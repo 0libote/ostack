@@ -1,0 +1,9 @@
+{
+  "upstream_repo": "t3dotgg/tstack",
+  "upstream_branch": "main",
+  "sync_root": "skills",
+  "local_only_skills": ["humanizer", "frontend-design", "ponytail"],
+  "ignore_paths": ["README.md", "LICENSE"],
+  "pr_branch_prefix": "sync/upstream-",
+  "pr_labels": ["sync", "upstream"]
+}
