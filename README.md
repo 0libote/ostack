@@ -49,7 +49,8 @@ Pick only what you need. For example `cp -R ostack/skills/full-send ostack/skill
 - `python3` for `babysit-pr`'s `pr-wait` script.
 - `council` and `agent-loop` need subagents for the models you choose. T3 Code
   does this with `delegate_task`. Otherwise you need a harness that can run
-  those models. Name your reviewer in the request or in `CLAUDE.md`/`AGENTS.md`.
+  those models. Name your reviewer in the request. If you name none, it asks
+  before starting.
 
 ## Make them yours
 

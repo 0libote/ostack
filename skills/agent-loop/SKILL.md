@@ -18,9 +18,12 @@ of scope creep and don't be scared to push back.
 ## Model
 
 The reviewer is the model the user names in the request. If the request names
-none, use the reviewer model configured in `CLAUDE.md` or `AGENTS.md`. If
-neither names one, ask the user which model to use before starting. Never
-hardcode a model, and do not substitute a different model without asking.
+none, ask the user which model to use before starting anything else. Use the
+harness question tool so the thread shows it is waiting: `AskUserQuestion` in
+Claude Code, `request_user_input` in Codex, or the question tool your harness
+has. List the available models as options. Never fall back to a configured
+default, never hardcode a model, and do not substitute a different model
+without asking.
 
 ## Budget
 
