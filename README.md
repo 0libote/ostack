@@ -1,16 +1,14 @@
 # ostack
 
-Agent skills for everyday work, synced from their upstream GitHub repos.
-This is **not a fork** — it's a synced copy with automation to stay current
-without overwriting local edits.
+Agent skills for everyday work, copied from their upstream GitHub repos. A script keeps them current and leaves local edits alone.
 
-Skills work in Claude Code and Codex. Some use
-[T3 Code](https://github.com/t3dotgg/t3code) features when they are available
-and fall back to native tools when they are not.
+Skills run in Claude Code and Codex. Some use
+[T3 Code](https://github.com/t3dotgg/t3code) features when available
+and fall back to native tools when not.
 
 ## Skills
 
-Synced (one PR per skill when upstream changes):
+Each upstream change arrives as one PR per skill:
 
 | Skill | Say | Source | What it does |
 |---|---|---|---|
@@ -43,7 +41,7 @@ cp -R ostack/skills/* ~/.claude/skills/   # Claude Code
 cp -R ostack/skills/* ~/.codex/skills/    # Codex
 ```
 
-Pick only what you need — e.g. `cp -R ostack/skills/full-send ostack/skills/babysit-pr ~/.claude/skills/`.
+Pick only what you need. For example `cp -R ostack/skills/full-send ostack/skills/babysit-pr ~/.claude/skills/`.
 
 ## Requirements
 
@@ -59,32 +57,31 @@ These are starting points. Edit them. Put personal settings, like which models
 sit on your council, in your `CLAUDE.md` or `AGENTS.md`, so you can update the
 skills without losing them.
 
-Local edits live in this repo. The sync action never pushes directly to `main`
-— it opens one PR per upstream skill so you can review the diff and keep your
-customizations (see below).
+Local edits live in this repo. The sync action never pushes to `main`. It opens
+one PR per upstream skill, so you can review the diff and keep your changes.
 
 ## Staying in sync with upstream
 
 Sources (see [`.github/upstream.json`](.github/upstream.json)):
 
-- `tstack` — [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack) (`main`, `skills/`, all skills). New skills Theo adds appear as new PRs automatically.
-- `humanizer` — [`blader/humanizer`](https://github.com/blader/humanizer) (`main`, `SKILL.md` + `agents/openai.yaml` → `skills/humanizer/`).
-- `frontend-design` — [`anthropics/skills`](https://github.com/anthropics/skills) (`main`, `skills/frontend-design/` → `skills/frontend-design/`).
-- `ponytail` — [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail) (`main`, `skills/ponytail/` → `skills/ponytail/`).
+- `tstack`: [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack) (`main`, `skills/`, all skills). New skills Theo adds appear as new PRs automatically.
+- `humanizer`: [`blader/humanizer`](https://github.com/blader/humanizer) (`main`, `SKILL.md` plus `agents/openai.yaml` into `skills/humanizer/`).
+- `frontend-design`: [`anthropics/skills`](https://github.com/anthropics/skills) (`main`, `skills/frontend-design/` into `skills/frontend-design/`).
+- `ponytail`: [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail) (`main`, `skills/ponytail/` into `skills/ponytail/`).
 
 How it works:
 
-- [`sync-upstream.yml`](.github/workflows/sync-upstream.yml) runs manually
-  from Actions → "Sync upstream skills", and weekly on Mondays.
+- Run [`sync-upstream.yml`](.github/workflows/sync-upstream.yml) from Actions
+  with Sync upstream skills, or let it run weekly on Mondays.
 - It clones each source, diffs upstream skill(s) against `skills/<name>`, and
-  for each **new or changed** skill opens **one PR** named
+  for each new or changed skill opens one PR named
   `sync(<source>): <skill> from <repo>@<sha>` on branch `sync/<skill>`.
-- The PR diff is exactly upstream-vs-current, so you see what changed upstream.
-  Merge it as-is, or cherry-pick / resolve conflicts to keep local edits.
-- PRs are labeled `sync` + `upstream`. If a PR for that skill is already open,
-  the run skips it instead of opening a duplicate.
-- `README.md` and root `LICENSE` are never overwritten. To track a new source
-  (e.g. more `ponytail-*` skills), add it to `upstream.json`.
+- The PR diff shows upstream against your current files, so you see what changed.
+  Merge it as-is, or cherry-pick and resolve conflicts to keep local edits.
+- PRs carry the `sync` and `upstream` labels. If a PR for that skill is already
+  open, the run skips it instead of opening a duplicate.
+- `README.md` and root `LICENSE` stay untouched. To track a new source
+  (for example more `ponytail-*` skills), add it to `upstream.json`.
 
 Run it locally:
 
@@ -97,6 +94,6 @@ bash .github/scripts/sync-upstream.sh                      # create branches + P
 ## License
 
 - `tstack`-derived skills: [MIT](LICENSE) © Theo Browne (retained).
-- `humanizer`: MIT © Siqi Chen — see upstream [`blader/humanizer`](https://github.com/blader/humanizer).
-- `frontend-design`: Apache-2.0 — see [`skills/frontend-design/LICENSE.txt`](skills/frontend-design/LICENSE.txt).
-- `ponytail`: MIT © DietrichGebert — see upstream [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail).
+- `humanizer`: MIT © Siqi Chen. Upstream [`blader/humanizer`](https://github.com/blader/humanizer).
+- `frontend-design`: Apache-2.0. See [`skills/frontend-design/LICENSE.txt`](skills/frontend-design/LICENSE.txt).
+- `ponytail`: MIT © DietrichGebert. Upstream [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail).
