@@ -1,9 +1,39 @@
 {
-  "upstream_repo": "t3dotgg/tstack",
-  "upstream_branch": "main",
-  "sync_root": "skills",
-  "local_only_skills": ["humanizer", "frontend-design", "ponytail"],
+  "sources": [
+    {
+      "id": "tstack",
+      "repo": "t3dotgg/tstack",
+      "branch": "main",
+      "mode": "all",
+      "upstream_path": "skills",
+      "local_path": "skills"
+    },
+    {
+      "id": "humanizer",
+      "repo": "blader/humanizer",
+      "branch": "main",
+      "mode": "single",
+      "local_skill": "humanizer",
+      "files": ["SKILL.md", "agents/openai.yaml"]
+    },
+    {
+      "id": "frontend-design",
+      "repo": "anthropics/skills",
+      "branch": "main",
+      "mode": "single",
+      "upstream_path": "skills/frontend-design",
+      "local_skill": "frontend-design"
+    },
+    {
+      "id": "ponytail",
+      "repo": "DietrichGebert/ponytail",
+      "branch": "main",
+      "mode": "single",
+      "upstream_path": "skills/ponytail",
+      "local_skill": "ponytail"
+    }
+  ],
   "ignore_paths": ["README.md", "LICENSE"],
-  "pr_branch_prefix": "sync/upstream-",
+  "pr_branch_prefix": "sync/",
   "pr_labels": ["sync", "upstream"]
 }
