@@ -9,7 +9,10 @@
 # - For each source, clones upstream (shallow) and diffs upstream skill(s)
 #   against local skills/<name>.
 # - tstack (mode=all): every subdir of upstream skills/ is a skill. New
-#   upstream skills become new PRs automatically.
+#   upstream skills become new PRs automatically. `renames` in upstream.json
+#   maps an upstream name to a different local name (e.g. sol-loop ->
+#   agent-loop); renamed PRs carry a note to cherry-pick and keep the local
+#   generalization.
 # - humanizer / frontend-design / ponytail (mode=single): one mapped skill
 #   each (see upstream.json). Full directory or listed files are compared.
 # - For each new or changed skill: creates branch sync/<skill>, copies the
@@ -64,9 +67,10 @@ skipped=()
 unchanged=()
 
 sync_one_skill() {
-  # args: source_id repo sha short upstream_dir local_dir skill status_label
+  # args: source_id repo sha short upstream_dir local_dir skill status [upstream_name]
   local source_id="$1" repo="$2" sha="$3" short="$4"
   local upstream_dir="$5" local_dir="$6" skill="$7" status="$8"
+  local upstream_name="${9:-$skill}"
 
   local branch="${PR_PREFIX}${skill}"
   echo "---"
@@ -127,6 +131,10 @@ sync_one_skill() {
   git push -u origin "$branch" --force-with-lease
 
   local title="sync(${source_id}): ${skill} from ${repo}@${short}"
+  local RENAME_NOTE=""
+  if [[ "$upstream_name" != "$skill" ]]; then
+    RENAME_NOTE="- Note: local \`$skill\` is renamed and customized from upstream \`$upstream_name\`. Cherry-pick workflow changes only and keep the local generalization (model choice, trigger phrase, report line)."
+  fi
   local body
   body=$(cat <<EOF
 Syncs skill \`$skill\` from upstream [\`${repo}@\`${short}](https://github.com/${repo}/commit/${sha}).
@@ -147,7 +155,7 @@ $diffstat
 - If you customized \`skills/$skill\` locally, resolve conflicts / cherry-pick to keep your edits. Do not lose local settings — merge, don't just overwrite \`$BASE_BRANCH\` blindly.
 - New upstream skills appear as added files. Close the PR if you don't want that skill.
 - \`README.md\` and \`LICENSE\` are never touched by this sync.
-
+$RENAME_NOTE
 Upstream skill path: https://github.com/${repo}/tree/${UPSTREAM_BRANCH_HINT}/$UPSTREAM_PATH_HINT
 EOF
 )
@@ -184,22 +192,24 @@ for ((i = 0; i < NUM_SOURCES; i++)); do
   if [[ "$mode" == "all" ]]; then
     upstream_path=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get('upstream_path','skills'))" "$SRC_JSON")
     local_path=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get('local_path','skills'))" "$SRC_JSON")
+    renames_json=$(python3 -c "import json,sys;print(json.dumps(json.loads(sys.argv[1]).get('renames',{})))" "$SRC_JSON")
     export UPSTREAM_PATH_HINT="$upstream_path"
     for upstream_dir in "$clone_dir/$upstream_path"/*/; do
       [[ -d "$upstream_dir" ]] || continue
       skill=$(basename "$upstream_dir")
       export UPSTREAM_PATH_HINT="$upstream_path/$skill"
-      local_dir="$local_path/$skill"
+      local_name=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get(sys.argv[2],sys.argv[2]))" "$renames_json" "$skill")
+      local_dir="$local_path/$local_name"
       status="new"
       if [[ -d "$local_dir" ]]; then
         if diff -r -q "$local_dir" "$upstream_dir" >/dev/null 2>&1; then
-          unchanged+=("$skill")
+          unchanged+=("$local_name")
           continue
         else
           status="updated"
         fi
       fi
-      sync_one_skill "$source_id" "$repo" "$SHA" "$SHORT" "$upstream_dir" "$local_dir" "$skill" "$status"
+      sync_one_skill "$source_id" "$repo" "$SHA" "$SHORT" "$upstream_dir" "$local_dir" "$local_name" "$status" "$skill"
     done
   else
     local_skill=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get('local_skill',''))" "$SRC_JSON")

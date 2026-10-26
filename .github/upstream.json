@@ -6,7 +6,10 @@
       "branch": "main",
       "mode": "all",
       "upstream_path": "skills",
-      "local_path": "skills"
+      "local_path": "skills",
+      "renames": {
+        "sol-loop": "agent-loop"
+      }
     },
     {
       "id": "humanizer",

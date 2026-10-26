@@ -15,7 +15,7 @@ Each upstream change arrives as one PR per skill:
 | `full-send` | "full send" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/full-send) | Takes a change to a merged PR with nobody watching: proves it, reviews it, files it, babysits it, merges it. |
 | `full-stop` | "full stop" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/full-stop) | Same as `full-send`, but stops when the PR is ready for you to merge. |
 | `council` | "council" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/council) | Gets review from three models from different providers, and loops until they agree. |
-| `sol-loop` | "sol loop" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/sol-loop) | Reviews a change with GPT Sol in a loop until both agents agree. |
+| `agent-loop` | "agent loop" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/sol-loop) | Reviews a change with a reviewer model you choose, in a loop until both agents agree. |
 | `file-pr` | "file a PR" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/file-pr) | Files a short PR that leads with the problem, not an inventory of changes. |
 | `takeover` | "take over" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/takeover) | Finishes someone else's PR, branch, or agent thread, and keeps their credit. |
 | `babysit-pr` | "babysit" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/babysit-pr) | Watches a PR through CI and review bots, and fixes the real findings. |
@@ -27,7 +27,7 @@ Each upstream change arrives as one PR per skill:
 
 Some skills call others. Install the ones they need too:
 
-- `full-send` uses `sol-loop`, `file-pr`, and `babysit-pr`.
+- `full-send` uses `agent-loop`, `file-pr`, and `babysit-pr`.
 - `full-stop` uses `full-send`.
 - `takeover` uses `modernize`, `file-pr`, `babysit-pr`, and `leaving-pr-comments`.
 - `file-pr`, `babysit-pr`, and `modernize` use `leaving-pr-comments`.
@@ -47,9 +47,9 @@ Pick only what you need. For example `cp -R ostack/skills/full-send ostack/skill
 
 - An authenticated [GitHub CLI](https://cli.github.com) (`gh`).
 - `python3` for `babysit-pr`'s `pr-wait` script.
-- `council` and `sol-loop` need subagents on other providers' models. T3 Code
+- `council` and `agent-loop` need subagents for the models you choose. T3 Code
   does this with `delegate_task`. Otherwise you need a harness that can run
-  those models.
+  those models. Name your reviewer in the request or in `CLAUDE.md`/`AGENTS.md`.
 
 ## Make them yours
 
@@ -64,7 +64,7 @@ one PR per upstream skill, so you can review the diff and keep your changes.
 
 Sources (see [`.github/upstream.json`](.github/upstream.json)):
 
-- `tstack`: [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack) (`main`, `skills/`, all skills). New skills Theo adds appear as new PRs automatically.
+- `tstack`: [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack) (`main`, `skills/`, all skills). New skills Theo adds appear as new PRs automatically. Upstream `sol-loop` is tracked as local `agent-loop` (renamed, model-agnostic).
 - `humanizer`: [`blader/humanizer`](https://github.com/blader/humanizer) (`main`, `SKILL.md` plus `agents/openai.yaml` into `skills/humanizer/`).
 - `frontend-design`: [`anthropics/skills`](https://github.com/anthropics/skills) (`main`, `skills/frontend-design/` into `skills/frontend-design/`).
 - `ponytail`: [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail) (`main`, `skills/ponytail/` into `skills/ponytail/`).
