@@ -3,7 +3,8 @@
 A static page for browsing and installing the skills. `index.html` and `app.js` provide the content and interactions.
 `styles.css` imports `tokens.css` and `base.css`; `fonts/` contains locally served
 fonts and their open-source licenses. The catalog stays readable without JavaScript;
-JavaScript adds search, category filters, illustrative previews, and copying.
+JavaScript adds search, category filters, illustrative previews, and an install
+picker with harness, method, and scope buttons plus command copying.
 Skill previews describe workflows; they do not execute agents or commands.
 
 ## Local preview
@@ -45,3 +46,11 @@ Edit the skill cards in `index.html`; the skill key, category, command, and prev
 live on each card as data attributes. Keep the visible skill count and the
 README collection in sync when adding or removing a skill. All skill links
 point to their source files in the repository.
+
+## Update installation options
+
+Harness IDs and personal/project paths live on the `data-agent`, `data-global`,
+and `data-project` attributes in `index.html`. `app.js` generates commands for the
+selected method and scope. Keep the root README installation table and examples
+in sync when changing these options. Without JavaScript, the default Claude Code
+CLI command and a link to the complete installation guide remain available.

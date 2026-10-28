@@ -2,8 +2,9 @@
 
 Agent skills for everyday work, copied from their upstream GitHub repos. A script keeps them current and leaves local edits alone.
 
-Skills run in Claude Code and Codex. Some use
-[T3 Code](https://github.com/t3dotgg/t3code) features when available
+Install skills in Claude Code, Codex, Cursor, OpenCode, Gemini CLI, or GitHub
+Copilot. Some workflows need tools or model access that your harness must provide.
+Some use [T3 Code](https://github.com/t3dotgg/t3code) features when available
 and fall back to native tools when not.
 
 ## Website
@@ -42,13 +43,98 @@ Some skills call others. Install the ones they need too:
 
 ## Install
 
+Choose your harness, installation method, and scope. The [website](site/) has an
+interactive command picker for the same options. Start a new agent session after
+installing, then ask for a skill by name.
+
+### One command with the skills CLI
+
+Requires Node.js and npm. This example installs for Claude Code across your projects;
+the CLI prompts you to choose the skills:
+
 ```bash
-git clone https://github.com/0libote/ostack
-cp -R ostack/skills/* ~/.claude/skills/   # Claude Code
-cp -R ostack/skills/* ~/.codex/skills/    # Codex
+npx skills add 0libote/ostack --agent claude-code --global
 ```
 
-Pick only what you need. For example `cp -R ostack/skills/full-send ostack/skills/babysit-pr ~/.claude/skills/`.
+Replace `claude-code` with your harness's agent ID below. For a project install,
+run from your project root and omit `--global`:
+
+```bash
+npx skills add 0libote/ostack --agent codex
+```
+
+Select a particular skill or the whole collection:
+
+```bash
+npx skills add 0libote/ostack --agent codex --global --skill humanizer
+npx skills add 0libote/ostack --agent codex --global --skill '*'
+```
+
+Install dependent skills too; the dependencies are listed above. The CLI offers
+symlinks by default; add `--copy` to use independent copies. Use
+`npx skills update` to update CLI-managed installs. See the
+[skills CLI documentation](https://github.com/vercel-labs/skills/blob/main/docs/commands.md).
+
+### Harnesses and directories
+
+The manual methods below use these directories. The non-Claude project installs
+use `.agents/skills`, which these harnesses also discover and the skills CLI uses.
+Personal installs apply across projects; project installs belong in the project root.
+
+| Harness | CLI agent ID | Personal directory | Project directory |
+| --- | --- | --- | --- |
+| [Claude Code](https://code.claude.com/docs/en/skills) | `claude-code` | `~/.claude/skills` | `.claude/skills` |
+| [Codex](https://learn.chatgpt.com/docs/customization/overview) | `codex` | `~/.agents/skills` | `.agents/skills` |
+| [Cursor](https://cursor.com/docs/skills) | `cursor` | `~/.cursor/skills` | `.agents/skills` |
+| [OpenCode](https://opencode.ai/docs/skills/) | `opencode` | `~/.config/opencode/skills` | `.agents/skills` |
+| [Gemini CLI](https://geminicli.com/docs/cli/using-agent-skills/) | `gemini-cli` | `~/.gemini/skills` | `.agents/skills` |
+| [GitHub Copilot](https://docs.github.com/en/copilot/concepts/customizations/agent-skills) | `github-copilot` | `~/.copilot/skills` | `.agents/skills` |
+
+Codex's current personal directory is `~/.agents/skills`; older instructions in
+this repository used `~/.codex/skills`. Harness discovery does not guarantee every
+workflow can run: model delegation and GitHub tools still depend on your setup.
+
+### Copy files
+
+Requires Git and a Unix shell (macOS, Linux, or WSL). This installs personal skills
+for Claude Code. Substitute either directory from the table for another harness
+or scope. For project scope, run these commands from your project root.
+
+```bash
+git clone https://github.com/0libote/ostack
+mkdir -p ~/.claude/skills
+cp -R ostack/skills/* ~/.claude/skills/
+```
+
+If you already cloned the repo, reuse that checkout and skip the clone command.
+Pick only what you need, keeping dependencies together. For example:
+
+```bash
+cp -R ostack/skills/humanizer ~/.claude/skills/
+```
+
+Copies are independent of the checkout. To update them, pull the checkout and copy
+again. Copying replaces files with matching names, including local edits.
+
+### Link a checkout
+
+Use links if you want edits in the checkout to be available without copying again.
+Requires Git and a Unix shell with symlink support. Keep the checkout in place.
+Skip the first line if it is already cloned in your current directory.
+
+```bash
+git clone https://github.com/0libote/ostack
+mkdir -p ~/.claude/skills
+for skill in "$PWD"/ostack/skills/*; do
+  ln -s "$skill" ~/.claude/skills/
+done
+```
+
+Substitute the destination directory from the table for another harness or scope.
+The absolute source paths keep links working after you leave the current directory.
+Existing same-named entries are left in place; `ln` reports a conflict. To update
+linked skills, run `git -C ostack pull --ff-only`. For shared project skills, prefer
+copies or the skills CLI so teammates do not depend on your local checkout path.
 
 ## Requirements
 

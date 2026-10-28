@@ -81,21 +81,35 @@ h2 { font-size: var(--text-section); }
 .empty-state button:hover { border-color: var(--color-ink); }
 .install-section { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--space-2xl); padding-block: var(--space-2xl) var(--space-3xl); border-top: 1px solid var(--color-rule-2); }
 .install-copy p { color: var(--color-muted); max-width: 45ch; margin-block: var(--space-lg); }
-.install-copy a { font-size: var(--text-sm); }
+.install-agents { min-width: 0; padding: 0; margin: var(--space-xl) 0 0; border: 0; }
+.install-agents legend { padding: 0; margin-bottom: var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); }
+.agent-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-xs); }
+.agent-options button { min-height: 52px; text-align: left; padding: var(--space-sm) var(--space-md); border: 1px solid var(--color-rule-2); border-radius: var(--radius-pill); background: var(--color-clear); font-size: var(--text-sm); }
+.agent-options button:hover { border-color: var(--color-ink-2); background: var(--color-paper-2); }
+.agent-options button[aria-pressed=true] { border-color: var(--color-accent); background: var(--color-accent-soft); color: var(--color-accent); }
 .install-code { min-width: 0; }
-.install-tabs { display: flex; align-items: center; gap: var(--space-md); border-bottom: 1px solid var(--color-rule); }
-.install-tabs button { background: var(--color-clear); border: 0; border-bottom: 2px solid var(--color-clear); padding: var(--space-sm) var(--space-xs); min-height: 48px; font-size: var(--text-sm); color: var(--color-muted); }
+.install-controls { display: flex; flex-direction: column; gap: var(--space-lg); margin-bottom: var(--space-lg); }
+.install-tabs { display: flex; gap: var(--space-lg); border-bottom: 1px solid var(--color-rule); }
+.install-tabs button { background: var(--color-clear); border: 0; border-bottom: 2px solid var(--color-clear); padding: var(--space-sm) 0; min-height: 48px; font-size: var(--text-sm); color: var(--color-muted); }
 .install-tabs button:hover { color: var(--color-ink); }
 .install-tabs button[aria-pressed=true] { color: var(--color-accent); border-color: var(--color-accent); }
-#copy-install { margin-left: auto; color: var(--color-ink); }
-.install-code pre { overflow-x: auto; padding-block: var(--space-lg); margin: 0; font-family: var(--font-outlier); font-size: var(--text-sm); line-height: 2; }
+.scope-options { display: flex; align-self: start; gap: var(--space-2xs); padding: var(--space-2xs); border-radius: var(--radius-pill); background: var(--color-paper-3); }
+.scope-options button { min-height: 44px; padding: var(--space-xs) var(--space-md); font-size: var(--text-sm); border: 1px solid var(--color-clear); border-radius: var(--radius-pill); background: var(--color-clear); color: var(--color-muted); }
+.scope-options button:hover { color: var(--color-ink); }
+.scope-options button[aria-pressed=true] { border-color: var(--color-rule-2); background: var(--color-paper-2); color: var(--color-ink); }
+.install-output { background: var(--color-paper-2); color: var(--color-ink); border-radius: var(--radius-card); padding: var(--space-md) var(--space-lg); }
+.install-command-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); font-size: var(--text-sm); color: var(--color-muted); }
+#copy-install { flex-shrink: 0; padding: var(--space-xs) 0; min-height: 44px; border: 0; background: var(--color-clear); color: var(--color-ink); font-size: var(--text-sm); }
+#copy-install:hover { color: var(--color-accent); }
+.install-code pre { overflow-x: auto; min-height: 160px; padding-block: var(--space-lg); margin: 0; font-family: var(--font-outlier); font-size: var(--text-sm); line-height: 2; }
 code { font-family: var(--font-outlier); }
-.install-hint { color: var(--color-muted); font-size: var(--text-sm); border-top: 1px solid var(--color-rule); padding-top: var(--space-lg); }
+.install-hint { color: var(--color-ink-2); font-size: var(--text-sm); padding-top: var(--space-lg); }
+.install-scope-hint { color: var(--color-muted); font-size: var(--text-sm); margin-top: var(--space-xs); }
 .copy-status { min-height: 1.55em; margin-top: var(--space-md); color: var(--color-accent); font-size: var(--text-sm); }
 .site-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-lg); padding-block: var(--space-xl); border-top: 1px solid var(--color-rule); }
 .site-footer p, .site-footer > a:last-child { font-size: var(--text-sm); color: var(--color-muted); }
 .site-footer > a:last-child:hover { color: var(--color-accent); }
-.sr-only { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); white-space: nowrap; }
+.sr-only { overflow: hidden; position: absolute; width: 1px; height: 1px; clip-path: inset(50%); white-space: nowrap; }
 .skip-link { position: fixed; top: var(--space-md); left: var(--space-md); z-index: var(--z-toast); transform: translateY(-200%); background: var(--color-accent); color: var(--color-accent-ink); padding: var(--space-sm) var(--space-lg); }
 .skip-link:focus-visible { transform: none; }
 @media (min-width: 1600px) { .hero { min-height: 920px; } }
@@ -142,6 +156,8 @@ code { font-family: var(--font-outlier); }
   .card-description { grid-column: 1 / -1; grid-row: 3; }
   .preview-button { grid-column: 1 / -1; grid-row: 4; }
   .install-section { grid-template-columns: minmax(0, 1fr); padding-bottom: var(--space-2xl); }
+  .install-tabs { gap: var(--space-sm); }
+  .install-tabs button { white-space: nowrap; font-size: var(--text-xs); }
   .install-code pre { font-size: var(--text-xs); }
   .site-footer { align-items: start; flex-direction: column; }
 }

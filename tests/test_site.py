@@ -12,11 +12,14 @@ class Catalog(HTMLParser):
         self.cards = []
         self.links = []
         self.ids = []
+        self.install_agents = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if tag == 'article' and attrs.get('class') == 'skill-card':
             self.cards.append(attrs)
+        if tag == 'button' and 'data-agent' in attrs:
+            self.install_agents.append(attrs)
         if 'id' in attrs:
             self.ids.append(attrs['id'])
         for key in ('href', 'src'):
@@ -44,6 +47,19 @@ class SiteTest(unittest.TestCase):
                 self.assertTrue(link == '#' or link[1:] in catalog.ids, link)
             elif not link.startswith('https://'):
                 self.assertTrue((ROOT / 'site' / link).is_file(), link)
+
+    def test_readme_documents_every_install_target(self):
+        catalog = Catalog()
+        catalog.feed((ROOT / 'site/index.html').read_text())
+        readme = (ROOT / 'README.md').read_text()
+        self.assertEqual(len(catalog.install_agents), 6)
+        for agent in catalog.install_agents:
+            with self.subTest(agent=agent['data-agent']):
+                row = next(line for line in readme.splitlines()
+                           if f"`{agent['data-agent']}` |" in line)
+                self.assertIn(f"`{agent['data-global']}`", row)
+                self.assertIn(f"`{agent['data-project']}`", row)
+        self.assertNotIn('https://github.com/0libote/ostack#requirements', catalog.links)
 
 
 if __name__ == '__main__':

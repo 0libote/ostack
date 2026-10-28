@@ -49,16 +49,49 @@ for (const button of previewButtons) {
 }
 
 const agentButtons = [...document.querySelectorAll('[data-agent]')];
+const methodButtons = [...document.querySelectorAll('[data-method]')];
+const scopeButtons = [...document.querySelectorAll('[data-scope]')];
 const copyStatus = document.querySelector('#copy-status');
-for (const button of agentButtons) {
-  button.hidden = false;
-  button.addEventListener('click', () => {
-    for (const agent of agentButtons) agent.setAttribute('aria-pressed', String(agent === button));
-    const directory = button.dataset.agent === 'codex' ? '.codex' : '.claude';
-    document.querySelector('#install-command').textContent = `git clone https://github.com/0libote/ostack\nmkdir -p ~/${directory}/skills\ncp -R ostack/skills/* ~/${directory}/skills/`;
-    copyStatus.textContent = '';
-  });
+const installCommand = document.querySelector('#install-command');
+const installHints = {
+  cli: 'Uses the skills CLI. Requires Node.js and npm; choose the skills in its prompts.',
+  copy: 'Requires Git and a Unix shell. Copies the skills into your harness’s folder.',
+  link: 'Requires Git and a Unix shell. Keep the checkout: edits there are available through the links.'
+};
+
+function updateInstall() {
+  const agent = agentButtons.find(button => button.getAttribute('aria-pressed') === 'true');
+  const method = methodButtons.find(button => button.getAttribute('aria-pressed') === 'true').dataset.method;
+  const scope = scopeButtons.find(button => button.getAttribute('aria-pressed') === 'true').dataset.scope;
+  const directory = agent.dataset[scope];
+  if (method === 'cli') {
+    installCommand.textContent = `npx skills add 0libote/ostack --agent ${agent.dataset.agent}${scope === 'global' ? ' --global' : ''}`;
+  } else {
+    const install = method === 'copy'
+      ? `cp -R ostack/skills/* ${directory}/`
+      : `for skill in "$PWD"/ostack/skills/*; do\n  ln -s "$skill" ${directory}/\ndone`;
+    installCommand.textContent = `git clone https://github.com/0libote/ostack\nmkdir -p ${directory}\n${install}`;
+  }
+  const selection = `${agent.textContent} / ${scope === 'global' ? 'all projects' : 'this project'}`;
+  document.querySelector('#install-destination').textContent = selection;
+  document.querySelector('#install-hint').textContent = installHints[method];
+  document.querySelector('#install-scope-hint').textContent = scope === 'global'
+    ? 'Available across your projects. Start a new agent session after installing.'
+    : 'Run from your project root. Start a new agent session after installing.';
+  document.querySelector('#install-selection').textContent = `${selection}. ${methodButtons.find(button => button.dataset.method === method).textContent}. Commands updated.`;
+  copyStatus.textContent = '';
 }
+
+for (const buttons of [agentButtons, methodButtons, scopeButtons]) {
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      for (const option of buttons) option.setAttribute('aria-pressed', String(option === button));
+      updateInstall();
+    });
+  }
+}
+document.querySelector('#install-agents').hidden = false;
+document.querySelector('#install-controls').hidden = false;
 const copyButton = document.querySelector('#copy-install');
 copyButton.hidden = false;
 copyButton.addEventListener('click', async () => {

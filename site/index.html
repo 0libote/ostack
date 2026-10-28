@@ -119,10 +119,43 @@
   </div><div class="empty-state" id="empty-state" hidden><h3>No skills found.</h3><p>Try another search or browse the whole collection.</p><button type="button" id="reset-filters">Show all skills</button></div>
 </section>
 <section class="install-section wrap" id="install" aria-labelledby="install-title">
-  <div class="install-copy"><h2 id="install-title">Put them to work.</h2><p>Clone the repo and copy the skills into your agent’s skills folder. Start a new session, then ask for a skill by name.</p><a class="text-link" href="https://github.com/0libote/ostack#requirements">Check the requirements</a></div>
-  <div class="install-code"><div class="install-tabs" role="group" aria-label="Choose your coding agent"><button type="button" data-agent="claude" aria-pressed="true">Claude Code</button><button type="button" data-agent="codex" aria-pressed="false" hidden>Codex</button><button type="button" id="copy-install" hidden>Copy</button></div><pre tabindex="0" aria-label="Installation commands"><code id="install-command">git clone https://github.com/0libote/ostack
-mkdir -p ~/.claude/skills
-cp -R ostack/skills/* ~/.claude/skills/</code></pre><p class="install-hint">Start a new agent session after installing.<br>Some skills also need GitHub CLI, Python, Node.js, Chrome, or model access.</p><p class="copy-status" id="copy-status" role="status" aria-live="polite"></p><noscript><p>For Codex, replace <code>~/.claude/skills</code> with <code>~/.codex/skills</code>.</p></noscript></div>
+  <div class="install-copy">
+    <h2 id="install-title">Put them to work.</h2>
+    <p>Pick your harness and how you want to install. Copy the commands, then ask for a skill by name.</p>
+    <fieldset class="install-agents" id="install-agents" hidden>
+      <legend>Your harness</legend>
+      <div class="agent-options" role="group" aria-label="Choose your coding agent">
+        <button type="button" data-agent="claude-code" data-global="~/.claude/skills" data-project=".claude/skills" aria-pressed="true">Claude Code</button>
+        <button type="button" data-agent="codex" data-global="~/.agents/skills" data-project=".agents/skills" aria-pressed="false">Codex</button>
+        <button type="button" data-agent="cursor" data-global="~/.cursor/skills" data-project=".agents/skills" aria-pressed="false">Cursor</button>
+        <button type="button" data-agent="opencode" data-global="~/.config/opencode/skills" data-project=".agents/skills" aria-pressed="false">OpenCode</button>
+        <button type="button" data-agent="gemini-cli" data-global="~/.gemini/skills" data-project=".agents/skills" aria-pressed="false">Gemini CLI</button>
+        <button type="button" data-agent="github-copilot" data-global="~/.copilot/skills" data-project=".agents/skills" aria-pressed="false">GitHub Copilot</button>
+      </div>
+    </fieldset>
+  </div>
+  <div class="install-code">
+    <div class="install-controls" id="install-controls" hidden>
+      <div class="install-tabs" role="group" aria-label="Installation method">
+        <button type="button" data-method="cli" aria-pressed="true">One command</button>
+        <button type="button" data-method="copy" aria-pressed="false">Copy files</button>
+        <button type="button" data-method="link" aria-pressed="false">Link checkout</button>
+      </div>
+      <div class="scope-options" role="group" aria-label="Installation scope">
+        <button type="button" data-scope="global" aria-pressed="true">All projects</button>
+        <button type="button" data-scope="project" aria-pressed="false">This project</button>
+      </div>
+    </div>
+    <div class="install-output">
+      <div class="install-command-heading"><p id="install-destination">Claude Code / all projects</p><button type="button" id="copy-install" hidden>Copy commands</button></div>
+      <pre tabindex="0" aria-label="Installation commands"><code id="install-command">npx skills add 0libote/ostack --agent claude-code --global</code></pre>
+    </div>
+    <p class="install-hint" id="install-hint">Uses the skills CLI. Requires Node.js and npm; choose the skills in its prompts.</p>
+    <p class="install-scope-hint" id="install-scope-hint">Available across your projects. Start a new agent session after installing.</p>
+    <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+    <p class="sr-only" id="install-selection" role="status" aria-live="polite"></p>
+    <noscript><p>More harnesses and manual installation methods are in the <a href="https://github.com/0libote/ostack#install">installation guide</a>.</p></noscript>
+  </div>
 </section>
 </main>
 <footer class="wrap site-footer"><a class="wordmark" href="#">ostack<span class="wordmark-dot">.</span></a><p>Agent skills from the open-source community.</p><a href="https://github.com/0libote/ostack#license">Sources &amp; licenses</a></footer>
