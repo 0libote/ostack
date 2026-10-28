@@ -84,7 +84,8 @@ h2 { font-size: var(--text-section); }
 .install-agents { min-width: 0; padding: 0; margin: var(--space-xl) 0 0; border: 0; }
 .install-agents legend { padding: 0; margin-bottom: var(--space-sm); font-size: var(--text-sm); color: var(--color-muted); }
 .agent-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-xs); }
-.agent-options button { min-height: 52px; text-align: left; padding: var(--space-sm) var(--space-md); border: 1px solid var(--color-rule-2); border-radius: var(--radius-pill); background: var(--color-clear); font-size: var(--text-sm); }
+.agent-options button { display: flex; align-items: center; gap: var(--space-sm); min-height: 52px; text-align: left; padding: var(--space-sm) var(--space-md); border: 1px solid var(--color-rule-2); border-radius: var(--radius-pill); background: var(--color-clear); font-size: var(--text-sm); }
+.agent-options img { width: 20px; height: 20px; flex-shrink: 0; object-fit: contain; }
 .agent-options button:hover { border-color: var(--color-ink-2); background: var(--color-paper-2); }
 .agent-options button[aria-pressed=true] { border-color: var(--color-accent); background: var(--color-accent-soft); color: var(--color-accent); }
 .install-code { min-width: 0; }
@@ -160,4 +161,8 @@ code { font-family: var(--font-outlier); }
   .install-tabs button { white-space: nowrap; font-size: var(--text-xs); }
   .install-code pre { font-size: var(--text-xs); }
   .site-footer { align-items: start; flex-direction: column; }
+}
+
+@media (max-width: 360px) {
+  .agent-options button { gap: var(--space-xs); padding-inline: var(--space-xs); }
 }
