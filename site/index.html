@@ -14,14 +14,14 @@
 <a class="skip-link" href="#skills">Skip to skills</a>
 <header class="site-header wrap">
   <a class="wordmark" href="#" aria-label="ostack home"><span class="logo" aria-hidden="true">≋</span>ostack<span class="wordmark-dot">.</span></a>
-  <nav aria-label="Main navigation"><a href="#skills">The skills <span class="nav-count">12</span></a><a href="#install">Get started</a><a class="github-link" href="https://github.com/0libote/ostack">GitHub <span aria-hidden="true">↗</span></a></nav>
+  <nav aria-label="Main navigation"><a href="#skills">The skills <span class="nav-count">13</span></a><a href="#install">Get started</a><a class="github-link" href="https://github.com/0libote/ostack">GitHub <span aria-hidden="true">↗</span></a></nav>
 </header>
 <main>
 <section class="hero wrap" aria-labelledby="hero-title">
   <div class="hero-copy">
     <p class="intro"><span class="small-star" aria-hidden="true">✳</span> For Claude Code &amp; Codex</p>
     <h1 id="hero-title">Give your agent<br>better habits.</h1>
-    <p class="hero-description">Twelve skills for the work around the code. Review a change, finish a pull request, or clean up a draft. Copy the ones you need.</p>
+    <p class="hero-description">Thirteen skills for the work around the code. Review a change, finish a pull request, or clean up a draft. Copy the ones you need.</p>
     <div class="hero-actions"><a class="button primary" href="#skills">Browse the skills <span aria-hidden="true">↘</span></a><a class="text-link" href="#install">Install the collection</a></div>
     <p class="compatibility"><span class="compatibility-mark" aria-hidden="true">✓</span> Plain Markdown. Open source. Editable.</p>
   </div>
@@ -40,7 +40,7 @@
 <section class="catalog wrap" id="skills" aria-labelledby="skills-title">
   <div class="section-heading"><div><h2 id="skills-title">What needs doing?</h2></div><p>Browse by task, or search for a skill.</p></div>
   <div class="catalog-toolbar" hidden id="catalog-toolbar"><div class="filters" role="group" aria-label="Filter skills by category"><button type="button" data-category="All" aria-pressed="true">All</button><button type="button" data-category="Ship" aria-pressed="false">Ship</button><button type="button" data-category="Review" aria-pressed="false">Review</button><button type="button" data-category="Create" aria-pressed="false">Create</button><button type="button" data-category="Maintain" aria-pressed="false">Maintain</button></div><label class="search"><span aria-hidden="true">⌕</span><span class="sr-only">Search skills</span><input id="skill-search" type="search" placeholder="Find a skill…" autocomplete="off"></label></div>
-  <p class="result-count" id="result-count" role="status" aria-live="polite">12 skills</p>
+  <p class="result-count" id="result-count" role="status" aria-live="polite">13 skills</p>
   <div class="skill-grid" id="skill-grid">
     <article class="skill-card" data-skill="full-send" data-category="Ship" data-command="full send" data-steps="Prove the change → review → open a PR → monitor → merge">
       <div class="card-top"><span class="category">Ship</span></div>
@@ -108,6 +108,12 @@
       <p class="card-tagline">Design a considered interface</p><p class="card-description">Build thoughtful layouts with deliberate type, color, and interaction.</p>
       <button class="preview-button" type="button" data-preview="frontend-design" aria-label="See frontend-design example" hidden>See example <span aria-hidden="true">↗</span></button>
     </article>
+    <article class="skill-card" data-skill="hallmark" data-category="Create" data-command="use hallmark to build a page" data-steps="Read the brief → choose a theme → build → check the design">
+      <div class="card-top"><span class="category">Create</span></div>
+      <h3><a href="https://github.com/0libote/ostack/tree/main/skills/hallmark">hallmark<span aria-hidden="true">↗</span></a></h3>
+      <p class="card-tagline">Build pages with a distinct style</p><p class="card-description">Design new pages with themes and checks for common AI design habits. Name Hallmark to redesign or audit an existing page.</p>
+      <button class="preview-button" type="button" data-preview="hallmark" aria-label="See hallmark example" hidden>See example <span aria-hidden="true">↗</span></button>
+    </article>
     <article class="skill-card" data-skill="ponytail" data-category="Maintain" data-command="ponytail" data-steps="Read the code → find the smallest complete change → verify it">
       <div class="card-top"><span class="category">Maintain</span></div>
       <h3><a href="https://github.com/0libote/ostack/tree/main/skills/ponytail">ponytail<span aria-hidden="true">↗</span></a></h3>
@@ -120,7 +126,7 @@
   <div class="install-copy"><span class="install-symbol" aria-hidden="true">↙</span><h2 id="install-title">Put them to work.</h2><p>Clone the repo and copy the skills into your agent’s skills folder. Start a new session, then ask for a skill by name.</p><a class="text-link" href="https://github.com/0libote/ostack#requirements">Check the requirements <span aria-hidden="true">↗</span></a></div>
   <div class="install-code"><div class="install-tabs" role="group" aria-label="Choose your coding agent"><button type="button" data-agent="claude" aria-pressed="true">Claude Code</button><button type="button" data-agent="codex" aria-pressed="false" hidden>Codex</button><button type="button" id="copy-install" hidden>Copy <span aria-hidden="true">⧉</span></button></div><pre tabindex="0" aria-label="Installation commands"><code id="install-command">git clone https://github.com/0libote/ostack
 mkdir -p ~/.claude/skills
-cp -R ostack/skills/* ~/.claude/skills/</code></pre><p class="install-hint">Start a new agent session after installing.<br>Some skills also need GitHub CLI, Python, or model access.</p><p class="copy-status" id="copy-status" role="status" aria-live="polite"></p><noscript><p>For Codex, replace <code>~/.claude/skills</code> with <code>~/.codex/skills</code>.</p></noscript></div>
+cp -R ostack/skills/* ~/.claude/skills/</code></pre><p class="install-hint">Start a new agent session after installing.<br>Some skills also need GitHub CLI, Python, Node.js, Chrome, or model access.</p><p class="copy-status" id="copy-status" role="status" aria-live="polite"></p><noscript><p>For Codex, replace <code>~/.claude/skills</code> with <code>~/.codex/skills</code>.</p></noscript></div>
 </section>
 </main>
 <footer class="wrap site-footer"><a class="wordmark" href="#">ostack<span class="wordmark-dot">.</span></a><p>Agent skills from the open-source community.</p><a href="https://github.com/0libote/ostack#license">Sources &amp; licenses <span aria-hidden="true">↗</span></a></footer>

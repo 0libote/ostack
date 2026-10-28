@@ -28,6 +28,14 @@
       "local_skill": "frontend-design"
     },
     {
+      "id": "hallmark",
+      "repo": "Nutlope/hallmark",
+      "branch": "main",
+      "mode": "single",
+      "upstream_path": "skills/hallmark",
+      "local_skill": "hallmark"
+    },
+    {
       "id": "ponytail",
       "repo": "DietrichGebert/ponytail",
       "branch": "main",

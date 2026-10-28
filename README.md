@@ -29,6 +29,7 @@ Each upstream change arrives as one PR per skill:
 | `leaving-pr-comments` | (automatic) | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/leaving-pr-comments) | Formats comments that an agent posts on your behalf. |
 | `humanizer` | "humanize" | [`blader/humanizer`](https://github.com/blader/humanizer) | Rewrites AI-sounding prose so it reads like the writer, without changing what it says. Based on Wikipedia's "Signs of AI writing". |
 | `frontend-design` | "design" | [`anthropics/skills`](https://github.com/anthropics/skills/tree/main/skills/frontend-design) | Design lead for UI work: distinctive visual direction, typography, and layout that avoids templated defaults. |
+| `hallmark` | "use hallmark" | [`Nutlope/hallmark`](https://github.com/Nutlope/hallmark/tree/main/skills/hallmark) | Designs new pages with themes and checks for common AI design habits; redesigns or audits existing pages when named. |
 | `ponytail` | "ponytail" | [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail/tree/main/skills/ponytail) | Lazy senior dev mode: the smallest change that fully solves the task. Lite / full (default) / ultra. |
 
 Some skills call others. Install the ones they need too:
@@ -53,6 +54,7 @@ Pick only what you need. For example `cp -R ostack/skills/full-send ostack/skill
 
 - An authenticated [GitHub CLI](https://cli.github.com) (`gh`).
 - `python3` for `babysit-pr`'s `pr-wait` script.
+- `hallmark` needs Node.js 18+ for its helper scripts. Its browser checks and screenshots also need Chrome and `puppeteer-core` (`npm install -g puppeteer-core`); static checks work without them.
 - `council` and `agent-loop` need subagents for the models you choose. T3 Code
   does this with `delegate_task`. Otherwise you need a harness that can run
   those models. Name your reviewer in the request. If you name none, it asks
@@ -74,6 +76,7 @@ Sources (see [`.github/upstream.json`](.github/upstream.json)):
 - `tstack`: [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack) (`main`, `skills/`, all skills). New skills Theo adds appear as new PRs automatically. Upstream `sol-loop` is tracked as local `agent-loop` (renamed, model-agnostic).
 - `humanizer`: [`blader/humanizer`](https://github.com/blader/humanizer) (`main`, `SKILL.md` plus `agents/openai.yaml` into `skills/humanizer/`).
 - `frontend-design`: [`anthropics/skills`](https://github.com/anthropics/skills) (`main`, `skills/frontend-design/` into `skills/frontend-design/`).
+- `hallmark`: [`Nutlope/hallmark`](https://github.com/Nutlope/hallmark) (`main`, `skills/hallmark/` into `skills/hallmark/`, including its license, themes, references, and scripts).
 - `ponytail`: [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail) (`main`, `skills/ponytail/` into `skills/ponytail/`).
 
 How it works:
@@ -108,4 +111,5 @@ bash .github/scripts/sync-upstream.sh                      # create branches + P
 - `tstack`-derived skills: [MIT](LICENSE) © Theo Browne (retained).
 - `humanizer`: MIT © Siqi Chen. Upstream [`blader/humanizer`](https://github.com/blader/humanizer).
 - `frontend-design`: Apache-2.0. See [`skills/frontend-design/LICENSE.txt`](skills/frontend-design/LICENSE.txt).
+- `hallmark`: MIT © Hallmark contributors. See [`skills/hallmark/LICENSE`](skills/hallmark/LICENSE). Photos listed in its library retain their individual licenses and require the credits specified by the skill.
 - `ponytail`: MIT © DietrichGebert. Upstream [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail).
