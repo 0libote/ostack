@@ -14,9 +14,9 @@
     "Pause/play, manual navigation, keyboard, touch, offscreen and background suspension"
   ],
   "introduce": [
-    "Next-card preview",
-    "Integrated icon controls below slides",
-    "Accessible interactive position rail"
+    "Subtle next-card edge",
+    "Centered pause and arrow controls",
+    "Compact labeled slide markers"
   ],
   "assumptions": "Developer audience; browse skills; technical restrained tone; current refinement stays within the existing component"
 }

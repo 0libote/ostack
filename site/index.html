@@ -33,8 +33,9 @@
     </div>
     <div class="carousel-controls" id="carousel-controls" hidden>
       <button type="button" id="toggle-autoplay" data-playing="true" aria-label="Pause automatic rotation" aria-controls="skill-carousel"><svg class="pause-glyph" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg><svg class="play-glyph" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg><span class="sr-only" data-playback-label>Pause</span></button>
-      <input id="carousel-progress" type="range" min="1" max="13" value="1" step="1" aria-label="Choose a skill" aria-controls="skill-carousel">
-      <div class="carousel-arrows"><button type="button" id="previous-skill" aria-label="Previous skill" aria-controls="skill-carousel"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button><button type="button" id="next-skill" aria-label="Next skill" aria-controls="skill-carousel"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button></div>
+      <button type="button" id="previous-skill" aria-label="Previous skill" aria-controls="skill-carousel"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+      <div class="carousel-pagination" id="carousel-pagination" role="group" aria-label="Choose a skill"></div>
+      <button type="button" id="next-skill" aria-label="Next skill" aria-controls="skill-carousel"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
       <p class="sr-only" id="carousel-position" role="status" aria-live="polite" aria-atomic="true"></p>
     </div>
   </section>

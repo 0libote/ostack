@@ -5,6 +5,7 @@
 /* Hallmark · finish-review: in-thread · ship · gap: none · Floor 0 FAIL · Reflex 0 */
 /* Hallmark · hero-review: in-thread · fix · 1 finding resolved: local font declarations now load both theme faces */
 /* Hallmark · reworded "Thirteen skills for the work around the code. Review a change, finish a pull request, or clean up a draft. Copy the ones you need." to "Thirteen editable skills for Claude Code and Codex." · 58 shortens the hero; skill details remain in the catalog */
+/* Hallmark · answered F4 · carousel buttons have no fill; their small markers indicate slide position rather than primary actions */
 @import url("./tokens.css");
 @import url("./base.css");
 
@@ -205,25 +206,23 @@ code { font-family: var(--font-outlier); }
 }
 
 /* Hallmark · component: carousel controls · theme: Console (kept) · genre: modern-minimal · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: S, let the actual next skill show the rail's purpose */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: S, compact markers identify the carousel without a media-player rail */
 .skill-carousel.is-ready .carousel-track { padding-inline-end: var(--carousel-peek); }
 .carousel-heading { padding-block: var(--space-md) var(--space-lg); }
-.carousel-controls { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: var(--space-lg); padding-top: var(--space-xs); }
-.carousel-controls button { width: 44px; min-width: 0; height: 44px; padding: 0; border: 0; border-radius: 0; background: var(--color-clear); color: var(--color-muted); }
+.carousel-controls { display: flex; justify-content: center; gap: var(--space-2xs); padding-top: var(--space-xs); }
+.carousel-controls button { flex-shrink: 0; width: 44px; min-width: 0; height: 44px; padding: 0; border: 0; border-radius: 0; background: var(--color-clear); color: var(--color-muted); }
 .carousel-controls button:hover { color: var(--color-ink); }
 #toggle-autoplay { width: 44px; min-width: 0; padding: 0; }
 #toggle-autoplay .play-glyph, #toggle-autoplay[data-playing="false"] .pause-glyph { display: none; }
 #toggle-autoplay[data-playing="false"] .play-glyph { display: block; }
-.carousel-arrows { display: flex; gap: var(--space-xs); }
-#carousel-progress { appearance: none; min-width: 0; width: 100%; height: 44px; margin: 0; border: 0; border-radius: 0; background: var(--color-clear); cursor: pointer; }
-#carousel-progress::-webkit-slider-runnable-track { height: 2px; background: var(--color-field-edge); }
-#carousel-progress::-webkit-slider-thumb { appearance: none; width: 32px; height: 2px; margin-top: 0; border: 0; border-radius: 0; background: var(--color-accent); }
-#carousel-progress::-moz-range-track { height: 2px; background: var(--color-field-edge); }
-#carousel-progress::-moz-range-thumb { width: 32px; height: 2px; border: 0; border-radius: 0; background: var(--color-accent); }
+.carousel-pagination { display: flex; align-items: center; }
+.carousel-pagination button { width: 24px; flex: 0 0 24px; }
+.carousel-pagination button::before { content: ""; width: 4px; height: 4px; border-radius: var(--radius-pill); background: var(--color-field-edge); }
+.carousel-pagination button[aria-current="true"]::before { width: 16px; background: var(--color-accent); }
+.carousel-pagination button:hover::before { background: var(--color-ink); }
 #carousel-position { min-width: 0; text-align: start; }
 @media (max-width: 640px) {
   .carousel-heading { padding-bottom: var(--space-md); }
-  .carousel-controls { gap: var(--space-xs); }
-  .carousel-arrows { gap: 0; }
+  .carousel-controls { gap: var(--space-2xs); }
   .featured-skill h3 { font-size: 32px; }
 }

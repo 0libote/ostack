@@ -2,7 +2,7 @@ export function setupCarousel(carousel, cards) {
   const track = carousel.querySelector('.carousel-track');
   const status = carousel.querySelector('#carousel-position');
   const toggle = carousel.querySelector('#toggle-autoplay');
-  const progress = carousel.querySelector('#carousel-progress');
+  const pagination = carousel.querySelector('#carousel-pagination');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const slides = cards.map((card, index) => {
     const slide = track.firstElementChild.cloneNode(true);
@@ -15,6 +15,15 @@ export function setupCarousel(carousel, cards) {
     return slide;
   });
   track.replaceChildren(...slides);
+  const markers = cards.map((card, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.setAttribute('aria-label', `Show ${card.dataset.skill}`);
+    button.setAttribute('aria-controls', 'skill-carousel');
+    button.addEventListener('click', () => manual(index));
+    return button;
+  });
+  pagination.replaceChildren(...markers);
   let current = 0;
   let settle;
   let timer;
@@ -49,8 +58,11 @@ export function setupCarousel(carousel, cards) {
   function select(index) {
     current = (index + slides.length) % slides.length;
     slides.forEach((slide, position) => { slide.inert = position !== current; });
-    progress.value = String(current + 1);
-    progress.setAttribute('aria-valuetext', `${cards[current].dataset.skill}, skill ${current + 1} of ${slides.length}`);
+    const start = Math.max(0, Math.min(current - 2, slides.length - 5));
+    markers.forEach((marker, position) => {
+      marker.hidden = position < start || position >= start + 5;
+      marker.setAttribute('aria-current', String(position === current));
+    });
     status.textContent = `${current + 1} / ${slides.length}`;
     status.setAttribute('aria-label', `Skill ${current + 1} of ${slides.length}: ${cards[current].dataset.skill}`);
   }
@@ -79,8 +91,13 @@ export function setupCarousel(carousel, cards) {
       if (closest !== current) select(closest);
     }, 120);
   }, { passive: true });
-  progress.max = String(slides.length);
-  progress.addEventListener('input', () => manual(Number(progress.value) - 1));
+  pagination.addEventListener('keydown', event => {
+    const target = { ArrowLeft: current - 1, ArrowRight: current + 1, Home: 0, End: slides.length - 1 }[event.key];
+    if (target === undefined) return;
+    event.preventDefault();
+    manual(target);
+    markers[current].focus();
+  });
   toggle.addEventListener('click', () => {
     playing = !playing;
     syncPlayback();

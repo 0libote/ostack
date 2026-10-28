@@ -9,7 +9,7 @@ const cards = [], links = [], ids = [], agents = [];
 const carousel = {};
 await new HTMLRewriter()
   .on('.skill-carousel', { element(el) { carousel.role = el.getAttribute('role'); carousel.label = el.getAttribute('aria-labelledby'); } })
-  .on('#carousel-progress', { element(el) { carousel.rangeType = el.getAttribute('type'); carousel.rangeLabel = el.getAttribute('aria-label'); carousel.rangeTarget = el.getAttribute('aria-controls'); } })
+  .on('#carousel-pagination', { element(el) { carousel.paginationRole = el.getAttribute('role'); carousel.paginationLabel = el.getAttribute('aria-label'); } })
   .on('#toggle-autoplay', { element(el) { carousel.rotationTarget = el.getAttribute('aria-controls'); carousel.rotationLabel = el.getAttribute('aria-label'); } })
   .on('#carousel-controls', { element(el) { carousel.controlsHidden = el.hasAttribute('hidden'); } })
   .on('.featured-skill a', { element(el) { carousel.fallbackLink = el.getAttribute('href'); } })
@@ -67,9 +67,8 @@ test('carousel keeps an accessible static skill link without JavaScript', () => 
   expect(ids).toContain(carousel.label);
   expect(carousel.controlsHidden).toBe(true);
   expect(carousel.rotationTarget).toBe('skill-carousel');
-  expect(carousel.rangeType).toBe('range');
-  expect(carousel.rangeLabel).toBe('Choose a skill');
-  expect(carousel.rangeTarget).toBe('skill-carousel');
+  expect(carousel.paginationRole).toBe('group');
+  expect(carousel.paginationLabel).toBe('Choose a skill');
   expect(carousel.rotationLabel).toBe('Pause automatic rotation');
   expect(carousel.fallbackLink).toBe(`/skills/${cards[0].skill}/`);
 });
