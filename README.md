@@ -9,7 +9,7 @@ and fall back to native tools when not.
 
 ## Website
 
-The site lives in [`site/`](site/) and uses [Bun](https://bun.sh) for development,
+The catalog and individual skill pages live in [`site/`](site/) and use [Bun](https://bun.sh) for development,
 bundling, and tests. From the repository root:
 
 ```sh
@@ -18,7 +18,8 @@ bun run dev
 ```
 
 `bun test` runs the catalog checks and verifies a production build.
-`bun run build` generates `dist/` for static hosting. See the
+`bun run build` generates `dist/` for static hosting, including a showcase page at
+`/skills/<name>/` for every skill. See the
 [website guide](site/README.md) for setup and Cloudflare Pages settings.
 
 ## Skills

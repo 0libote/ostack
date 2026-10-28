@@ -1,6 +1,8 @@
 # ostack website
 
-A static page for browsing and installing the skills. `index.html` and `app.js` provide the content and interactions.
+A static catalog and individual pages for browsing and installing the skills.
+`index.html` holds the catalog content, `app.js` handles its interactions, and
+`install.js` provides the shared install picker.
 `styles.css` imports `tokens.css` and `base.css`; `fonts/` contains locally served
 fonts and their open-source licenses. The catalog stays readable without JavaScript;
 JavaScript adds search, category filters, illustrative previews, and an install
@@ -17,8 +19,10 @@ bun install
 bun run dev
 ```
 
-Open the local URL Bun prints (normally http://localhost:3000). Its HTML dev server
-bundles the referenced JavaScript, CSS, logos, and fonts and reloads edits.
+Open the local URL Bun prints (normally http://localhost:3000). The dev script
+generates the skill pages and serves them through Bun with hot reload. Routes
+include `/` and `/skills/<skill-name>/`; detail routes also work without the
+trailing slash. Bun bundles the referenced JavaScript, CSS, logos, and fonts.
 Clipboard access requires localhost or HTTPS. There are currently no package
 dependencies; Bun creates a lockfile when dependencies are added.
 
@@ -64,7 +68,8 @@ bun test
 ```
 
 Bun's test runner checks catalog coverage, local links, unique IDs, and agreement
-between the README and install picker. The build test also generates `dist/` and
+between the README and install picker. It verifies every skill page, its source
+instructions, internal links, and dependency-aware installation. The build test also generates `dist/` and
 checks its linked assets, font policy, security headers, and license files.
 The website CI runs these same checks on pushes and pull requests.
 
@@ -79,6 +84,25 @@ point to their source files in the repository.
 
 Harness IDs and personal/project paths live on the `data-agent`, `data-global`,
 and `data-project` attributes in `index.html`. `app.js` generates commands for the
-selected method and scope. Keep the root README installation table and examples
+selected method and scope. Skill pages use the same picker, restricted to that
+skill and its transitive dependencies. Keep the root README installation table and examples
 in sync when changing these options. Without JavaScript, the default Claude Code
 CLI command and a link to the complete installation guide remain available.
+
+## Skill pages
+
+Catalog titles link to `/skills/<name>/`. `scripts/generate-pages.js` creates all
+13 pages in the ignored `site/skills/` folder whenever development or a production
+build starts. Do not edit the generated HTML.
+
+Edit card descriptions, commands, and workflow steps in `site/index.html`. The
+page layout, dependency map, and skill-specific notes live in the generator.
+Full instructions come directly from each `skills/<name>/SKILL.md` and are shown
+as escaped text inside a native disclosure. This preserves code examples without
+executing HTML or scripts from skill documents. Restart `bun run dev` after
+changing catalog metadata, skill instructions, or the generator to regenerate pages.
+
+Production output contains `dist/index.html` and `dist/skills/<name>/index.html`.
+The site stays readable without JavaScript, including each page's default install
+command and expandable source. The existing Cloudflare `dist` setting serves all
+pages; no application server or deployment setting change is needed.

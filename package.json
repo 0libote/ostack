@@ -7,7 +7,7 @@
     "bun": ">=1.4.4"
   },
   "scripts": {
-    "dev": "bun ./site/index.html",
+    "dev": "bun --hot ./scripts/dev.js",
     "build": "bun ./scripts/build.js",
     "test": "bun test"
   }

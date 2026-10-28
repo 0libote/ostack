@@ -22,8 +22,8 @@ const skills = [...new Bun.Glob('skills/*/SKILL.md').scanSync({ cwd: fileURLToPa
   .map(path => path.split('/')[1]).sort();
 
 test('catalog represents every installed skill and keeps its preview data', () => {
-  const prefix = 'https://github.com/0libote/ostack/tree/main/skills/';
-  expect(links.filter(link => link.startsWith(prefix)).map(link => link.slice(prefix.length)).sort()).toEqual(skills);
+  const prefix = '/skills/';
+  expect(links.filter(link => link.startsWith(prefix)).map(link => link.slice(prefix.length, -1)).sort()).toEqual(skills);
   expect(cards.map(card => card.skill).sort()).toEqual(skills);
   for (const card of cards) {
     expect(['Ship', 'Review', 'Create', 'Maintain']).toContain(card.category);
@@ -37,6 +37,8 @@ test('local links and assets exist, and IDs are unique', async () => {
   for (const link of links) {
     if (link.startsWith('#')) {
       if (link !== '#') expect(ids).toContain(link.slice(1));
+    } else if (link.startsWith('/skills/')) {
+      expect(skills).toContain(link.split('/')[2]);
     } else if (!link.startsWith('https://')) {
       await access(new URL(link, new URL('site/', root)));
     }

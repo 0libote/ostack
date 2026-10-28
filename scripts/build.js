@@ -1,3 +1,4 @@
+import { generateSkillPages } from './generate-pages.js';
 import { fileURLToPath } from 'node:url';
 import { copyFile, mkdir, rm } from 'node:fs/promises';
 
@@ -6,7 +7,8 @@ const output = new URL('dist/', root);
 await rm(output, { recursive: true, force: true });
 
 const result = await Bun.build({
-  entrypoints: [fileURLToPath(new URL('site/index.html', root))],
+  entrypoints: await generateSkillPages(),
+  root: fileURLToPath(new URL('site/', root)),
   outdir: fileURLToPath(output),
   target: 'browser',
   minify: true
