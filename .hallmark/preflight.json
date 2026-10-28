@@ -1,0 +1,24 @@
+{
+  "scanned": "2026-10-28",
+  "findings": {
+    "fonts": "Avenir Next/system sans and system mono (site/styles.css:1 before redesign)",
+    "palette": "Blue, yellow, near-white (site/styles.css:1 before redesign)",
+    "framework": "Static HTML, CSS and JavaScript (site/README.md:3)",
+    "routes": [
+      "/ (site/index.html)"
+    ],
+    "motion": "Smooth scroll only"
+  },
+  "preserve": [
+    "All skill facts, descriptions, links, fields, hooks and handlers",
+    "ostack identity and favicon",
+    "No-JavaScript readable catalog"
+  ],
+  "introduce": [
+    "Console graphite theme",
+    "Banner hero with live command specimen",
+    "Full-width skill index",
+    "Locally served fonts and theme tokens"
+  ],
+  "assumptions": "Developer audience; browse and install skills; technical restrained tone; no new imagery"
+}

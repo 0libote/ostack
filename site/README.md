@@ -1,7 +1,8 @@
 # ostack website
 
-A static page for browsing and installing the skills. `index.html`, `styles.css`, and
-`app.js` are the entire app. The catalog stays readable without JavaScript;
+A static page for browsing and installing the skills. `index.html` and `app.js` provide the content and interactions.
+`styles.css` imports `tokens.css` and `base.css`; `fonts/` contains locally served
+fonts and their open-source licenses. The catalog stays readable without JavaScript;
 JavaScript adds search, category filters, illustrative previews, and copying.
 Skill previews describe workflows; they do not execute agents or commands.
 

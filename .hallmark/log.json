@@ -1,0 +1,29 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "site",
+  "shape": "Index-First",
+  "theme": "console",
+  "axes": "dark/grotesk-sans/chromatic-amber",
+  "hero": "Banner",
+  "nav": "masthead",
+  "footer": "colophon block",
+  "imagery": "none",
+  "photos": [],
+  "entry": "site/index.html",
+  "fingerprint": "banner-command/index/rows/masthead/colophon/no-photos",
+  "sections": [
+   "hero and command specimen",
+   "principles",
+   "searchable index",
+   "installation",
+   "footer"
+  ],
+  "signature": "interactive command specimen from the real skill catalog",
+  "waived": [],
+  "prompt": "Full redesign of the ostack site",
+  "review": "in-thread: ship; Floor 0 FAIL, Reflex 0",
+  "date": "2026-10-28"
+ }
+]
