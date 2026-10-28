@@ -1,4 +1,5 @@
 import { setupInstall } from './install.js';
+import { setupCarousel } from './carousel.js';
 
 const cards = [...document.querySelectorAll('.skill-card')];
 const search = document.querySelector('#skill-search');
@@ -31,23 +32,6 @@ document.querySelector('#reset-filters').addEventListener('click', () => {
 });
 document.querySelector('#catalog-toolbar').hidden = false;
 
-const previewButtons = [...document.querySelectorAll('[data-preview]')];
-for (const button of previewButtons) {
-  button.hidden = false;
-  button.addEventListener('click', () => {
-    const card = cards.find(item => item.dataset.skill === button.dataset.preview);
-    document.querySelector('#demo-command').textContent = card.dataset.command;
-    document.querySelector('#demo-description').textContent = card.querySelector('.card-tagline').textContent;
-    document.querySelector('#demo-steps').textContent = card.dataset.steps;
-    for (const preset of document.querySelectorAll('.demo-presets button')) {
-      preset.setAttribute('aria-pressed', String(preset.dataset.preview === button.dataset.preview));
-    }
-    if (button.classList.contains('preview-button')) {
-      const terminal = document.querySelector('.terminal');
-      terminal.focus({ preventScroll: true });
-      terminal.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
-    }
-  });
-}
+setupCarousel(document.querySelector('.skill-carousel'), cards);
 
 setupInstall();

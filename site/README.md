@@ -5,9 +5,13 @@ A static catalog and individual pages for browsing and installing the skills.
 `install.js` provides the shared install picker.
 `styles.css` imports `tokens.css` and `base.css`; `fonts/` contains locally served
 fonts and their open-source licenses. The catalog stays readable without JavaScript;
-JavaScript adds search, category filters, illustrative previews, and an install
+JavaScript adds search, category filters, a skill carousel, and an install
 picker with harness, method, and scope buttons plus command copying.
-Skill previews describe workflows; they do not execute agents or commands.
+The carousel shows every catalog skill, with previous/next controls, arrow keys,
+Home/End navigation, and native touch scrolling. It advances every five seconds, with a Pause/Play control. Arrow buttons,
+keyboard navigation, and touch or horizontal-wheel interaction switch to manual
+mode until Play is selected.
+Without JavaScript, the first featured skill and the full catalog remain readable.
 
 ## Development
 
@@ -75,7 +79,7 @@ The website CI runs these same checks on pushes and pull requests.
 
 ## Update the catalog
 
-Edit the skill cards in `index.html`; the skill key, category, command, and preview steps
+Edit the skill cards in `index.html`; the skill key, category, command, and workflow steps
 live on each card as data attributes. Keep the visible skill count and the
 README collection in sync when adding or removing a skill. All skill links
 point to their source files in the repository.
@@ -106,3 +110,15 @@ Production output contains `dist/index.html` and `dist/skills/<name>/index.html`
 The site stays readable without JavaScript, including each page's default install
 command and expandable source. The existing Cloudflare `dist` setting serves all
 pages; no application server or deployment setting change is needed.
+
+## Featured skill carousel
+
+`carousel.js` builds the homepage slides from the catalog cards, including their
+names, categories, descriptions, and page links. Add a catalog entry to include
+it in the carousel. The static first slide in `index.html` is the no-JavaScript
+fallback; keep it aligned with the first catalog entry. Offscreen slides are inert
+so keyboard focus stays on the selected skill. Autoplay suspends while hovered,
+offscreen, or in a background tab. Keyboard focus switches to manual mode. Reduced
+motion starts in manual mode and disables smooth scrolling; Play remains available
+for users who explicitly choose rotation. Automatic changes are not announced
+through the live region.

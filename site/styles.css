@@ -1,7 +1,7 @@
 /* Hallmark · shape: Index-First · genre: modern-minimal · theme: Console (deal 1/3) · redesign: full
- * hero: Banner · nav: masthead · footer: colophon block · imagery: none · signature: interactive command specimen · console: graphite
+ * hero: Banner · nav: masthead · footer: colophon block · imagery: none · signature: interactive skill carousel · console: graphite
  * axes: dark/grotesk-sans/chromatic-amber · posture: restrained · draw: 6433a5 · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: S, retained real skill commands as the page's largest interactive object */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: S, led with real skill names and purposes in the carousel */
 /* Hallmark · finish-review: in-thread · ship · gap: none · Floor 0 FAIL · Reflex 0 */
 /* Hallmark · hero-review: in-thread · fix · 1 finding resolved: local font declarations now load both theme faces */
 /* Hallmark · reworded "Thirteen skills for the work around the code. Review a change, finish a pull request, or clean up a draft. Copy the ones you need." to "Thirteen editable skills for Claude Code and Codex." · 58 shortens the hero; skill details remain in the catalog */
@@ -13,8 +13,8 @@ body { font-synthesis: none; }
 a { text-decoration: none; }
 button { cursor: pointer; }
 button, input { color: inherit; }
-a, button, input, pre, .terminal { outline-offset: 4px; }
-a:focus-visible, button:focus-visible, input:focus-visible, pre:focus-visible, .terminal:focus-visible { outline: 2px solid var(--color-focus); }
+a, button, input, pre { outline-offset: 4px; }
+a:focus-visible, button:focus-visible, input:focus-visible, pre:focus-visible { outline: 2px solid var(--color-focus); }
 a:hover { color: var(--color-accent); }
 a:active, button:active { opacity: .75; }
 button:disabled { opacity: .5; cursor: not-allowed; }
@@ -36,19 +36,21 @@ h1 { grid-row: 1 / 3; font-size: clamp(48px, 6.4vw, 92px); max-width: 15ch; line
 .primary { background: var(--color-accent); color: var(--color-accent-ink); }
 .primary:hover { background: var(--color-ink); color: var(--color-paper); }
 .text-link { text-decoration: underline; text-decoration-color: var(--color-rule-2); text-underline-offset: 6px; }
-.demo-area { width: 100%; border-top: 1px solid var(--color-rule-2); }
-.demo-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); padding-block: var(--space-sm); }
-.demo-heading h2 { font-size: var(--text-sm); letter-spacing: 0; color: var(--color-muted); }
-.demo-presets { display: flex; gap: var(--space-xs); }
-.demo-presets button { border: 0; border-bottom: 2px solid var(--color-clear); background: var(--color-clear); padding: var(--space-xs) var(--space-md); min-height: 44px; font-size: var(--text-sm); color: var(--color-muted); }
-.demo-presets button:hover { color: var(--color-ink); }
-.demo-presets button[aria-pressed=true] { color: var(--color-accent); border-color: var(--color-accent); }
-.terminal { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-2xl); align-items: center; background: var(--color-paper-2); color: var(--color-ink); padding: var(--space-xl); border-radius: var(--radius-card); min-height: 200px; }
-.terminal-prompt { font-family: var(--font-outlier); font-size: clamp(28px, 3.8vw, 56px); line-height: 1.2; overflow-wrap: anywhere; }
-.terminal-prompt > span:first-child { color: var(--color-cool); margin-right: var(--space-md); }
-#demo-description { font-size: var(--text-lg); margin-bottom: var(--space-md); }
-#demo-steps { font-size: var(--text-sm); line-height: 1.7; color: var(--color-muted); }
-.preview-disclaimer { color: var(--color-muted); font-size: var(--text-xs); margin-top: var(--space-sm); }
+.skill-carousel { width: 100%; min-width: 0; border-top: 1px solid var(--color-rule-2); }
+.carousel-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); padding-block: var(--space-sm); }
+.carousel-heading h2 { font-size: var(--text-sm); letter-spacing: 0; color: var(--color-muted); }
+.carousel-controls { display: flex; align-items: center; gap: var(--space-sm); }
+.carousel-controls button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--color-rule-2); border-radius: var(--radius-pill); background: var(--color-clear); color: var(--color-ink); }
+#toggle-autoplay { width: auto; min-width: 64px; padding-inline: var(--space-sm); font-size: var(--text-sm); }
+.carousel-controls button:hover { border-color: var(--color-accent); color: var(--color-accent); }
+#carousel-position { color: var(--color-muted); font-size: var(--text-sm); font-variant-numeric: tabular-nums; min-width: 60px; text-align: center; }
+.carousel-track { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: var(--space-md); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: var(--radius-card); }
+.featured-skill { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-2xl); align-items: center; background: var(--color-paper-2); color: var(--color-ink); padding: var(--space-xl); border-radius: var(--radius-card); min-height: 240px; scroll-snap-align: start; scroll-snap-stop: always; }
+.featured-skill h3 { font-size: clamp(28px, 3.8vw, 56px); line-height: 1.1; overflow-wrap: anywhere; }
+.featured-identity > p { font-size: var(--text-sm); color: var(--color-muted); margin-top: var(--space-sm); }
+.featured-title { font-size: var(--text-lg); line-height: 1.35; }
+.featured-description { font-size: var(--text-sm); line-height: 1.6; color: var(--color-muted); margin-block: var(--space-sm) var(--space-lg); }
+.featured-copy > a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-sm); }
 .principles { background: var(--color-paper-3); color: var(--color-muted); }
 .principles-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-md) var(--space-lg); padding-block: var(--space-lg); font-size: var(--text-sm); }
 .principles-inner p:first-child { color: var(--color-ink-2); }
@@ -73,8 +75,8 @@ h2 { font-size: var(--text-section); }
 .category { font-size: var(--text-sm); color: var(--color-muted); }
 .card-tagline { grid-column: 2; grid-row: 1; font-size: var(--text-lg); line-height: 1.3; }
 .card-description { grid-column: 2; grid-row: 2 / 4; color: var(--color-muted); font-size: var(--text-md); max-width: 56ch; }
-.preview-button { grid-column: 3; grid-row: 1 / 4; align-self: center; min-height: 44px; border: 0; border-bottom: 1px solid var(--color-rule-2); background: var(--color-clear); padding: var(--space-xs) 0; color: var(--color-ink-2); font-size: var(--text-sm); }
-.preview-button:hover { color: var(--color-accent); border-color: var(--color-accent); }
+.skill-link { grid-column: 3; grid-row: 1 / 4; align-self: center; min-height: 44px; border: 0; border-bottom: 1px solid var(--color-rule-2); background: var(--color-clear); padding: var(--space-xs) 0; color: var(--color-ink-2); font-size: var(--text-sm); }
+.skill-link:hover { color: var(--color-accent); border-color: var(--color-accent); }
 .empty-state { padding-block: var(--space-2xl); }
 .empty-state p { color: var(--color-muted); margin-block: var(--space-md); }
 .empty-state button { border: 1px solid var(--color-rule-2); border-radius: var(--radius-pill); background: var(--color-paper-2); min-height: 44px; padding: var(--space-xs) var(--space-md); }
@@ -120,11 +122,11 @@ code { font-family: var(--font-outlier); }
   .intro-layout { grid-template-columns: minmax(0, 1fr); }
   h1 { grid-row: auto; font-size: clamp(48px, 9vw, 80px); }
   .hero-description { max-width: 45ch; }
-  .terminal { gap: var(--space-lg); padding: var(--space-lg); }
+  .featured-skill { gap: var(--space-lg); padding: var(--space-lg); }
   .principles-inner p:nth-child(3) { flex-basis: 55%; }
   .skill-card { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
   .card-description { grid-row: 2; }
-  .preview-button { grid-column: 2; grid-row: 3; justify-self: start; }
+  .skill-link { grid-column: 2; grid-row: 3; justify-self: start; }
   .section-heading { align-items: start; flex-direction: column; }
   .install-section { gap: var(--space-xl); }
 }
@@ -138,11 +140,10 @@ code { font-family: var(--font-outlier); }
   .hero { padding-block: var(--space-xl); }
   h1 { font-size: clamp(44px, 11vw, 68px); }
   .hero-actions { gap: var(--space-md); }
-  .demo-heading { flex-direction: column; align-items: start; gap: var(--space-xs); }
-  .demo-presets { width: 100%; }
-  .demo-presets button { flex: 1; padding-inline: var(--space-xs); }
-  .terminal { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); padding: var(--space-lg); min-height: 300px; }
-  .terminal-prompt { font-size: 36px; }
+  .carousel-heading { gap: var(--space-sm); flex-direction: column; align-items: start; }
+  .carousel-controls { gap: var(--space-xs); }
+  .featured-skill { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); padding: var(--space-lg); min-height: 320px; align-content: center; }
+  .featured-skill h3 { font-size: 36px; }
   .principles-inner { flex-direction: column; align-items: start; gap: var(--space-sm); }
   .catalog { padding-block: var(--space-2xl); }
   .catalog-toolbar { flex-direction: column; align-items: stretch; }
@@ -155,7 +156,7 @@ code { font-family: var(--font-outlier); }
   .card-top { grid-column: 2; grid-row: 1; align-self: center; }
   .card-tagline { grid-column: 1 / -1; grid-row: 2; }
   .card-description { grid-column: 1 / -1; grid-row: 3; }
-  .preview-button { grid-column: 1 / -1; grid-row: 4; }
+  .skill-link { grid-column: 1 / -1; grid-row: 4; }
   .install-section { grid-template-columns: minmax(0, 1fr); padding-bottom: var(--space-2xl); }
   .install-tabs { gap: var(--space-sm); }
   .install-tabs button { white-space: nowrap; font-size: var(--text-xs); }

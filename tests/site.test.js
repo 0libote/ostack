@@ -6,7 +6,12 @@ const root = new URL('../', import.meta.url);
 const source = await Bun.file(new URL('site/index.html', root)).text();
 const readme = await Bun.file(new URL('README.md', root)).text();
 const cards = [], links = [], ids = [], agents = [];
+const carousel = {};
 await new HTMLRewriter()
+  .on('.skill-carousel', { element(el) { carousel.role = el.getAttribute('role'); carousel.label = el.getAttribute('aria-labelledby'); } })
+  .on('#toggle-autoplay', { element(el) { carousel.rotationTarget = el.getAttribute('aria-controls'); carousel.rotationLabel = el.getAttribute('aria-label'); } })
+  .on('#carousel-controls', { element(el) { carousel.controlsHidden = el.hasAttribute('hidden'); } })
+  .on('.featured-skill a', { element(el) { carousel.fallbackLink = el.getAttribute('href'); } })
   .on('article.skill-card', { element(el) {
     cards.push(Object.fromEntries(['skill', 'category', 'command', 'steps'].map(key => [key, el.getAttribute(`data-${key}`)])));
   } })
@@ -23,7 +28,7 @@ const skills = [...new Bun.Glob('skills/*/SKILL.md').scanSync({ cwd: fileURLToPa
 
 test('catalog represents every installed skill and keeps its preview data', () => {
   const prefix = '/skills/';
-  expect(links.filter(link => link.startsWith(prefix)).map(link => link.slice(prefix.length, -1)).sort()).toEqual(skills);
+  expect([...new Set(links.filter(link => link.startsWith(prefix)))].map(link => link.slice(prefix.length, -1)).sort()).toEqual(skills);
   expect(cards.map(card => card.skill).sort()).toEqual(skills);
   for (const card of cards) {
     expect(['Ship', 'Review', 'Create', 'Maintain']).toContain(card.category);
@@ -53,4 +58,14 @@ test('README documents every installation target and directory', () => {
     expect(row).toContain(`\`${agent.project}\``);
   }
   expect(links).not.toContain('https://github.com/0libote/ostack#requirements');
+});
+
+
+test('carousel keeps an accessible static skill link without JavaScript', () => {
+  expect(carousel.role).toBe('region');
+  expect(ids).toContain(carousel.label);
+  expect(carousel.controlsHidden).toBe(true);
+  expect(carousel.rotationTarget).toBe('skill-carousel');
+  expect(carousel.rotationLabel).toBe('Pause automatic rotation');
+  expect(carousel.fallbackLink).toBe(`/skills/${cards[0].skill}/`);
 });
