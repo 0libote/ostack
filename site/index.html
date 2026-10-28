@@ -24,12 +24,18 @@
     <div class="hero-actions"><a class="button primary" href="#skills">Browse the skills</a><a class="text-link" href="#install">Install the collection</a></div>
   </div>
   <section class="skill-carousel" role="region" aria-roledescription="carousel" aria-labelledby="featured-title">
-    <div class="carousel-heading"><h2 id="featured-title">Explore the skills</h2><div class="carousel-controls" id="carousel-controls" hidden><button type="button" id="toggle-autoplay" aria-label="Pause automatic rotation" aria-controls="skill-carousel">Pause</button><button type="button" id="previous-skill" aria-label="Previous skill" aria-controls="skill-carousel"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button><p id="carousel-position" role="status" aria-live="polite" aria-atomic="true"></p><button type="button" id="next-skill" aria-label="Next skill" aria-controls="skill-carousel"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button></div></div>
+    <div class="carousel-heading"><h2 id="featured-title">Explore the skills</h2></div>
     <div class="carousel-track" id="skill-carousel" tabindex="0" aria-label="Featured skills">
       <article class="featured-skill" role="group" aria-roledescription="slide" aria-label="full-send">
         <div class="featured-identity"><h3>full-send</h3><p>Ship</p></div>
         <div class="featured-copy"><p class="featured-title">Take a change through to merge</p><p class="featured-description">Prove the change, get it reviewed, open a PR, and see it through to merge.</p><a class="text-link" href="/skills/full-send/">Explore this skill</a></div>
       </article>
+    </div>
+    <div class="carousel-controls" id="carousel-controls" hidden>
+      <button type="button" id="toggle-autoplay" data-playing="true" aria-label="Pause automatic rotation" aria-controls="skill-carousel"><svg class="pause-glyph" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg><svg class="play-glyph" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z"/></svg><span class="sr-only" data-playback-label>Pause</span></button>
+      <input id="carousel-progress" type="range" min="1" max="13" value="1" step="1" aria-label="Choose a skill" aria-controls="skill-carousel">
+      <div class="carousel-arrows"><button type="button" id="previous-skill" aria-label="Previous skill" aria-controls="skill-carousel"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button><button type="button" id="next-skill" aria-label="Next skill" aria-controls="skill-carousel"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button></div>
+      <p class="sr-only" id="carousel-position" role="status" aria-live="polite" aria-atomic="true"></p>
     </div>
   </section>
 </section>

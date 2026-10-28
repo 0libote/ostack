@@ -7,9 +7,11 @@ A static catalog and individual pages for browsing and installing the skills.
 fonts and their open-source licenses. The catalog stays readable without JavaScript;
 JavaScript adds search, category filters, a skill carousel, and an install
 picker with harness, method, and scope buttons plus command copying.
-The carousel shows every catalog skill, with previous/next controls, arrow keys,
+The carousel shows every catalog skill, with a next-card preview, an interactive
+position rail, previous/next arrows, and arrow keys,
 Home/End navigation, and native touch scrolling. It advances every five seconds, with a Pause/Play control. Arrow buttons,
-keyboard navigation, and touch or horizontal-wheel interaction switch to manual
+keyboard navigation, dragging the position rail, and touch or horizontal-wheel
+interaction switch to manual
 mode until Play is selected.
 Without JavaScript, the first featured skill and the full catalog remain readable.
 
@@ -115,7 +117,10 @@ pages; no application server or deployment setting change is needed.
 
 `carousel.js` builds the homepage slides from the catalog cards, including their
 names, categories, descriptions, and page links. Add a catalog entry to include
-it in the carousel. The static first slide in `index.html` is the no-JavaScript
+it in the carousel. The rail lets visitors jump directly to a skill; its accessible value names the
+selected skill. The numeric position is announced to screen readers during manual
+navigation. The icon-only Pause/Play button keeps an explicit accessible label.
+The static first slide in `index.html` is the no-JavaScript
 fallback; keep it aligned with the first catalog entry. Offscreen slides are inert
 so keyboard focus stays on the selected skill. Autoplay suspends while hovered,
 offscreen, or in a background tab. Keyboard focus switches to manual mode. Reduced

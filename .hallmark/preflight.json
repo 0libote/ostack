@@ -1,24 +1,22 @@
 {
   "scanned": "2026-10-28",
+  "scope": "carousel component",
   "findings": {
-    "fonts": "Avenir Next/system sans and system mono (site/styles.css:1 before redesign)",
-    "palette": "Blue, yellow, near-white (site/styles.css:1 before redesign)",
-    "framework": "Static HTML, CSS and JavaScript (site/README.md:3)",
-    "routes": [
-      "/ (site/index.html)"
-    ],
-    "motion": "Smooth scroll only"
+    "fonts": "Locally served Host Grotesk and Atkinson Hyperlegible Mono (site/tokens.css)",
+    "palette": "Console graphite with amber signal (site/tokens.css)",
+    "framework": "Bun 1.4.4 static multipage site (package.json)",
+    "material": "13 real skill entries and their local pages",
+    "motion": "Five-second carousel rotation; reduced motion starts manual"
   },
   "preserve": [
-    "All skill facts, descriptions, links, fields, hooks and handlers",
-    "ostack identity and favicon",
-    "No-JavaScript readable catalog"
+    "Console theme and existing site layout",
+    "All skill content, links, and routes",
+    "Pause/play, manual navigation, keyboard, touch, offscreen and background suspension"
   ],
   "introduce": [
-    "Console graphite theme",
-    "Banner hero with live command specimen",
-    "Full-width skill index",
-    "Locally served fonts and theme tokens"
+    "Next-card preview",
+    "Integrated icon controls below slides",
+    "Accessible interactive position rail"
   ],
-  "assumptions": "Developer audience; browse and install skills; technical restrained tone; no new imagery"
+  "assumptions": "Developer audience; browse skills; technical restrained tone; current refinement stays within the existing component"
 }

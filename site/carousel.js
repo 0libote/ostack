@@ -2,6 +2,7 @@ export function setupCarousel(carousel, cards) {
   const track = carousel.querySelector('.carousel-track');
   const status = carousel.querySelector('#carousel-position');
   const toggle = carousel.querySelector('#toggle-autoplay');
+  const progress = carousel.querySelector('#carousel-progress');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const slides = cards.map((card, index) => {
     const slide = track.firstElementChild.cloneNode(true);
@@ -23,7 +24,8 @@ export function setupCarousel(carousel, cards) {
 
   function syncPlayback() {
     clearTimeout(timer);
-    toggle.textContent = playing ? 'Pause' : 'Play';
+    toggle.dataset.playing = String(playing);
+    toggle.querySelector('[data-playback-label]').textContent = playing ? 'Pause' : 'Play';
     toggle.setAttribute('aria-label', playing ? 'Pause automatic rotation' : 'Start automatic rotation');
     status.setAttribute('aria-live', playing ? 'off' : 'polite');
     if (playing && visible && !hovered && !document.hidden) {
@@ -47,6 +49,8 @@ export function setupCarousel(carousel, cards) {
   function select(index) {
     current = (index + slides.length) % slides.length;
     slides.forEach((slide, position) => { slide.inert = position !== current; });
+    progress.value = String(current + 1);
+    progress.setAttribute('aria-valuetext', `${cards[current].dataset.skill}, skill ${current + 1} of ${slides.length}`);
     status.textContent = `${current + 1} / ${slides.length}`;
     status.setAttribute('aria-label', `Skill ${current + 1} of ${slides.length}: ${cards[current].dataset.skill}`);
   }
@@ -75,6 +79,8 @@ export function setupCarousel(carousel, cards) {
       if (closest !== current) select(closest);
     }, 120);
   }, { passive: true });
+  progress.max = String(slides.length);
+  progress.addEventListener('input', () => manual(Number(progress.value) - 1));
   toggle.addEventListener('click', () => {
     playing = !playing;
     syncPlayback();
@@ -105,6 +111,7 @@ export function setupCarousel(carousel, cards) {
     visible = entry.intersectionRatio >= 0.25;
     syncPlayback();
   }, { threshold: 0.25 }).observe(carousel);
+  carousel.classList.add('is-ready');
   select(0);
   syncPlayback();
   carousel.querySelector('#carousel-controls').hidden = false;
