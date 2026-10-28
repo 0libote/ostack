@@ -89,6 +89,11 @@ How it works:
   open, the run skips it instead of opening a duplicate.
 - `README.md` and root `LICENSE` stay untouched. To track a new source
   (for example more `ponytail-*` skills), add it to `upstream.json`.
+- The workflow needs permission to open PRs. Enable Settings, Actions,
+  General, Workflow permissions, "Allow GitHub Actions to create and approve
+  pull requests". Without it, runs push branches but fail to open PRs. As a
+  fallback, add a repo secret `SYNC_PAT` (classic PAT with repo and workflow
+  scopes); the workflow uses it when set.
 
 Run it locally:
 

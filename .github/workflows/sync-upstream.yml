@@ -21,6 +21,10 @@ jobs:
       - name: Sync each upstream skill (one PR per skill)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Optional PAT (classic, repo + workflow scopes) used when the
+          # repo setting "Allow GitHub Actions to create and approve pull
+          # requests" is off. The script prefers it when set.
+          SYNC_PAT: ${{ secrets.SYNC_PAT }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

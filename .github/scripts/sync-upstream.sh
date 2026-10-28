@@ -43,6 +43,13 @@ CONFIG=".github/upstream.json"
 REPO_ROOT=$(git rev-parse --show-toplevel)
 cd "$REPO_ROOT"
 
+# Prefer an optional PAT for `gh` calls (workflow secret SYNC_PAT).
+# GITHUB_TOKEN cannot open PRs while the repo setting "Allow GitHub Actions
+# to create and approve pull requests" is off.
+if [[ -n "${SYNC_PAT:-}" ]]; then
+  export GH_TOKEN="$SYNC_PAT"
+fi
+
 if [[ ! -f "$CONFIG" ]]; then
   echo "Missing $CONFIG" >&2
   exit 1
@@ -65,6 +72,7 @@ changed=()
 new_skills=()
 skipped=()
 unchanged=()
+failed=()
 
 sync_one_skill() {
   # args: source_id repo sha short upstream_dir local_dir skill status [upstream_name]
@@ -160,10 +168,27 @@ Upstream skill path: https://github.com/${repo}/tree/${UPSTREAM_BRANCH_HINT}/$UP
 EOF
 )
   # shellcheck disable=SC2086
-  gh pr create --base "$BASE_BRANCH" --head "$branch" --title "$title" --body "$body" ${LABEL_ARGS[@]:-} 2>/dev/null \
-    || gh pr create --base "$BASE_BRANCH" --head "$branch" --title "$title" --body "$body"
+  local pr_url="" pr_err=""
+  if pr_url=$(gh pr create --base "$BASE_BRANCH" --head "$branch" --title "$title" --body "$body" ${LABEL_ARGS[@]:-} 2>&1); then
+    echo "opened PR for $skill: $pr_url"
+  elif pr_url=$(gh pr create --base "$BASE_BRANCH" --head "$branch" --title "$title" --body "$body" 2>&1); then
+    echo "opened PR for $skill (without labels): $pr_url"
+  else
+    pr_err="$pr_url"
+    echo "warning: branch $branch was pushed but no PR was opened for $skill." >&2
+    echo "$pr_err" >&2
+    if echo "$pr_err" | grep -qi "not permitted to create.*pull request"; then
+      cat >&2 <<EOF
+fix: enable Settings > Actions > General > Workflow permissions > "Allow GitHub Actions to create and approve pull requests",
+or add a repo secret SYNC_PAT (classic PAT with repo + workflow scopes) - the workflow prefers it automatically.
+Branch $branch is already pushed; re-run the workflow once fixed.
+EOF
+    fi
+    failed+=("$skill")
+    git checkout -q "$BASE_BRANCH"
+    return 0
+  fi
 
-  echo "opened PR for $skill"
   if [[ "$status" == "new" ]]; then new_skills+=("$skill"); else changed+=("$skill"); fi
 
   git checkout -q "$BASE_BRANCH"
@@ -258,3 +283,9 @@ echo "New: ${new_skills[*]:-none}"
 echo "Updated: ${changed[*]:-none}"
 echo "Unchanged: ${unchanged[*]:-none}"
 echo "Skipped (open PR exists): ${skipped[*]:-none}"
+echo "Failed (branch pushed, no PR): ${failed[*]:-none}"
+
+if [[ ${#failed[@]} -gt 0 ]]; then
+  echo "One or more skills could not open a PR. Branches are pushed; fix permissions and re-run." >&2
+  exit 1
+fi
