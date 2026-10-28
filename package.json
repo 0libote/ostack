@@ -1,0 +1,14 @@
+{
+  "name": "ostack",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.4.4",
+  "engines": {
+    "bun": ">=1.4.4"
+  },
+  "scripts": {
+    "dev": "bun ./site/index.html",
+    "build": "bun ./scripts/build.js",
+    "test": "bun test"
+  }
+}

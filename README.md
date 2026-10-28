@@ -9,9 +9,17 @@ and fall back to native tools when not.
 
 ## Website
 
-A small, static skill showcase lives in [`site/`](site/). See the
-[website guide](site/README.md) for local preview and Cloudflare Pages settings.
-No build step or dependencies are required.
+The site lives in [`site/`](site/) and uses [Bun](https://bun.sh) for development,
+bundling, and tests. From the repository root:
+
+```sh
+bun install
+bun run dev
+```
+
+`bun test` runs the catalog checks and verifies a production build.
+`bun run build` generates `dist/` for static hosting. See the
+[website guide](site/README.md) for setup and Cloudflare Pages settings.
 
 ## Skills
 
