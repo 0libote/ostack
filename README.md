@@ -6,6 +6,12 @@ Skills run in Claude Code and Codex. Some use
 [T3 Code](https://github.com/t3dotgg/t3code) features when available
 and fall back to native tools when not.
 
+## Website
+
+A small, static skill showcase lives in [`site/`](site/). See the
+[website guide](site/README.md) for local preview and Cloudflare Pages settings.
+No build step or dependencies are required.
+
 ## Skills
 
 Each upstream change arrives as one PR per skill:
