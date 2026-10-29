@@ -66,6 +66,19 @@ PR_PREFIX=$(python3 -c "import json;print(json.load(open('$CONFIG')).get('pr_bra
 LABELS_JSON=$(python3 -c "import json;print(' '.join(json.load(open('$CONFIG')).get('pr_labels',['sync','upstream'])))")
 read -ra LABEL_ARGS <<< "$(for l in $LABELS_JSON; do printf -- '--label %s ' "$l"; done)"
 
+# Ensure pr_labels exist so `gh pr create --label` doesn't fail on fresh
+# repos (missing labels were the "(without labels)" fallback noise).
+if command -v gh >/dev/null 2>&1 && [[ "$DRY_RUN" != "1" ]]; then
+  EXISTING_LABELS=$(gh label list --json name --jq '.[].name' 2>/dev/null || true)
+  for l in $LABELS_JSON; do
+    if ! grep -qx "$l" <<< "$EXISTING_LABELS"; then
+      echo "Creating missing label: $l"
+      gh label create "$l" --color 0E8A16 2>/dev/null \
+        || echo "warning: could not create label $l (continuing without it)" >&2
+    fi
+  done
+fi
+
 NUM_SOURCES=$(python3 -c "import json;print(len(json.load(open('$CONFIG')).get('sources',[])))")
 
 changed=()
