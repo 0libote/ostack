@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import { rm } from 'node:fs/promises';
+import { readdir, rm } from 'node:fs/promises';
 
 const root = new URL('../', import.meta.url);
 const dependencies = {
@@ -22,6 +22,7 @@ export const escapeHTML = text => text.replace(/[&<>"']/g, char => ({ '&': '&amp
 
 export async function generateSkillPages() {
   const source = await Bun.file(new URL('site/index.html', root)).text();
+  const catalogPage = await Bun.file(new URL('site/skills/index.html', root)).text();
   const catalog = [];
   let current;
   await new HTMLRewriter()
@@ -31,7 +32,7 @@ export async function generateSkillPages() {
     } })
     .on('.skill-card .card-tagline', { text(chunk) { current.title += chunk.text; } })
     .on('.skill-card .card-description', { text(chunk) { current.description += chunk.text; } })
-    .transform(new Response(source)).text();
+    .transform(new Response(catalogPage)).text();
   const bySlug = new Map(catalog.map(skill => [skill.slug, skill]));
   const installed = [...new Bun.Glob('skills/*/SKILL.md').scanSync({ cwd: fileURLToPath(root) })].map(path => path.split('/')[1]).sort();
   if (JSON.stringify([...bySlug.keys()].sort()) !== JSON.stringify(installed) || bySlug.size !== catalog.length) {
@@ -39,8 +40,10 @@ export async function generateSkillPages() {
   }
   const section = source.match(/<section class="install-section[\s\S]*?<\/section>/)[0];
   const footer = source.match(/<footer[\s\S]*?<\/footer>/)[0].replace('href="#"', 'href="/"');
-  await rm(new URL('site/skills/', root), { recursive: true, force: true });
-  const entries = [fileURLToPath(new URL('site/index.html', root))];
+  for (const entry of await readdir(new URL('site/skills/', root), { withFileTypes: true })) {
+    if (entry.isDirectory()) await rm(new URL(`site/skills/${entry.name}/`, root), { recursive: true, force: true });
+  }
+  const entries = ['site/index.html', 'site/skills/index.html'].map(path => fileURLToPath(new URL(path, root)));
   for (const skill of catalog) {
     const installSkills = new Set();
     function include(slug) {
@@ -77,7 +80,7 @@ export async function generateSkillPages() {
 <a class="skip-link" href="#skill-content">Skip to skill</a>
 <header class="site-header wrap">
   <a class="wordmark" href="/" aria-label="ostack home"><span class="logo" aria-hidden="true">≋</span>ostack<span class="wordmark-dot">.</span></a>
-  <nav aria-label="Main navigation"><a href="/#skills">All skills</a><a href="#install">Install</a><a href="https://github.com/0libote/ostack">GitHub</a></nav>
+  <nav aria-label="Main navigation"><a href="/skills/">All skills</a><a href="#install">Install</a><a href="https://github.com/0libote/ostack">GitHub</a></nav>
 </header>
 <main id="skill-content">
   <section class="skill-intro wrap" aria-labelledby="skill-title">
@@ -90,7 +93,7 @@ export async function generateSkillPages() {
   ${extraSkills.length ? `<section class="skill-dependencies wrap" aria-labelledby="dependencies-title"><h2 id="dependencies-title">Works with</h2><p>The install commands include these required skills.</p><div class="skill-links">${extraSkills.map(link).join('')}</div></section>` : ''}
   ${install}
   <section class="skill-instructions wrap"><details><summary>Read the skill instructions</summary><p>The full SKILL.md, as shipped in this collection. Supporting files are in the source repository.</p><pre tabindex="0" aria-label="Full skill instructions"><code>${escapeHTML(instructions)}</code></pre></details></section>
-  <section class="skill-related wrap" aria-labelledby="related-title"><h2 id="related-title">More to ${escapeHTML(skill.category.toLowerCase())}</h2><div class="related-list">${related.map(other => `<a href="/skills/${other.slug}/"><span>${escapeHTML(other.slug)}</span><span>${escapeHTML(other.title)}</span></a>`).join('')}</div><a class="text-link" href="/#skills">Browse all skills</a></section>
+  <section class="skill-related wrap" aria-labelledby="related-title"><h2 id="related-title">More to ${escapeHTML(skill.category.toLowerCase())}</h2><div class="related-list">${related.map(other => `<a href="/skills/${other.slug}/"><span>${escapeHTML(other.slug)}</span><span>${escapeHTML(other.title)}</span></a>`).join('')}</div><a class="text-link" href="/skills/">Browse all skills</a></section>
 </main>
 ${footer}
 </body>
@@ -102,4 +105,4 @@ ${footer}
   return entries;
 }
 
-if (import.meta.main) console.log(`Generated ${(await generateSkillPages()).length - 1} skill pages`);
+if (import.meta.main) console.log(`Generated ${(await generateSkillPages()).length - 2} skill pages`);

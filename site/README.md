@@ -1,8 +1,8 @@
 # ostack website
 
 A static catalog and individual pages for browsing and installing the skills.
-`index.html` holds the catalog content, `app.js` handles its interactions, and
-`install.js` provides the shared install picker.
+`index.html` is the homepage, `skills/index.html` holds the catalog content,
+`catalog.js` handles search and filters, and `install.js` provides the shared install picker.
 `styles.css` imports `tokens.css` and `base.css`; `fonts/` contains locally served
 fonts and their open-source licenses. The catalog stays readable without JavaScript;
 JavaScript adds search, category filters, a moving skill-name banner, and an install
@@ -23,7 +23,7 @@ bun run dev
 
 Open the local URL Bun prints (normally http://localhost:3000). The dev script
 generates the skill pages and serves them through Bun with hot reload. Routes
-include `/` and `/skills/<skill-name>/`; detail routes also work without the
+include `/`, `/skills/`, and `/skills/<skill-name>/`; catalog and detail routes also work without the
 trailing slash. Bun bundles the referenced JavaScript, CSS, logos, and fonts.
 Clipboard access requires localhost or HTTPS. There are currently no package
 dependencies; Bun creates a lockfile when dependencies are added.
@@ -77,15 +77,14 @@ The website CI runs these same checks on pushes and pull requests.
 
 ## Update the catalog
 
-Edit the skill cards in `index.html`; the skill key, category, command, and workflow steps
+Edit the skill cards in `skills/index.html`; the skill key, category, command, and workflow steps
 live on each card as data attributes. Keep the visible skill count and the
-README collection in sync when adding or removing a skill. All skill links
-point to their source files in the repository.
+README collection in sync when adding or removing a skill. Catalog links open the individual skill pages, which also link to their source files.
 
 ## Update installation options
 
 Harness IDs and personal/project paths live on the `data-agent`, `data-global`,
-and `data-project` attributes in `index.html`. `app.js` generates commands for the
+and `data-project` attributes in `index.html`. `install.js` generates commands for the
 selected method and scope. Skill pages use the same picker, restricted to that
 skill and its transitive dependencies. Keep the root README installation table and examples
 in sync when changing these options. Without JavaScript, the default Claude Code
@@ -94,24 +93,24 @@ CLI command and a link to the complete installation guide remain available.
 ## Skill pages
 
 Catalog titles link to `/skills/<name>/`. `scripts/generate-pages.js` creates all
-13 pages in the ignored `site/skills/` folder whenever development or a production
-build starts. Do not edit the generated HTML.
+13 detail pages in ignored `site/skills/<name>/` folders whenever development or a production
+build starts. The catalog at `site/skills/index.html` is source; do not edit the generated detail HTML.
 
-Edit card descriptions, commands, and workflow steps in `site/index.html`. The
+Edit card descriptions, commands, and workflow steps in `site/skills/index.html`. The
 page layout, dependency map, and skill-specific notes live in the generator.
 Full instructions come directly from each `skills/<name>/SKILL.md` and are shown
 as escaped text inside a native disclosure. This preserves code examples without
 executing HTML or scripts from skill documents. Restart `bun run dev` after
 changing catalog metadata, skill instructions, or the generator to regenerate pages.
 
-Production output contains `dist/index.html` and `dist/skills/<name>/index.html`.
+Production output contains `dist/index.html`, `dist/skills/index.html`, and `dist/skills/<name>/index.html`.
 The site stays readable without JavaScript, including each page's default install
 command and expandable source. The existing Cloudflare `dist` setting serves all
 pages; no application server or deployment setting change is needed.
 
 ## Moving skill-name banner
 
-`skill-banner.js` uses the catalog cards to populate the moving names and links.
+`skill-banner.js` animates the homepage’s fallback list of skill names and links.
 A second copy produces the seamless CSS transform loop; its links work with a
 pointer but are excluded from keyboard navigation and assistive technology.
 Keyboard focus pauses movement and brings the selected original link into view.

@@ -1,16 +1,8 @@
-export function setupSkillBanner(banner, cards) {
+export function setupSkillBanner(banner) {
   const list = banner.querySelector('.banner-list');
   const track = banner.querySelector('.banner-track');
   const toggle = banner.querySelector('#toggle-banner');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  list.replaceChildren(...cards.map(card => {
-    const item = document.createElement('li');
-    const link = document.createElement('a');
-    link.href = card.querySelector('h3 a').getAttribute('href');
-    link.textContent = card.dataset.skill;
-    item.append(link);
-    return item;
-  }));
   const copy = list.cloneNode(true);
   copy.classList.add('banner-copy');
   copy.setAttribute('aria-hidden', 'true');

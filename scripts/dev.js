@@ -7,6 +7,9 @@ for (const entry of await generateSkillPages()) {
   if (slug) {
     routes[`/skills/${slug}`] = page;
     routes[`/skills/${slug}/`] = page;
+  } else if (entry.endsWith('/site/skills/index.html')) {
+    routes['/skills'] = page;
+    routes['/skills/'] = page;
   } else {
     routes['/'] = page;
   }

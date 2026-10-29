@@ -7,7 +7,7 @@ import { access } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 beforeAll(async () => { await import('../scripts/build.js'); });
 
-test('production build includes its assets, security policy, licenses, and no-script catalog', async () => {
+test('production build includes its assets, security policy, licenses, and separate no-script catalog', async () => {
   const output = new URL('dist/', root);
   const html = await Bun.file(new URL('index.html', output)).text();
   const assets = [];
@@ -17,7 +17,21 @@ test('production build includes its assets, security policy, licenses, and no-sc
     .on('link[href]', { element(el) { assets.push(el.getAttribute('href')); } })
     .on('article.skill-card', { element() { cards++; } })
     .transform(new Response(html)).text();
-  expect(cards).toBe([...new Bun.Glob('skills/*/SKILL.md').scanSync({ cwd: fileURLToPath(root) })].length);
+  expect(cards).toBe(0);
+  expect(html).not.toContain('What needs doing?');
+  expect(html).toContain('href="/skills/"');
+  const catalogPage = new URL('skills/index.html', output);
+  const catalog = await Bun.file(catalogPage).text();
+  const catalogAssets = [];
+  let catalogCards = 0;
+  await new HTMLRewriter()
+    .on('article.skill-card', { element() { catalogCards++; } })
+    .on('[src]', { element(el) { catalogAssets.push(el.getAttribute('src')); } })
+    .on('link[href]', { element(el) { catalogAssets.push(el.getAttribute('href')); } })
+    .transform(new Response(catalog)).text();
+  expect(catalogCards).toBe([...new Bun.Glob('skills/*/SKILL.md').scanSync({ cwd: fileURLToPath(root) })].length);
+  expect(catalog).toContain('<title>Skills | ostack</title>');
+  for (const asset of catalogAssets) await access(new URL(asset, catalogPage));
   expect(assets.some(path => path.endsWith('.js'))).toBe(true);
   expect(assets.some(path => path.endsWith('.css'))).toBe(true);
   for (const asset of assets) await access(new URL(asset, output));
@@ -52,6 +66,8 @@ test('every skill has a built page with working assets, routes, and its exact in
     const instructions = await Bun.file(new URL(`skills/${slug}/SKILL.md`, root)).text();
     expect(html).toContain(`<title>${slug} | ostack</title>`);
     expect(html).toContain(escapeHTML(instructions));
+    expect(html).toContain('href="/skills/"');
+    expect(html).not.toContain('href="/#skills"');
     const ids = [], links = [], assets = [];
     let scripts = 0;
     await new HTMLRewriter()

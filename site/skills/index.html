@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101317">
+  <meta name="description" content="Browse, search, and install all thirteen ostack skills for your coding agent.">
+  <title>Skills | ostack</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../catalog.js" type="module"></script>
+</head>
+<body class="catalog-page">
+<a class="skip-link" href="#skills">Skip to skills</a>
+<header class="site-header wrap">
+  <a class="wordmark" href="/" aria-label="ostack home"><span class="logo" aria-hidden="true">≋</span>ostack<span class="wordmark-dot">.</span></a>
+  <nav aria-label="Main navigation"><a href="/skills/" aria-current="page">The skills <span class="nav-count">13</span></a><a href="/#install">Get started</a><a class="github-link" href="https://github.com/0libote/ostack">GitHub</a></nav>
+</header>
+<main>
+<section class="catalog wrap" id="skills" aria-labelledby="skills-title">
+  <div class="section-heading"><div><h1 id="skills-title">The skills.</h1></div><p>Browse by task, or search for a skill.</p></div>
+  <div class="catalog-toolbar" hidden id="catalog-toolbar"><div class="filters" role="group" aria-label="Filter skills by category"><button type="button" data-category="All" aria-pressed="true">All</button><button type="button" data-category="Ship" aria-pressed="false">Ship</button><button type="button" data-category="Review" aria-pressed="false">Review</button><button type="button" data-category="Create" aria-pressed="false">Create</button><button type="button" data-category="Maintain" aria-pressed="false">Maintain</button></div><label class="search"><span class="sr-only">Search skills</span><input id="skill-search" type="search" placeholder="Find a skill…" autocomplete="off"></label></div>
+  <p class="result-count" id="result-count" role="status" aria-live="polite">13 skills</p>
+  <div class="skill-grid" id="skill-grid">
+    <article class="skill-card" data-skill="full-send" data-category="Ship" data-command="full send" data-steps="Prove the change → review → open a PR → monitor → merge">
+      <h3><a href="/skills/full-send/">full-send</a></h3>
+      <div class="card-top"><span class="category">Ship</span></div>
+      <p class="card-tagline">Take a change through to merge</p><p class="card-description">Prove the change, get it reviewed, open a PR, and see it through to merge.</p>
+      <a class="skill-link" href="/skills/full-send/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="full-stop" data-category="Ship" data-command="full stop" data-steps="Prove the change → review → open a PR → ready for you to merge">
+      <h3><a href="/skills/full-stop/">full-stop</a></h3>
+      <div class="card-top"><span class="category">Ship</span></div>
+      <p class="card-tagline">Prepare a PR for you to merge</p><p class="card-description">The full shipping workflow, with the final merge left in your hands.</p>
+      <a class="skill-link" href="/skills/full-stop/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="council" data-category="Review" data-command="council" data-steps="Choose reviewers → independent reviews → compare findings → resolve">
+      <h3><a href="/skills/council/">council</a></h3>
+      <div class="card-top"><span class="category">Review</span></div>
+      <p class="card-tagline">Review with different models</p><p class="card-description">Bring different models together to challenge a change and compare notes.</p>
+      <a class="skill-link" href="/skills/council/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="agent-loop" data-category="Review" data-command="agent loop" data-steps="Choose a reviewer → review → fix → repeat until agreed">
+      <h3><a href="/skills/agent-loop/">agent-loop</a></h3>
+      <div class="card-top"><span class="category">Review</span></div>
+      <p class="card-tagline">Review and revise with one model</p><p class="card-description">Work with a reviewer of your choice until both agents agree on the change.</p>
+      <a class="skill-link" href="/skills/agent-loop/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="file-pr" data-category="Ship" data-command="file a PR" data-steps="Check the diff → explain the change → open a pull request">
+      <h3><a href="/skills/file-pr/">file-pr</a></h3>
+      <div class="card-top"><span class="category">Ship</span></div>
+      <p class="card-tagline">Open a concise pull request</p><p class="card-description">Open a concise pull request that explains the problem and what changed.</p>
+      <a class="skill-link" href="/skills/file-pr/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="takeover" data-category="Ship" data-command="take over this PR" data-steps="Read the context → update the branch → finish the work">
+      <h3><a href="/skills/takeover/">takeover</a></h3>
+      <div class="card-top"><span class="category">Ship</span></div>
+      <p class="card-tagline">Continue an existing change</p><p class="card-description">Take over a branch, pull request, or agent thread and finish the job.</p>
+      <a class="skill-link" href="/skills/takeover/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="babysit-pr" data-category="Ship" data-command="babysit this PR" data-steps="Watch CI and reviews → handle actionable feedback → report status">
+      <h3><a href="/skills/babysit-pr/">babysit-pr</a></h3>
+      <div class="card-top"><span class="category">Ship</span></div>
+      <p class="card-tagline">Monitor checks and reviews</p><p class="card-description">Watch checks and reviews, handle failures, and keep the pull request moving.</p>
+      <a class="skill-link" href="/skills/babysit-pr/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="modernize" data-category="Maintain" data-command="modernize this PR" data-steps="Read the PR → update against the base → resolve conflicts → verify">
+      <h3><a href="/skills/modernize/">modernize</a></h3>
+      <div class="card-top"><span class="category">Maintain</span></div>
+      <p class="card-tagline">Update an older pull request</p><p class="card-description">Bring an older pull request up to date and check that it still belongs.</p>
+      <a class="skill-link" href="/skills/modernize/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="leaving-pr-comments" data-category="Review" data-command="leave a PR comment" data-steps="Read the context → explain the finding → post a useful comment">
+      <h3><a href="/skills/leaving-pr-comments/">leaving-pr-comments</a></h3>
+      <div class="card-top"><span class="category">Review</span></div>
+      <p class="card-tagline">Write actionable GitHub comments</p><p class="card-description">Leave clear, readable GitHub comments with enough context to act on.</p>
+      <a class="skill-link" href="/skills/leaving-pr-comments/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="humanizer" data-category="Create" data-command="humanize this" data-steps="Read the draft → remove stock phrasing → preserve meaning and voice">
+      <h3><a href="/skills/humanizer/">humanizer</a></h3>
+      <div class="card-top"><span class="category">Create</span></div>
+      <p class="card-tagline">Remove AI writing habits</p><p class="card-description">Trim AI writing habits while keeping the meaning and the writer’s voice.</p>
+      <a class="skill-link" href="/skills/humanizer/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="frontend-design" data-category="Create" data-command="design this page" data-steps="Read the brief → choose a visual direction → build → critique">
+      <h3><a href="/skills/frontend-design/">frontend-design</a></h3>
+      <div class="card-top"><span class="category">Create</span></div>
+      <p class="card-tagline">Design a considered interface</p><p class="card-description">Build thoughtful layouts with deliberate type, color, and interaction.</p>
+      <a class="skill-link" href="/skills/frontend-design/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="hallmark" data-category="Create" data-command="use hallmark to build a page" data-steps="Read the brief → choose a theme → build → check the design">
+      <h3><a href="/skills/hallmark/">hallmark</a></h3>
+      <div class="card-top"><span class="category">Create</span></div>
+      <p class="card-tagline">Build pages with a distinct style</p><p class="card-description">Design new pages with themes and checks for common AI design habits. Name Hallmark to redesign or audit an existing page.</p>
+      <a class="skill-link" href="/skills/hallmark/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="ponytail" data-category="Maintain" data-command="ponytail" data-steps="Read the code → find the smallest complete change → verify it">
+      <h3><a href="/skills/ponytail/">ponytail</a></h3>
+      <div class="card-top"><span class="category">Maintain</span></div>
+      <p class="card-tagline">Make the smallest complete change</p><p class="card-description">Choose the smallest complete solution, and skip the extra machinery.</p>
+      <a class="skill-link" href="/skills/ponytail/">Explore skill</a>
+    </article>
+  </div><div class="empty-state" id="empty-state" hidden><h3>No skills found.</h3><p>Try another search or browse the whole collection.</p><button type="button" id="reset-filters">Show all skills</button></div>
+</section>
+</main>
+<footer class="wrap site-footer"><a class="wordmark" href="/">ostack<span class="wordmark-dot">.</span></a><p>Agent skills from the open-source community.</p><a href="https://github.com/0libote/ostack#license">Sources &amp; licenses</a></footer>
+</body>
+</html>
