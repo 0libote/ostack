@@ -1,5 +1,5 @@
 import { setupInstall } from './install.js';
-import { setupCarousel } from './carousel.js';
+import { setupSkillBanner } from './skill-banner.js';
 
 const cards = [...document.querySelectorAll('.skill-card')];
 const search = document.querySelector('#skill-search');
@@ -32,6 +32,6 @@ document.querySelector('#reset-filters').addEventListener('click', () => {
 });
 document.querySelector('#catalog-toolbar').hidden = false;
 
-setupCarousel(document.querySelector('.skill-carousel'), cards);
+setupSkillBanner(document.querySelector('.skill-banner'), cards);
 
 setupInstall();

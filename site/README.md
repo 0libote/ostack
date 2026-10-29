@@ -5,14 +5,11 @@ A static catalog and individual pages for browsing and installing the skills.
 `install.js` provides the shared install picker.
 `styles.css` imports `tokens.css` and `base.css`; `fonts/` contains locally served
 fonts and their open-source licenses. The catalog stays readable without JavaScript;
-JavaScript adds search, category filters, a skill carousel, and an install
+JavaScript adds search, category filters, a moving skill-name banner, and an install
 picker with harness, method, and scope buttons plus command copying.
-The carousel shows every catalog skill, with a next-card preview, compact slide markers, previous/next arrows, and arrow keys,
-Home/End navigation, and native touch scrolling. It advances every five seconds, with a Pause/Play control. Arrow buttons,
-keyboard navigation, choosing a slide marker, and touch or horizontal-wheel
-interaction switch to manual
-mode until Play is selected.
-Without JavaScript, the first featured skill and the full catalog remain readable.
+The skill-name banner moves continuously and links to the individual pages.
+It pauses on hover or keyboard focus and has a pause/play control. Reduced motion
+and no-JavaScript mode show a static, wrapping list of all skill names.
 
 ## Development
 
@@ -112,17 +109,15 @@ The site stays readable without JavaScript, including each page's default instal
 command and expandable source. The existing Cloudflare `dist` setting serves all
 pages; no application server or deployment setting change is needed.
 
-## Featured skill carousel
+## Moving skill-name banner
 
-`carousel.js` builds the homepage slides from the catalog cards, including their
-names, categories, descriptions, and page links. Add a catalog entry to include
-it in the carousel. Five nearby slide markers are shown at a time. Each names its skill for assistive
-technology and supports direct selection and arrow-key navigation. The numeric position is announced to screen readers during manual
-navigation. The icon-only Pause/Play button keeps an explicit accessible label.
-The static first slide in `index.html` is the no-JavaScript
-fallback; keep it aligned with the first catalog entry. Offscreen slides are inert
-so keyboard focus stays on the selected skill. Autoplay suspends while hovered,
-offscreen, or in a background tab. Keyboard focus switches to manual mode. Reduced
-motion starts in manual mode and disables smooth scrolling; Play remains available
-for users who explicitly choose rotation. Automatic changes are not announced
-through the live region.
+`skill-banner.js` uses the catalog cards to populate the moving names and links.
+A second copy produces the seamless CSS transform loop; its links work with a
+pointer but are excluded from keyboard navigation and assistive technology.
+Keyboard focus pauses movement and brings the selected original link into view.
+
+Animation pauses when offscreen or in a background tab. The explicit Pause/Play
+control preserves the current position. With reduced motion or JavaScript off,
+all names form a static, wrapping list. Keep the fallback list in `index.html`
+aligned with the catalog; the site test checks this. Change `--banner-duration`
+in `tokens.css` to adjust the pace.

@@ -6,13 +6,11 @@ const root = new URL('../', import.meta.url);
 const source = await Bun.file(new URL('site/index.html', root)).text();
 const readme = await Bun.file(new URL('README.md', root)).text();
 const cards = [], links = [], ids = [], agents = [];
-const carousel = {};
+const banner = { links: [] };
 await new HTMLRewriter()
-  .on('.skill-carousel', { element(el) { carousel.role = el.getAttribute('role'); carousel.label = el.getAttribute('aria-labelledby'); } })
-  .on('#carousel-pagination', { element(el) { carousel.paginationRole = el.getAttribute('role'); carousel.paginationLabel = el.getAttribute('aria-label'); } })
-  .on('#toggle-autoplay', { element(el) { carousel.rotationTarget = el.getAttribute('aria-controls'); carousel.rotationLabel = el.getAttribute('aria-label'); } })
-  .on('#carousel-controls', { element(el) { carousel.controlsHidden = el.hasAttribute('hidden'); } })
-  .on('.featured-skill a', { element(el) { carousel.fallbackLink = el.getAttribute('href'); } })
+  .on('.skill-banner', { element(el) { banner.label = el.getAttribute('aria-label'); } })
+  .on('.banner-list a', { element(el) { banner.links.push(el.getAttribute('href')); } })
+  .on('#toggle-banner', { element(el) { banner.controlHidden = el.hasAttribute('hidden'); banner.controlLabel = el.getAttribute('aria-label'); } })
   .on('article.skill-card', { element(el) {
     cards.push(Object.fromEntries(['skill', 'category', 'command', 'steps'].map(key => [key, el.getAttribute(`data-${key}`)])));
   } })
@@ -62,13 +60,9 @@ test('README documents every installation target and directory', () => {
 });
 
 
-test('carousel keeps an accessible static skill link without JavaScript', () => {
-  expect(carousel.role).toBe('region');
-  expect(ids).toContain(carousel.label);
-  expect(carousel.controlsHidden).toBe(true);
-  expect(carousel.rotationTarget).toBe('skill-carousel');
-  expect(carousel.paginationRole).toBe('group');
-  expect(carousel.paginationLabel).toBe('Choose a skill');
-  expect(carousel.rotationLabel).toBe('Pause automatic rotation');
-  expect(carousel.fallbackLink).toBe(`/skills/${cards[0].skill}/`);
+test('skill banner provides every skill link without JavaScript', () => {
+  expect(banner.label).toBe('Explore the skills');
+  expect(banner.links).toEqual(cards.map(card => `/skills/${card.skill}/`));
+  expect(banner.controlHidden).toBe(true);
+  expect(banner.controlLabel).toBe('Pause moving skill names');
 });

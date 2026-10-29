@@ -1,11 +1,10 @@
 /* Hallmark · shape: Index-First · genre: modern-minimal · theme: Console (deal 1/3) · redesign: full
- * hero: Banner · nav: masthead · footer: colophon block · imagery: none · signature: interactive skill carousel · console: graphite
+ * hero: Banner · nav: masthead · footer: colophon block · imagery: none · signature: continuous skill-name banner · console: graphite
  * axes: dark/grotesk-sans/chromatic-amber · posture: restrained · draw: 6433a5 · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: S, led with real skill names and purposes in the carousel */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: S, led with the real skill names and their detail pages */
 /* Hallmark · finish-review: in-thread · ship · gap: none · Floor 0 FAIL · Reflex 0 */
 /* Hallmark · hero-review: in-thread · fix · 1 finding resolved: local font declarations now load both theme faces */
 /* Hallmark · reworded "Thirteen skills for the work around the code. Review a change, finish a pull request, or clean up a draft. Copy the ones you need." to "Thirteen editable skills for Claude Code and Codex." · 58 shortens the hero; skill details remain in the catalog */
-/* Hallmark · answered F4 · carousel buttons have no fill; their small markers indicate slide position rather than primary actions */
 @import url("./tokens.css");
 @import url("./base.css");
 
@@ -28,7 +27,7 @@ button[aria-busy="true"] { cursor: progress; }
 nav { display: flex; align-items: center; gap: var(--space-xl); font-size: var(--text-sm); }
 nav a { display: inline-flex; align-items: center; gap: var(--space-xs); min-height: 44px; }
 .nav-count { color: var(--color-muted); font-variant-numeric: tabular-nums; }
-.hero { min-height: calc(100svh - 88px); padding-block: var(--space-2xl) var(--space-xl); display: flex; flex-direction: column; justify-content: center; gap: var(--space-2xl); }
+.hero { min-height: auto; padding-block: var(--space-2xl) var(--space-xl); display: flex; flex-direction: column; justify-content: center; gap: var(--space-2xl); }
 .intro-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-lg) var(--space-2xl); align-items: end; }
 h1 { grid-row: 1 / 3; font-size: clamp(48px, 6.4vw, 92px); max-width: 15ch; line-height: 1.02; }
 .hero-description { color: var(--color-ink-2); font-size: var(--text-lead); max-width: 32ch; }
@@ -37,21 +36,6 @@ h1 { grid-row: 1 / 3; font-size: clamp(48px, 6.4vw, 92px); max-width: 15ch; line
 .primary { background: var(--color-accent); color: var(--color-accent-ink); }
 .primary:hover { background: var(--color-ink); color: var(--color-paper); }
 .text-link { text-decoration: underline; text-decoration-color: var(--color-rule-2); text-underline-offset: 6px; }
-.skill-carousel { width: 100%; min-width: 0; border-top: 1px solid var(--color-rule-2); }
-.carousel-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); padding-block: var(--space-sm); }
-.carousel-heading h2 { font-size: var(--text-sm); letter-spacing: 0; color: var(--color-muted); }
-.carousel-controls { display: flex; align-items: center; gap: var(--space-sm); }
-.carousel-controls button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--color-rule-2); border-radius: var(--radius-pill); background: var(--color-clear); color: var(--color-ink); }
-#toggle-autoplay { width: auto; min-width: 64px; padding-inline: var(--space-sm); font-size: var(--text-sm); }
-.carousel-controls button:hover { border-color: var(--color-accent); color: var(--color-accent); }
-#carousel-position { color: var(--color-muted); font-size: var(--text-sm); font-variant-numeric: tabular-nums; min-width: 60px; text-align: center; }
-.carousel-track { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: var(--space-md); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: var(--radius-card); }
-.featured-skill { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-2xl); align-items: center; background: var(--color-paper-2); color: var(--color-ink); padding: var(--space-xl); border-radius: var(--radius-card); min-height: 240px; scroll-snap-align: start; scroll-snap-stop: always; }
-.featured-skill h3 { font-size: clamp(28px, 3.8vw, 56px); line-height: 1.1; overflow-wrap: anywhere; }
-.featured-identity > p { font-size: var(--text-sm); color: var(--color-muted); margin-top: var(--space-sm); }
-.featured-title { font-size: var(--text-lg); line-height: 1.35; }
-.featured-description { font-size: var(--text-sm); line-height: 1.6; color: var(--color-muted); margin-block: var(--space-sm) var(--space-lg); }
-.featured-copy > a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-sm); }
 .principles { background: var(--color-paper-3); color: var(--color-muted); }
 .principles-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-md) var(--space-lg); padding-block: var(--space-lg); font-size: var(--text-sm); }
 .principles-inner p:first-child { color: var(--color-ink-2); }
@@ -116,14 +100,12 @@ code { font-family: var(--font-outlier); }
 .sr-only { overflow: hidden; position: absolute; width: 1px; height: 1px; clip-path: inset(50%); white-space: nowrap; }
 .skip-link { position: fixed; top: var(--space-md); left: var(--space-md); z-index: var(--z-toast); transform: translateY(-200%); background: var(--color-accent); color: var(--color-accent-ink); padding: var(--space-sm) var(--space-lg); }
 .skip-link:focus-visible { transform: none; }
-@media (min-width: 1600px) { .hero { min-height: 920px; } }
 @media (max-width: 960px) {
   nav { gap: var(--space-lg); }
   .hero { min-height: auto; padding-block: var(--space-2xl); gap: var(--space-xl); }
   .intro-layout { grid-template-columns: minmax(0, 1fr); }
   h1 { grid-row: auto; font-size: clamp(48px, 9vw, 80px); }
   .hero-description { max-width: 45ch; }
-  .featured-skill { gap: var(--space-lg); padding: var(--space-lg); }
   .principles-inner p:nth-child(3) { flex-basis: 55%; }
   .skill-card { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
   .card-description { grid-row: 2; }
@@ -141,10 +123,6 @@ code { font-family: var(--font-outlier); }
   .hero { padding-block: var(--space-xl); }
   h1 { font-size: clamp(44px, 11vw, 68px); }
   .hero-actions { gap: var(--space-md); }
-  .carousel-heading { gap: var(--space-sm); flex-direction: column; align-items: start; }
-  .carousel-controls { gap: var(--space-xs); }
-  .featured-skill { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); padding: var(--space-lg); min-height: 320px; align-content: center; }
-  .featured-skill h3 { font-size: 36px; }
   .principles-inner { flex-direction: column; align-items: start; gap: var(--space-sm); }
   .catalog { padding-block: var(--space-2xl); }
   .catalog-toolbar { flex-direction: column; align-items: stretch; }
@@ -205,24 +183,23 @@ code { font-family: var(--font-outlier); }
   .related-list a { grid-template-columns: minmax(0, 1fr); gap: var(--space-sm); }
 }
 
-/* Hallmark · component: carousel controls · theme: Console (kept) · genre: modern-minimal · v2.0.0 */
-/* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: S, compact markers identify the carousel without a media-player rail */
-.skill-carousel.is-ready .carousel-track { padding-inline-end: var(--carousel-peek); }
-.carousel-heading { padding-block: var(--space-md) var(--space-lg); }
-.carousel-controls { display: flex; justify-content: center; gap: var(--space-2xs); padding-top: var(--space-xs); }
-.carousel-controls button { flex-shrink: 0; width: 44px; min-width: 0; height: 44px; padding: 0; border: 0; border-radius: 0; background: var(--color-clear); color: var(--color-muted); }
-.carousel-controls button:hover { color: var(--color-ink); }
-#toggle-autoplay { width: 44px; min-width: 0; padding: 0; }
-#toggle-autoplay .play-glyph, #toggle-autoplay[data-playing="false"] .pause-glyph { display: none; }
-#toggle-autoplay[data-playing="false"] .play-glyph { display: block; }
-.carousel-pagination { display: flex; align-items: center; }
-.carousel-pagination button { width: 24px; flex: 0 0 24px; }
-.carousel-pagination button::before { content: ""; width: 4px; height: 4px; border-radius: var(--radius-pill); background: var(--color-field-edge); }
-.carousel-pagination button[aria-current="true"]::before { width: 16px; background: var(--color-accent); }
-.carousel-pagination button:hover::before { background: var(--color-ink); }
-#carousel-position { min-width: 0; text-align: start; }
-@media (max-width: 640px) {
-  .carousel-heading { padding-bottom: var(--space-md); }
-  .carousel-controls { gap: var(--space-2xs); }
-  .featured-skill h3 { font-size: 32px; }
+
+.skill-banner { display: flex; align-items: center; gap: var(--space-md); width: 100%; min-width: 0; border-block: 1px solid var(--color-rule); padding-block: var(--space-lg); }
+.banner-viewport { flex: 1; min-width: 0; overflow-x: clip; }
+.banner-list { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg) var(--space-xl); list-style: none; margin: 0; padding: 0; }
+.banner-list li { flex-shrink: 0; }
+.banner-list a { min-height: 44px; display: inline-flex; align-items: center; font-size: var(--text-title); font-weight: var(--display-weight); letter-spacing: var(--tracking-display); color: var(--color-ink-2); white-space: nowrap; }
+.banner-list a:hover { color: var(--color-accent); }
+.skill-banner.is-animated .banner-track { display: flex; width: max-content; animation: skill-drift var(--banner-duration) linear infinite; }
+.skill-banner.is-animated .banner-list { flex-wrap: nowrap; width: max-content; padding-inline-end: var(--space-xl); }
+.skill-banner.is-animated .banner-list a { font-size: clamp(24px, 2.5vw, 36px); }
+.skill-banner.is-paused .banner-track, .skill-banner.is-hovered .banner-track, .skill-banner:focus-within .banner-track { animation-play-state: paused; }
+#toggle-banner { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; padding: 0; border: 0; background: var(--color-clear); color: var(--color-muted); }
+#toggle-banner:hover { color: var(--color-ink); }
+#toggle-banner .play-glyph, #toggle-banner[data-playing="false"] .pause-glyph { display: none; }
+#toggle-banner[data-playing="false"] .play-glyph { display: block; }
+.skill-banner:not(.is-animated) .banner-copy { display: none; }
+@keyframes skill-drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .skill-banner.is-animated .banner-track { animation: none; transform: none; }
 }
