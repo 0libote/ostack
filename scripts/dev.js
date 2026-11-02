@@ -10,6 +10,9 @@ for (const entry of await generateSkillPages()) {
   } else if (entry.endsWith('/site/skills/index.html')) {
     routes['/skills'] = page;
     routes['/skills/'] = page;
+  } else if (entry.endsWith('/site/bun/index.html')) {
+    routes['/bun'] = page;
+    routes['/bun/'] = page;
   } else {
     routes['/'] = page;
   }

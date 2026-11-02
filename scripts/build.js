@@ -19,6 +19,8 @@ await copyFile(new URL('site/_headers', root), new URL('_headers', output));
 await mkdir(new URL('licenses/', output), { recursive: true });
 for (const [source, destination] of [
   ['LICENSE', 'ostack.txt'],
+  ['site/bun/ultra-LICENSE.txt', 'ultra.txt'],
+  ['site/bun/chivo-LICENSE.txt', 'chivo.txt'],
   ['site/fonts/Host-Grotesk-LICENSE.txt', 'host-grotesk.txt'],
   ['site/fonts/Atkinson-Mono-LICENSE.txt', 'atkinson-mono.txt'],
   ['site/logos/LICENSE.txt', 'LICENSE.txt'],

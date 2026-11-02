@@ -114,3 +114,23 @@ test('skill installers include transitive dependencies and keep the collection i
 test('skill source is escaped as text, including HTML examples', () => {
   expect(escapeHTML('<script>alert("example")</script> & data')).toBe('&lt;script&gt;alert(&quot;example&quot;)&lt;/script&gt; &amp; data');
 });
+
+
+test('standalone Bun page ships its own assets and homepage entry point', async () => {
+  const page = new URL('dist/bun/index.html', root);
+  const html = await Bun.file(page).text();
+  const assets = [];
+  await new HTMLRewriter()
+    .on('[src]', { element(el) { assets.push(el.getAttribute('src')); } })
+    .on('link[href]', { element(el) { assets.push(el.getAttribute('href')); } })
+    .transform(new Response(html)).text();
+  for (const asset of assets) await access(new URL(asset, page));
+  expect(html).toContain('id="praise"');
+  expect(html).toContain('<details>');
+  const home = await Bun.file(new URL('dist/index.html', root)).text();
+  expect(home).toContain('href="/bun/"');
+  expect(home).not.toContain('id="bun-title"');
+  for (const license of ['ultra.txt', 'chivo.txt']) {
+    expect(await Bun.file(new URL(`dist/licenses/${license}`, root)).text()).not.toBe('');
+  }
+});

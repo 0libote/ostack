@@ -120,3 +120,12 @@ control preserves the current position. With reduced motion or JavaScript off,
 all names form a static, wrapping list. Keep the fallback list in `index.html`
 aligned with the catalog; the site test checks this. Change `--banner-duration`
 in `tokens.css` to adjust the pace.
+
+## Bun side quest
+
+`/bun/` is a standalone satirical Bun recommendation, linked from the homepage.
+Its source, styles, local fonts and mascot are in `site/bun/`. The dev server also
+accepts `/bun`. `praise.js` progressively adds the local praise button; without
+JavaScript the docs links and native confessional disclosures still work.
+The mascot comes from [Bun](https://bun.sh/logo.svg). Ultra (Apache-2.0) and
+Chivo (OFL-1.1) are served locally, with their licenses copied into the build.
