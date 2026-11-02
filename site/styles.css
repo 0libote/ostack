@@ -204,3 +204,11 @@ code { font-family: var(--font-outlier); }
 @media (prefers-reduced-motion: reduce) {
   .skill-banner.is-animated .banner-track { animation: none; transform: none; }
 }
+
+.bun-section { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2xl); padding-block: var(--space-2xl); border-top: 1px solid var(--color-rule-2); }
+.bun-kicker { margin-bottom: var(--space-lg); color: var(--color-muted); font-family: var(--font-outlier); font-size: var(--text-xs); }
+.bun-section h2 { color: var(--color-accent); }
+.bun-creed { margin-top: var(--space-md); font-family: var(--font-outlier); font-size: var(--text-sm); }
+.bun-copy { display: grid; gap: var(--space-lg); color: var(--color-ink-2); }
+.bun-copy code { font-family: var(--font-outlier); font-size: 0.9em; }
+@media (max-width: 40rem) { .bun-section { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); } }

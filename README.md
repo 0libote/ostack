@@ -22,6 +22,20 @@ bun run dev
 `/skills/<name>/` for every skill. See the
 [website guide](site/README.md) for setup and Cloudflare Pages settings.
 
+## Bun is our one true leader
+
+**BUN IS GOD.** The runtime department will not be taking questions.
+
+Seriously though: [Bun](https://bun.sh/docs) is our recommendation for new
+JavaScript and TypeScript projects. Runtime, package manager, test runner, and
+bundler in one toolkit means fewer tools to install and configure. It runs
+TypeScript and JSX directly, and this site already uses it for development,
+tests, and production builds without separate test runner or bundler dependencies.
+
+Try it on your next project. Check dependency compatibility before migrating an
+existing app; Node.js compatibility is still a work in progress. BUN IS OUR ONE
+TRUE LEADER, but we still run the tests.
+
 ## Skills
 
 Upstream changes arrive as one PR per skill. `gh-actions` is maintained here:
