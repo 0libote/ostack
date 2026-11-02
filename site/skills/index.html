@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101317">
-  <meta name="description" content="Browse, search, and install all thirteen ostack skills for your coding agent.">
+  <meta name="description" content="Browse, search, and install all fourteen ostack skills for your coding agent.">
   <title>Skills | ostack</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../styles.css">
@@ -14,13 +14,13 @@
 <a class="skip-link" href="#skills">Skip to skills</a>
 <header class="site-header wrap">
   <a class="wordmark" href="/" aria-label="ostack home"><span class="logo" aria-hidden="true">≋</span>ostack<span class="wordmark-dot">.</span></a>
-  <nav aria-label="Main navigation"><a href="/skills/" aria-current="page">The skills <span class="nav-count">13</span></a><a href="/#install">Get started</a><a class="github-link" href="https://github.com/0libote/ostack">GitHub</a></nav>
+  <nav aria-label="Main navigation"><a href="/skills/" aria-current="page">The skills <span class="nav-count">14</span></a><a href="/#install">Get started</a><a class="github-link" href="https://github.com/0libote/ostack">GitHub</a></nav>
 </header>
 <main>
 <section class="catalog wrap" id="skills" aria-labelledby="skills-title">
   <div class="section-heading"><div><h1 id="skills-title">The skills.</h1></div><p>Browse by task, or search for a skill.</p></div>
   <div class="catalog-toolbar" hidden id="catalog-toolbar"><div class="filters" role="group" aria-label="Filter skills by category"><button type="button" data-category="All" aria-pressed="true">All</button><button type="button" data-category="Ship" aria-pressed="false">Ship</button><button type="button" data-category="Review" aria-pressed="false">Review</button><button type="button" data-category="Create" aria-pressed="false">Create</button><button type="button" data-category="Maintain" aria-pressed="false">Maintain</button></div><label class="search"><span class="sr-only">Search skills</span><input id="skill-search" type="search" placeholder="Find a skill…" autocomplete="off"></label></div>
-  <p class="result-count" id="result-count" role="status" aria-live="polite">13 skills</p>
+  <p class="result-count" id="result-count" role="status" aria-live="polite">14 skills</p>
   <div class="skill-grid" id="skill-grid">
     <article class="skill-card" data-skill="full-send" data-category="Ship" data-command="full send" data-steps="Prove the change → review → open a PR → monitor → merge">
       <h3><a href="/skills/full-send/">full-send</a></h3>
@@ -99,6 +99,12 @@
       <div class="card-top"><span class="category">Maintain</span></div>
       <p class="card-tagline">Make the smallest complete change</p><p class="card-description">Choose the smallest complete solution, and skip the extra machinery.</p>
       <a class="skill-link" href="/skills/ponytail/">Explore skill</a>
+    </article>
+    <article class="skill-card" data-skill="gh-actions" data-category="Maintain" data-command="write a GitHub Actions workflow" data-steps="Read the workflows → verify releases and permissions → edit → validate">
+      <h3><a href="/skills/gh-actions/">gh-actions</a></h3>
+      <div class="card-top"><span class="category">Maintain</span></div>
+      <p class="card-tagline">Write safer GitHub Actions workflows</p><p class="card-description">Verify action releases, scope permissions, configure caches, and control deployments when writing or reviewing workflows.</p>
+      <a class="skill-link" href="/skills/gh-actions/">Explore skill</a>
     </article>
   </div><div class="empty-state" id="empty-state" hidden><h3>No skills found.</h3><p>Try another search or browse the whole collection.</p><button type="button" id="reset-filters">Show all skills</button></div>
 </section>

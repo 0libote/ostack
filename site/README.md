@@ -93,7 +93,7 @@ CLI command and a link to the complete installation guide remain available.
 ## Skill pages
 
 Catalog titles link to `/skills/<name>/`. `scripts/generate-pages.js` creates all
-13 detail pages in ignored `site/skills/<name>/` folders whenever development or a production
+14 detail pages in ignored `site/skills/<name>/` folders whenever development or a production
 build starts. The catalog at `site/skills/index.html` is source; do not edit the generated detail HTML.
 
 Edit card descriptions, commands, and workflow steps in `site/skills/index.html`. The
