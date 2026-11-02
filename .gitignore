@@ -1,3 +1,17 @@
 node_modules/
 dist/
 site/skills/*/
+
+# Hallmark run artifacts (screenshots, records, caches, reviews)
+**/.hallmark/shots/
+**/.hallmark/before/
+**/.hallmark/before.json
+**/.hallmark/before.txt
+**/.hallmark/compare.html
+**/.hallmark/comps/
+**/.hallmark/log.json
+**/.hallmark/preflight.json
+**/.hallmark/salt
+**/.hallmark/*-review.md
+**/.hallmark/review-*.md
+**/.hallmark/redesign.md
