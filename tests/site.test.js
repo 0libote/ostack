@@ -5,7 +5,7 @@ import { access } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const readme = await Bun.file(new URL('README.md', root)).text();
 const pages = [];
-for (const [path, file] of [['/', 'site/index.html'], ['/skills/', 'site/skills/index.html']]) {
+for (const [path, file] of [['/', 'site/index.html'], ['/skills/', 'site/skills/index.html'], ['/bun/', 'site/bun/index.html']]) {
   const page = { path, cards: [], links: [], ids: [], agents: [], banner: { links: [] } };
   await new HTMLRewriter()
     .on('.skill-banner', { element(el) { page.banner.label = el.getAttribute('aria-label'); } })

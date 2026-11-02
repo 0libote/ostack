@@ -43,7 +43,7 @@ export async function generateSkillPages() {
   for (const entry of await readdir(new URL('site/skills/', root), { withFileTypes: true })) {
     if (entry.isDirectory()) await rm(new URL(`site/skills/${entry.name}/`, root), { recursive: true, force: true });
   }
-  const entries = ['site/index.html', 'site/skills/index.html'].map(path => fileURLToPath(new URL(path, root)));
+  const entries = ['site/index.html', 'site/skills/index.html', 'site/bun/index.html'].map(path => fileURLToPath(new URL(path, root)));
   for (const skill of catalog) {
     const installSkills = new Set();
     function include(slug) {

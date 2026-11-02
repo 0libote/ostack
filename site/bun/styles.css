@@ -1,0 +1,90 @@
+/* Hallmark · shape: Manifesto · genre: playful · theme: Halftone (deal 1/3) · job: try
+ * hero: recruitment poster · nav: masthead · footer: plain exit · imagery: official Bun mascot
+ * signature: oversized mascot worship and escalating praise ritual · halftone: cream
+ * axes: light/slab-serif/warm · posture: committed · v2.0.0 */
+/* Hallmark · finish-review: in-thread · fixed hero detection, mobile exits, and closed disclosure visibility
+ * answered 58: 92 words at the densest desktop window; actual features kept beside their jokes */
+/* Hallmark · pre-emit critique: strongest in copy and contrast; weakest: density, separated doctrine into ruled clauses */
+/* Hallmark · copy: user-requested uppercase creed; scene and display type carry the meme */
+@import url('./tokens.css');
+@import url('./base.css');
+:root { --container: 1280px; --gutter: 40px; --font-code: ui-monospace, monospace; --color-clear: transparent; }
+.wrap { width: 100%; max-width: var(--container); padding-inline: var(--gutter); margin-inline: auto; }
+.skip { position: absolute; top: -100px; left: var(--space-md); padding: var(--space-md); background: var(--color-ink); color: var(--color-paper); z-index: var(--z-toast); }
+.skip:focus-visible { top: var(--space-md); }
+.mast { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); min-height: 88px; border-bottom: var(--rule-bar) solid var(--color-ink); }
+.church-name { font-weight: 700; text-decoration: none; }
+nav { display: flex; align-items: center; gap: var(--space-lg); font-size: var(--text-sm); }
+nav a { padding-block: var(--space-sm); }
+a:hover { text-decoration-color: var(--color-accent); }
+.hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: center; gap: var(--gap-columns); min-height: calc(100svh - 88px); padding-block: var(--space-xl); }
+h1 { max-width: none; font-size: clamp(4rem, 8.8vw, 7.6rem); line-height: 1.08; letter-spacing: -0.045em; }
+.hero-line { margin-block: var(--space-lg); font-size: var(--text-lg); max-width: 32ch; }
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-lg); }
+.button { display: inline-flex; justify-content: center; align-items: center; min-height: 52px; padding: var(--space-sm) var(--space-lg); border: var(--rule-bar) solid var(--color-accent); border-radius: var(--radius-input); background: var(--color-accent); color: var(--color-accent-ink); text-decoration: none; font-weight: 700; line-height: 1.2; }
+.button:hover { background: var(--color-accent-deep); border-color: var(--color-accent-deep); }
+.button:active { transform: translateY(2px); }
+.praise-button { border: 0; border-bottom: var(--rule-bar) solid var(--color-ink); padding: var(--space-sm) 0; min-height: 48px; background: var(--color-clear); color: var(--color-ink); cursor: pointer; font-weight: 700; }
+.praise-button:hover { border-color: var(--color-accent); }
+.praise-button:active { transform: translateY(2px); }
+.holy-bun { margin: 0; text-align: center; }
+.bun-stage { display: grid; place-items: center; min-height: 500px; background: var(--color-paper-2); border-radius: 50% 50% 0 0; border: var(--rule-bar) solid var(--color-ink); border-bottom: 0; padding: var(--space-xl) var(--space-lg) 0; }
+.bun-stage img { width: 100%; max-height: 450px; object-fit: contain; }
+figcaption { border: var(--rule-bar) solid var(--color-ink); padding: var(--space-md); font-size: var(--text-lg); line-height: 1.4; }
+figcaption span { font-family: var(--font-display); font-size: var(--text-title); }
+.praise-response { font-size: var(--text-sm); padding-top: var(--space-md); min-height: 4.5em; color: var(--color-muted); }
+.decree { background: var(--color-accent); color: var(--color-accent-ink); }
+.decree-inner { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); align-items: end; gap: var(--gap-columns); padding-block: var(--space-2xl); }
+.decree h2 { font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1.08; letter-spacing: -0.035em; }
+.decree-aside { display: grid; gap: var(--space-xl); font-size: var(--text-lg); }
+.decree-aside p:last-child { font-size: var(--text-sm); }
+.doctrine { padding-block: var(--section-gap-s); }
+h2 { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.08; letter-spacing: -0.025em; }
+.doctrine h2 { margin-bottom: var(--space-2xl); }
+.doctrine-list { margin: 0; border-top: var(--rule-bar) solid var(--color-ink); }
+.doctrine-list > div { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--gap-columns); padding-block: var(--space-xl); border-bottom: var(--rule-hair) solid var(--color-rule); }
+dt { font-family: var(--font-display); font-size: var(--text-title); line-height: 1.2; }
+dd { margin: 0; color: var(--color-ink-2); }
+dd p { margin-bottom: var(--space-md); }
+code { font-family: var(--font-code); font-size: var(--text-sm); }
+.confessional { background: var(--color-paper-2); }
+.confess-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: var(--gap-columns); padding-block: var(--section-gap-s); }
+.confess-layout h2 { font-size: clamp(2rem, 3.5vw, 3rem); }
+.confess-layout > div > p { margin-top: var(--space-xl); font-size: var(--text-lg); }
+.confessions details { border-bottom: var(--rule-hair) solid var(--color-ink); }
+.confessions details:first-child { border-top: var(--rule-bar) solid var(--color-ink); }
+summary { cursor: pointer; font-size: var(--text-lg); font-weight: 700; padding-block: var(--space-lg); }
+summary:hover, details[open] summary { color: var(--color-accent-deep); }
+summary:active { color: var(--color-muted); }
+details p, details a { margin-bottom: var(--space-lg); }
+details a { display: inline-block; }
+.benediction { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); align-items: end; gap: var(--gap-columns); padding-block: var(--section-gap-s); }
+.benediction h2 { font-size: clamp(2rem, 4vw, 3.5rem); }
+.amen-action { display: grid; gap: var(--space-lg); justify-items: start; }
+.amen { font-family: var(--font-display); font-size: var(--text-title); }
+.footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); padding-block: var(--space-xl); border-top: var(--rule-bar) solid var(--color-ink); font-size: var(--text-xs); }
+@media (max-width: 60rem) {
+  :root { --gutter: 24px; }
+  .mast { flex-wrap: wrap; padding-block: var(--space-md); }
+  .hero { min-height: auto; }
+  .bun-stage { min-height: 270px; }
+  .decree-inner, .confess-layout, .benediction { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+  .decree-aside { max-width: 40ch; }
+}
+@media (max-width: 40rem) {
+  :root { --gutter: 20px; }
+  .mast { gap: var(--space-xs); }
+  nav { gap: var(--space-lg); flex-wrap: wrap; }
+  .hero { grid-template-columns: minmax(0, 1fr); padding-block: var(--space-xl); gap: var(--space-xl); }
+  h1 { font-size: clamp(3.4rem, 16vw, 6rem); }
+  .hero-line { font-size: var(--text-md); }
+  .holy-bun { max-width: 420px; width: 100%; margin-inline: auto; }
+  .bun-stage { min-height: 260px; }
+  .bun-stage img { max-height: 250px; }
+  .doctrine-list > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
+  .footer { align-items: start; flex-direction: column; }
+}
+
+.button, .praise-button { min-height: 52px; }
+.praise-button:disabled { opacity: 0.5; cursor: not-allowed; }
+details:not([open]) > :not(summary) { display: none; }
