@@ -9,7 +9,8 @@
       "local_path": "skills",
       "renames": {
         "sol-loop": "agent-loop"
-      }
+      },
+      "baseline": "1085050f3baed1ac724caa4a8166145fb2ac88af"
     },
     {
       "id": "humanizer",
@@ -17,7 +18,11 @@
       "branch": "main",
       "mode": "single",
       "local_skill": "humanizer",
-      "files": ["SKILL.md", "agents/openai.yaml"]
+      "files": [
+        "SKILL.md",
+        "agents/openai.yaml"
+      ],
+      "baseline": "0ef9fe5bc3572734fd3ae6c448fe00a30cd5dcf0"
     },
     {
       "id": "frontend-design",
@@ -25,7 +30,8 @@
       "branch": "main",
       "mode": "single",
       "upstream_path": "skills/frontend-design",
-      "local_skill": "frontend-design"
+      "local_skill": "frontend-design",
+      "baseline": "ca45fc496a3436251f191354091d557da31c15b5"
     },
     {
       "id": "hallmark",
@@ -33,7 +39,8 @@
       "branch": "main",
       "mode": "single",
       "upstream_path": "skills/hallmark",
-      "local_skill": "hallmark"
+      "local_skill": "hallmark",
+      "baseline": "4f6a46c6dc325d40ab268c93e25c7b96676ebccd"
     },
     {
       "id": "ponytail",
@@ -41,10 +48,17 @@
       "branch": "main",
       "mode": "single",
       "upstream_path": "skills/ponytail",
-      "local_skill": "ponytail"
+      "local_skill": "ponytail",
+      "baseline": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846"
     }
   ],
-  "ignore_paths": ["README.md", "LICENSE"],
+  "ignore_paths": [
+    "README.md",
+    "LICENSE"
+  ],
   "pr_branch_prefix": "sync/",
-  "pr_labels": ["sync", "upstream"]
+  "pr_labels": [
+    "sync",
+    "upstream"
+  ]
 }

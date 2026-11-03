@@ -193,11 +193,20 @@ How it works:
 
 - Run [`sync-upstream.yml`](.github/workflows/sync-upstream.yml) from Actions
   with Sync upstream skills, or let it run weekly on Mondays.
-- It clones each source, diffs upstream skill(s) against `skills/<name>`, and
-  for each new or changed skill opens one PR named
-  `sync(<source>): <skill> from <repo>@<sha>` on branch `sync/<skill>`.
-- The PR diff shows upstream against your current files, so you see what changed.
-  Merge it as-is, or cherry-pick and resolve conflicts to keep local edits.
+- It compares upstream against a recorded upstream revision, then merges only
+  those new changes into `skills/<name>`. Local customizations alone never
+  create a PR. Each proposed update uses branch `sync/<skill>`.
+- Independent upstream changes preserve local edits. If edits overlap, the
+  whole skill is skipped, its files stay untouched, and the run reports a
+  conflict for manual review.
+- Each update PR includes `.github/upstream-state/<source>/<skill>` with the
+  new revision. Merge that file along with the skill so future runs use the
+  right baseline. Closing an update without merging can propose it again.
+- Initial source revisions live in `.github/upstream.json` (`baseline`). These
+  establish the starting point for tracking future changes; they do not
+  replace existing local files. For a new source, set its baseline to the
+  revision you imported. Existing sources without recorded import revisions
+  start tracking from November 3, 2026.
 - PRs carry the `sync` and `upstream` labels. If a PR for that skill is already
   open, the run skips it instead of opening a duplicate.
 - `README.md` and root `LICENSE` stay untouched. To track a new source

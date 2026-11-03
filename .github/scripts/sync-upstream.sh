@@ -4,23 +4,9 @@
 # Usage:
 #   bash .github/scripts/sync-upstream.sh [--dry-run] [--source <id>]
 #
-# Behaviour:
-# - Reads sources from .github/upstream.json.
-# - For each source, clones upstream (shallow) and diffs upstream skill(s)
-#   against local skills/<name>.
-# - tstack (mode=all): every subdir of upstream skills/ is a skill. New
-#   upstream skills become new PRs automatically. `renames` in upstream.json
-#   maps an upstream name to a different local name (e.g. sol-loop ->
-#   agent-loop); renamed PRs carry a note to cherry-pick and keep the local
-#   generalization.
-# - humanizer / frontend-design / ponytail (mode=single): one mapped skill
-#   each (see upstream.json). Full directory or listed files are compared.
-# - For each new or changed skill: creates branch sync/<skill>, copies the
-#   upstream skill files in, commits, pushes, and opens a PR.
-# - Skips skills that are unchanged or already have an open PR on the same
-#   branch. Never pushes directly to main.
-# - The PR diff is upstream-vs-current main, so reviewers see exactly what
-#   changed upstream and can preserve local edits via normal merge resolution.
+# Apply only upstream changes since a recorded revision using a three-way merge.
+# Local-only edits survive. Conflicts skip the whole skill and fail the run.
+# Each PR records its new baseline; main advances only when the PR is merged.
 set -euo pipefail
 
 DRY_RUN=0
@@ -42,6 +28,13 @@ done
 CONFIG=".github/upstream.json"
 REPO_ROOT=$(git rev-parse --show-toplevel)
 cd "$REPO_ROOT"
+
+if [[ "$DRY_RUN" != "1" ]]; then
+  if [[ "$(git config user.name)" != "0libote" || "$(git config user.email)" != "79215282+0libote@users.noreply.github.com" ]]; then
+    echo "Set git identity to 0libote <79215282+0libote@users.noreply.github.com> before syncing." >&2
+    exit 1
+  fi
+fi
 
 # Prefer an optional PAT for `gh` calls (workflow secret SYNC_PAT).
 # GITHUB_TOKEN cannot open PRs while the repo setting "Allow GitHub Actions
@@ -93,6 +86,31 @@ sync_one_skill() {
   local upstream_dir="$5" local_dir="$6" skill="$7" status="$8"
   local upstream_name="${9:-$skill}"
 
+  local state_file=".github/upstream-state/$source_id/$skill"
+  local baseline
+  baseline=$(python3 -c 'import json,sys; print(json.loads(sys.argv[1])["baseline"])' "$SRC_JSON")
+  [[ ! -f "$state_file" ]] || baseline=$(cat "$state_file")
+  if [[ -d "$local_dir" ]]; then
+    if ! git -C "$clone_dir" cat-file -e "$baseline^{commit}" 2>/dev/null; then
+      git -C "$clone_dir" fetch --depth 1 origin "$baseline" --quiet
+    fi
+    local mapping="$SRC_JSON"
+    if [[ "$mode" == "all" ]]; then
+      mapping=$(python3 -c 'import json,sys; print(json.dumps({"upstream_path":sys.argv[1]}))' "$UPSTREAM_PATH_HINT")
+    fi
+    local merged="$TMPDIR/merged-$source_id-$skill"
+    if ! python3 .github/scripts/merge-upstream.py "$clone_dir" "$baseline" "$mapping" "$local_dir" "$upstream_dir" "$merged"; then
+      echo "Conflict: $skill; local files left untouched. Resolve upstream changes manually." >&2
+      failed+=("$skill (conflict)")
+      return
+    fi
+    upstream_dir="$merged"
+    if diff -r -q "$local_dir" "$upstream_dir" >/dev/null 2>&1; then
+      unchanged+=("$skill")
+      return
+    fi
+  fi
+
   local branch="${PR_PREFIX}${skill}"
   echo "---"
   echo "Skill '$skill' is $status (source $source_id $repo@$short)."
@@ -133,7 +151,9 @@ sync_one_skill() {
   # Ensure any upstream-executable file stays executable (cp -R usually keeps it, belt and braces).
   (cd "$upstream_dir" && find . -type f -perm -u+x -print0) | (cd "$local_dir" && xargs -0 -r chmod +x 2>/dev/null || true)
 
-  git add "$local_dir"
+  mkdir -p "$(dirname "$state_file")"
+  printf '%s\n' "$sha" > "$state_file"
+  git add "$local_dir" "$state_file"
   if git diff --cached --quiet; then
     echo "no changes to commit for $skill (unexpected)"
     git checkout -q "$BASE_BRANCH"
@@ -146,8 +166,7 @@ sync_one_skill() {
   diffstat=$(git diff --cached --stat | head -n 30)
   filelist=$(git diff --cached --name-only | tr '\n' ' ')
 
-  git -c user.name="github-actions[bot]" -c user.email="github-actions[bot]@users.noreply.github.com" \
-    commit -q -m "sync(${source_id}): ${skill} from ${repo}@${short}"
+  git commit -q -m "sync(${source_id}): ${skill} from ${repo}@${short}"
 
   git push -u origin "$branch" --force-with-lease
 
@@ -172,8 +191,7 @@ $diffstat
 \`\`\`
 
 **How to review:**
-- The PR diff shows upstream-vs-your current files. Upstream changes are applied wholesale on this branch.
-- If you customized \`skills/$skill\` locally, resolve conflicts / cherry-pick to keep your edits. Do not lose local settings — merge, don't just overwrite \`$BASE_BRANCH\` blindly.
+- Only changes since the recorded upstream revision are merged. Local edits are preserved; conflicting skills are skipped.
 - New upstream skills appear as added files. Close the PR if you don't want that skill.
 - \`README.md\` and \`LICENSE\` are never touched by this sync.
 $RENAME_NOTE
@@ -299,6 +317,6 @@ echo "Skipped (open PR exists): ${skipped[*]:-none}"
 echo "Failed (branch pushed, no PR): ${failed[*]:-none}"
 
 if [[ ${#failed[@]} -gt 0 ]]; then
-  echo "One or more skills could not open a PR. Branches are pushed; fix permissions and re-run." >&2
+  echo "One or more skills conflicted or could not open a PR. See the errors above." >&2
   exit 1
 fi

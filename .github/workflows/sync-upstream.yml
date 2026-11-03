@@ -19,6 +19,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Test upstream merge safety
+        run: python3 -m unittest discover -s tests -p 'test_sync_upstream.py'
+
       - name: Sync each upstream skill (one PR per skill)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -27,6 +30,6 @@ jobs:
           # requests" is off. The script prefers it when set.
           SYNC_PAT: ${{ secrets.SYNC_PAT }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "0libote"
+          git config user.email "79215282+0libote@users.noreply.github.com"
           bash .github/scripts/sync-upstream.sh

@@ -15,3 +15,6 @@ site/skills/*/
 **/.hallmark/*-review.md
 **/.hallmark/review-*.md
 **/.hallmark/redesign.md
+
+# Python sync checks
+__pycache__/
