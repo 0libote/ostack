@@ -182,8 +182,8 @@ code { font-family: var(--font-outlier); }
 }
 
 
-.skill-banner { display: flex; align-items: center; gap: var(--space-md); width: 100%; min-width: 0; border-block: 1px solid var(--color-rule); padding-block: var(--space-lg); }
-.banner-viewport { flex: 1; min-width: 0; overflow-x: clip; }
+.skill-banner { width: 100%; min-width: 0; border-block: 1px solid var(--color-rule); padding-block: var(--space-lg); }
+.banner-viewport { min-width: 0; overflow-x: clip; }
 .banner-list { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg) var(--space-xl); list-style: none; margin: 0; padding: 0; }
 .banner-list li { flex-shrink: 0; }
 .banner-list a { min-height: 44px; display: inline-flex; align-items: center; font-size: var(--text-title); font-weight: var(--display-weight); letter-spacing: var(--tracking-display); color: var(--color-ink-2); white-space: nowrap; }
@@ -192,10 +192,6 @@ code { font-family: var(--font-outlier); }
 .skill-banner.is-animated .banner-list { flex-wrap: nowrap; width: max-content; padding-inline-end: var(--space-xl); }
 .skill-banner.is-animated .banner-list a { font-size: clamp(24px, 2.5vw, 36px); }
 .skill-banner.is-paused .banner-track, .skill-banner.is-hovered .banner-track, .skill-banner:focus-within .banner-track { animation-play-state: paused; }
-#toggle-banner { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; padding: 0; border: 0; background: var(--color-clear); color: var(--color-muted); }
-#toggle-banner:hover { color: var(--color-ink); }
-#toggle-banner .play-glyph, #toggle-banner[data-playing="false"] .pause-glyph { display: none; }
-#toggle-banner[data-playing="false"] .play-glyph { display: block; }
 .skill-banner:not(.is-animated) .banner-copy { display: none; }
 @keyframes skill-drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {

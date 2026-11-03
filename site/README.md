@@ -8,7 +8,7 @@ fonts and their open-source licenses. The catalog stays readable without JavaScr
 JavaScript adds search, category filters, a moving skill-name banner, and an install
 picker with harness, method, and scope buttons plus command copying.
 The skill-name banner moves continuously and links to the individual pages.
-It pauses on hover or keyboard focus and has a pause/play control. Reduced motion
+It pauses on hover or keyboard focus. Reduced motion
 and no-JavaScript mode show a static, wrapping list of all skill names.
 
 ## Development
@@ -115,8 +115,7 @@ A second copy produces the seamless CSS transform loop; its links work with a
 pointer but are excluded from keyboard navigation and assistive technology.
 Keyboard focus pauses movement and brings the selected original link into view.
 
-Animation pauses when offscreen or in a background tab. The explicit Pause/Play
-control preserves the current position. With reduced motion or JavaScript off,
+Animation pauses when offscreen or in a background tab. With reduced motion or JavaScript off,
 all names form a static, wrapping list. Keep the fallback list in `index.html`
 aligned with the catalog; the site test checks this. Change `--banner-duration`
 in `tokens.css` to adjust the pace.

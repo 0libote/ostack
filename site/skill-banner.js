@@ -1,7 +1,6 @@
 export function setupSkillBanner(banner) {
   const list = banner.querySelector('.banner-list');
   const track = banner.querySelector('.banner-track');
-  const toggle = banner.querySelector('#toggle-banner');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const copy = list.cloneNode(true);
   copy.classList.add('banner-copy');
@@ -9,18 +8,12 @@ export function setupSkillBanner(banner) {
   for (const link of copy.querySelectorAll('a')) link.tabIndex = -1;
   copy.addEventListener('pointerdown', event => event.preventDefault());
   track.append(copy);
-  let paused = false;
   let visible = false;
 
   function update() {
     banner.classList.toggle('is-animated', !reducedMotion.matches);
-    banner.classList.toggle('is-paused', paused || !visible || document.hidden);
-    toggle.hidden = reducedMotion.matches;
-    toggle.dataset.playing = String(!paused);
-    toggle.querySelector('[data-playback-label]').textContent = paused ? 'Play' : 'Pause';
-    toggle.setAttribute('aria-label', paused ? 'Resume moving skill names' : 'Pause moving skill names');
+    banner.classList.toggle('is-paused', !visible || document.hidden);
   }
-  toggle.addEventListener('click', () => { paused = !paused; update(); });
   list.addEventListener('focusin', event => {
     const animation = track.getAnimations()[0];
     const item = event.target.closest('li');

@@ -10,7 +10,6 @@ for (const [path, file] of [['/', 'site/index.html'], ['/skills/', 'site/skills/
   await new HTMLRewriter()
     .on('.skill-banner', { element(el) { page.banner.label = el.getAttribute('aria-label'); } })
     .on('.banner-list a', { element(el) { page.banner.links.push(el.getAttribute('href')); } })
-    .on('#toggle-banner', { element(el) { page.banner.controlHidden = el.hasAttribute('hidden'); page.banner.controlLabel = el.getAttribute('aria-label'); } })
     .on('article.skill-card', { element(el) {
       page.cards.push(Object.fromEntries(['skill', 'category', 'command', 'steps'].map(key => [key, el.getAttribute(`data-${key}`)])));
     } })
@@ -71,6 +70,4 @@ test('README documents every installation target and directory', () => {
 test('homepage banner provides every skill link without JavaScript', () => {
   expect(home.banner.label).toBe('Explore the skills');
   expect(home.banner.links).toEqual(catalog.cards.map(card => `/skills/${card.skill}/`));
-  expect(home.banner.controlHidden).toBe(true);
-  expect(home.banner.controlLabel).toBe('Pause moving skill names');
 });
