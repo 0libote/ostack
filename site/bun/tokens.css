@@ -18,6 +18,13 @@
   --radius-card: 0; --radius-input: 3px; --radius-pill: 999px; --rule-hair: 1px; --rule-bar: 3px;
   --shadow-card: none;
   --tracking-display: 0.005em; --display-weight: 400;
+  --scrollbar-size: 12px;
+  --scrollbar-size-thin: 8px;
+  --scrollbar-track: var(--color-paper);
+  --scrollbar-thumb: var(--color-muted);
+  --scrollbar-thumb-hover: var(--color-accent);
+  --scrollbar-thumb-active: var(--color-accent-deep);
+  --scrollbar-corner: var(--color-paper);
 }
 
 @font-face {

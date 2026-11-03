@@ -1,6 +1,6 @@
 *, *::before, *::after { box-sizing: border-box; }
 html, body { overflow-x: clip; }
-html { scrollbar-color: var(--color-muted) var(--color-paper); scroll-padding-top: var(--space-3xl); }
+html { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); scroll-padding-top: var(--space-3xl); scrollbar-gutter: stable; }
 body { margin: 0; background: var(--color-paper); color: var(--color-ink); font-family: var(--font-body); font-size: var(--text-md); line-height: 1.55; -webkit-font-smoothing: antialiased; caret-color: var(--color-accent); }
 ::selection { background: color-mix(in oklab, var(--color-accent) 30%, transparent); }
 :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
@@ -25,3 +25,11 @@ button, input, select, textarea { font: inherit; }
 @media (prefers-reduced-motion: reduce) { *:not(.keep-motion), *:not(.keep-motion)::before, *:not(.keep-motion)::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
 /* photographs: natural vib=25 sat=10 con=6 */
 [data-slot] > img { filter: saturate(1.1) contrast(1.06); }
+
+/* Bun scrollbar: cream track, clay on hover */
+::-webkit-scrollbar { width: var(--scrollbar-size); height: var(--scrollbar-size); }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: var(--radius-pill); border: 3px solid var(--color-paper); background-clip: padding-box; transition: background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out); }
+::-webkit-scrollbar-thumb:hover { background-color: var(--scrollbar-thumb-hover); border-color: var(--color-paper); background-clip: padding-box; }
+::-webkit-scrollbar-thumb:active { background-color: var(--scrollbar-thumb-active); border-color: var(--color-paper); background-clip: padding-box; }
+::-webkit-scrollbar-corner { background: var(--scrollbar-corner); }

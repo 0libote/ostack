@@ -29,3 +29,13 @@
 @font-face { font-family: "Host Grotesk"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/host-grotesk-500.ttf") format("truetype"); }
 
 :root { --banner-duration: 70s; }
+
+:root {
+  --scrollbar-size: 12px;
+  --scrollbar-size-thin: 8px;
+  --scrollbar-track: var(--color-clear);
+  --scrollbar-thumb: var(--color-rule-2);
+  --scrollbar-thumb-hover: var(--color-accent);
+  --scrollbar-thumb-active: var(--color-accent);
+  --scrollbar-corner: var(--color-clear);
+}

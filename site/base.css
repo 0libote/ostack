@@ -1,6 +1,6 @@
 *, *::before, *::after { box-sizing: border-box; }
 html, body { overflow-x: clip; }
-html { scrollbar-color: var(--color-muted) var(--color-paper); scroll-padding-top: var(--space-3xl); }
+html { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); scroll-padding-top: var(--space-3xl); scrollbar-gutter: stable; }
 body { margin: 0; background: var(--color-paper); color: var(--color-ink); font-family: var(--font-body); font-size: var(--text-md); line-height: 1.55; -webkit-font-smoothing: antialiased; caret-color: var(--color-accent); }
 ::selection { background: color-mix(in oklab, var(--color-accent) 25%, transparent); }
 :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
@@ -27,3 +27,14 @@ button, input, select, textarea { font: inherit; }
 [data-slot]:has(> img) { isolation: isolate; background: var(--color-ink); outline: 1px solid color-mix(in oklab, var(--color-ink) 8%, transparent); outline-offset: -1px; }
 [data-slot] > img { z-index: 0; filter: grayscale(1) contrast(1.08); mix-blend-mode: multiply; }
 [data-slot]:has(> img)::before { content: ""; position: absolute; inset: 0; z-index: 1; background: var(--color-paper-3); mix-blend-mode: lighten; pointer-events: none; }
+
+/* Console scrollbar: graphite track, amber on hover */
+::-webkit-scrollbar { width: var(--scrollbar-size); height: var(--scrollbar-size); }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: var(--radius-pill); border: 3px solid var(--color-paper); background-clip: padding-box; transition: background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out); }
+::-webkit-scrollbar-thumb:hover { background-color: var(--scrollbar-thumb-hover); border-color: var(--color-paper); background-clip: padding-box; }
+::-webkit-scrollbar-thumb:active { background-color: var(--scrollbar-thumb-active); border-color: var(--color-paper); background-clip: padding-box; }
+::-webkit-scrollbar-corner { background: var(--scrollbar-corner); }
+pre, .install-code pre, .skill-instructions pre { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); }
+pre::-webkit-scrollbar { width: var(--scrollbar-size-thin); height: var(--scrollbar-size-thin); }
+pre::-webkit-scrollbar-thumb { border-width: 2px; }
