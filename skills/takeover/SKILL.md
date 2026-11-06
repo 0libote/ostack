@@ -35,8 +35,8 @@ repository guidance and permissions. Green mocked tests do not prove the user
 experience works. State what remains unverified.
 
 When the requested finish includes a PR, use `file-pr` to file or update it,
-then `babysit-pr` rather than stopping at creation. Use `leaving-pr-comments`
-for replies. Merge or close the original PR only when authorized.
+then `babysit-pr` rather than stopping at creation. Reply directly with no
+attribution footer. Merge or close the original PR only when authorized.
 
 Report what you inherited, what you changed, how you verified it, how credit
 was preserved, and any remaining decision.

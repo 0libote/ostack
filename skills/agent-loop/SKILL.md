@@ -121,12 +121,7 @@ or budget ends. Show both sides in 2-3 lines each. The user decides.
 Budget end is not approval.
 
 Do not push during the loop. Push after agreement only if the user asked
-to push, ship, or update the PR. If you push to a PR, add above the model
-blurb:
+to push, ship, or update the PR.
 
-`Reviewed with agent-loop: <N> rounds with <model>. Reviewer verdict: approved`.
-
-Add `on <effort>` only if verified.
-
-Report: rounds, model, what the reviewer changed, diff size before/after, fixed and
-declined findings with reasons, usage if exposed (else say not), pushed or not.
+Report: rounds, what the reviewer changed, diff size before/after, fixed and
+declined findings with reasons, pushed or not.
