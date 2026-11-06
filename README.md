@@ -38,7 +38,7 @@ TRUE LEADER, but we still run the tests.
 
 ## Skills
 
-Upstream changes arrive as one PR per skill. `gh-actions` is maintained here:
+Upstream changes arrive as one PR per skill. `gh-actions` and `rich-chat` are maintained here:
 
 | Skill | Say | Source | What it does |
 |---|---|---|---|
@@ -51,6 +51,7 @@ Upstream changes arrive as one PR per skill. `gh-actions` is maintained here:
 | `babysit-pr` | "babysit" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/babysit-pr) | Watches a PR through CI and review bots, and fixes the real findings. |
 | `modernize` | "modernize" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/modernize) | Rebases an old PR and decides if it should still exist. |
 | `leaving-pr-comments` | (automatic) | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/leaving-pr-comments) | Formats comments that an agent posts on your behalf. |
+| `rich-chat` | "use rich-chat" | [ostack](skills/rich-chat/SKILL.md) | Produces Markdown and inline HTML visuals in T3 Code chat, with tool discovery and preview before rendering. |
 | `gh-actions` | (automatic) | [ostack](skills/gh-actions/SKILL.md) | Writes and reviews GitHub Actions workflows with verified action releases, scoped permissions, caching, and deployment controls. |
 | `humanizer` | "humanize" | [`blader/humanizer`](https://github.com/blader/humanizer) | Rewrites AI-sounding prose so it reads like the writer, without changing what it says. Based on Wikipedia's "Signs of AI writing". |
 | `frontend-design` | "design" | [`anthropics/skills`](https://github.com/anthropics/skills/tree/main/skills/frontend-design) | Design lead for UI work: distinctive visual direction, typography, and layout that avoids templated defaults. |
