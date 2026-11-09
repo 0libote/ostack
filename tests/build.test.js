@@ -96,7 +96,7 @@ test('skill installers include transitive dependencies and keep the collection i
   let selected;
   await new HTMLRewriter().on('#install', { element(el) { selected = el.getAttribute('data-install-skills').split(' '); } })
     .transform(new Response(await Bun.file(new URL('dist/skills/full-stop/index.html', root)).text())).text();
-  expect(selected).toEqual(['full-stop', 'full-send', 'agent-loop', 'file-pr', 'leaving-pr-comments', 'babysit-pr']);
+  expect(selected).toEqual(['full-stop', 'full-send', 'agent-loop', 'file-pr', 'babysit-pr']);
   const agent = { agent: 'codex', global: '~/.agents/skills', project: '.agents/skills' };
   expect(getInstallCommand(agent, 'cli', 'global', selected)).toBe(`npx skills add 0libote/ostack --agent codex --global --skill ${selected.join(' ')}`);
   const copy = getInstallCommand(agent, 'copy', 'project', selected);
