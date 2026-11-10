@@ -13,6 +13,9 @@ for (const entry of await generateSkillPages()) {
   } else if (entry.endsWith('/site/bun/index.html')) {
     routes['/bun'] = page;
     routes['/bun/'] = page;
+  } else if (entry.endsWith('/site/plugins/index.html')) {
+    routes['/plugins'] = page;
+    routes['/plugins/'] = page;
   } else {
     routes['/'] = page;
   }

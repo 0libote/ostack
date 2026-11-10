@@ -116,6 +116,36 @@ test('skill source is escaped as text, including HTML examples', () => {
 });
 
 
+test('plugins page ships with working assets and install commands', async () => {
+  const page = new URL('dist/plugins/index.html', root);
+  const html = await Bun.file(page).text();
+  const assets = [];
+  const ids = [], links = [];
+  await new HTMLRewriter()
+    .on('[src]', { element(el) { assets.push(el.getAttribute('src')); } })
+    .on('link[href]', { element(el) { assets.push(el.getAttribute('href')); } })
+    .on('[id]', { element(el) { ids.push(el.getAttribute('id')); } })
+    .on('a[href]', { element(el) { links.push(el.getAttribute('href')); } })
+    .transform(new Response(html)).text();
+  for (const asset of assets) await access(new URL(asset, page));
+  expect(new Set(ids).size).toBe(ids.length);
+  expect(html).toContain('TokenEconomizer');
+  expect(html).toContain('microsoft/TokenEconomizer');
+  expect(html).toContain('codex plugin add tokeneconomizer@tokeneconomizer');
+  expect(html).toContain('href="/skills/"');
+  const home = await Bun.file(new URL('dist/index.html', root)).text();
+  expect(home).toContain('href="/plugins/"');
+  for (const href of links) {
+    if (href.startsWith('https://')) continue;
+    if (href.startsWith('#')) expect(ids).toContain(href.slice(1));
+    else {
+      const target = new URL(href, 'https://ostack.test');
+      const file = new URL(`.${target.pathname}${target.pathname.endsWith('/') ? 'index.html' : ''}`, new URL('dist/', root));
+      await access(file);
+    }
+  }
+});
+
 test('standalone Bun page ships its own assets and homepage entry point', async () => {
   const page = new URL('dist/bun/index.html', root);
   const html = await Bun.file(page).text();

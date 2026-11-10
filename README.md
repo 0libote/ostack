@@ -56,6 +56,7 @@ Upstream changes arrive as one PR per skill. `gh-actions` and `rich-chat` are ma
 | `frontend-design` | "design" | [`anthropics/skills`](https://github.com/anthropics/skills/tree/main/skills/frontend-design) | Design lead for UI work: distinctive visual direction, typography, and layout that avoids templated defaults. |
 | `hallmark` | "use hallmark" | [`Nutlope/hallmark`](https://github.com/Nutlope/hallmark/tree/main/skills/hallmark) | Designs new pages with themes and checks for common AI design habits; redesigns or audits existing pages when named. |
 | `ponytail` | "ponytail" | [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail/tree/main/skills/ponytail) | Lazy senior dev mode: the smallest change that fully solves the task. Lite / full (default) / ultra. |
+| `security-audit` | "security audit" | [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill/tree/main/skills/security-audit) | Runs a multi-phase code security audit with independently verified, machine-readable findings. |
 
 Some skills call others. Install the ones they need too:
 
@@ -63,6 +64,60 @@ Some skills call others. Install the ones they need too:
 - `full-stop` uses `full-send`.
 - `takeover` uses `modernize`, `file-pr`, and `babysit-pr`.
 - `humanizer` also ships `agents/openai.yaml`; `frontend-design` ships its Apache `LICENSE.txt`.
+
+## External plugins
+
+Plugins extend the agent itself rather than shipping Markdown instructions. They
+are installed by each agent's own plugin tooling, not the skills CLI. They are
+kept upstream and are not copied into `skills/`. The [plugins page](site/plugins/index.html)
+has the same install commands for the website.
+
+| Plugin | Source | Supports | What it does |
+|---|---|---|---|
+| TokenEconomizer | [`microsoft/TokenEconomizer`](https://github.com/microsoft/TokenEconomizer) | Codex, Claude Code, Copilot CLI, Pi; experimental OpenCode support | Learns repository facts, prunes unused tools where supported, and detects failure loops. Measured 18–30% lower cost on SWE-Bench tasks. |
+
+### TokenEconomizer
+
+Three mechanisms, each reversible and announced in one line. Tool pruning and
+the failure-loop guard are on by default; micro-skills (repository facts
+proposed every three sessions) is off by default. What it learns stays on your
+machine in `~/.tokeneconomizer`. Apache-2.0.
+
+```bash
+git clone https://github.com/microsoft/TokenEconomizer.git
+```
+
+Then register the clone with your agent:
+
+```bash
+# Claude Code
+claude plugin marketplace add "$PWD/TokenEconomizer"
+claude plugin install tokeneconomizer@tokeneconomizer
+# check with /tokeneconomizer:status; once per machine run /tokeneconomizer:toolprune refresh-catalog
+
+# Codex
+codex plugin marketplace add "$PWD/TokenEconomizer"
+codex plugin add tokeneconomizer@tokeneconomizer
+# restart Codex, then check with $tokeneconomizer:status
+
+# OpenCode (experimental)
+mkdir -p ~/.config/opencode/plugins
+ln -s "$PWD/TokenEconomizer/plugin/opencode/tokeneconomizer.ts" ~/.config/opencode/plugins/
+# check with ~/.tokeneconomizer/bin/te --host opencode status
+```
+
+For t3code-docker, install it inside the container as `t3` so the clone and
+Codex configuration live on the persistent `/home/t3` volume:
+
+```bash
+docker compose exec -u t3 t3code bash -lc 'git clone https://github.com/microsoft/TokenEconomizer.git "$HOME/.local/share/TokenEconomizer"'
+docker compose exec -u t3 t3code bash -lc 'codex plugin marketplace add "$HOME/.local/share/TokenEconomizer" && codex plugin add tokeneconomizer@tokeneconomizer'
+```
+
+Restart Codex sessions after installation. Update the plugin with `git pull`
+in the clone (`git -C ~/.local/share/TokenEconomizer pull` inside the
+container, plus the `codex plugin add` line again for Codex). The upstream
+README documents other agents, troubleshooting, and every setting.
 
 ## Install
 
@@ -231,3 +286,4 @@ bash .github/scripts/sync-upstream.sh                      # create branches + P
 - `frontend-design`: Apache-2.0. See [`skills/frontend-design/LICENSE.txt`](skills/frontend-design/LICENSE.txt).
 - `hallmark`: MIT © Hallmark contributors. See [`skills/hallmark/LICENSE`](skills/hallmark/LICENSE). Photos listed in its library retain their individual licenses and require the credits specified by the skill.
 - `ponytail`: MIT © DietrichGebert. Upstream [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail).
+- `security-audit`: MIT. See [`skills/security-audit/LICENSE`](skills/security-audit/LICENSE). Upstream [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill).

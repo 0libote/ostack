@@ -1,7 +1,9 @@
 # ostack website
 
-A static catalog and individual pages for browsing and installing the skills.
+A static catalog and individual pages for browsing and installing the skills,
+plus a plugins page for agent plugins kept upstream.
 `index.html` is the homepage, `skills/index.html` holds the catalog content,
+`plugins/index.html` documents TokenEconomizer,
 `catalog.js` handles search and filters, and `install.js` provides the shared install picker.
 `styles.css` imports `tokens.css` and `base.css`; `fonts/` contains locally served
 fonts and their open-source licenses. The catalog stays readable without JavaScript;
@@ -23,7 +25,7 @@ bun run dev
 
 Open the local URL Bun prints (normally http://localhost:3000). The dev script
 generates the skill pages and serves them through Bun with hot reload. Routes
-include `/`, `/skills/`, and `/skills/<skill-name>/`; catalog and detail routes also work without the
+include `/`, `/skills/`, `/skills/<skill-name>/`, and `/plugins/`; catalog and detail routes also work without the
 trailing slash. Bun bundles the referenced JavaScript, CSS, logos, and fonts.
 Clipboard access requires localhost or HTTPS. There are currently no package
 dependencies; Bun creates a lockfile when dependencies are added.
@@ -103,7 +105,15 @@ as escaped text inside a native disclosure. This preserves code examples without
 executing HTML or scripts from skill documents. Restart `bun run dev` after
 changing catalog metadata, skill instructions, or the generator to regenerate pages.
 
-Production output contains `dist/index.html`, `dist/skills/index.html`, and `dist/skills/<name>/index.html`.
+## Update plugins
+
+Plugins are documented, not vendored. Edit `site/plugins/index.html` directly;
+it is static and ships as `dist/plugins/index.html`. Keep the plugin count, the
+homepage teaser in `site/index.html`, and the root README `External plugins`
+section in sync when adding a plugin. The dev server serves `/plugins/` and the
+build includes it via `scripts/generate-pages.js`.
+
+Production output contains `dist/index.html`, `dist/skills/index.html`, `dist/skills/<name>/index.html`, and `dist/plugins/index.html`.
 The site stays readable without JavaScript, including each page's default install
 command and expandable source. The existing Cloudflare `dist` setting serves all
 pages; no application server or deployment setting change is needed.

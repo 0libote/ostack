@@ -50,6 +50,15 @@
       "upstream_path": "skills/ponytail",
       "local_skill": "ponytail",
       "baseline": "96608e078b2d5ea607c5c3b8b5a54d1c1fba6846"
+    },
+    {
+      "id": "security-audit",
+      "repo": "cloudflare/security-audit-skill",
+      "branch": "main",
+      "mode": "single",
+      "upstream_path": "skills/security-audit",
+      "local_skill": "security-audit",
+      "baseline": "c1c8a8c1471069fb0e188eeaff69b8e8db6564a8"
     }
   ],
   "ignore_paths": [

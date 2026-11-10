@@ -5,13 +5,17 @@ import { access } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const readme = await Bun.file(new URL('README.md', root)).text();
 const pages = [];
-for (const [path, file] of [['/', 'site/index.html'], ['/skills/', 'site/skills/index.html'], ['/bun/', 'site/bun/index.html']]) {
-  const page = { path, cards: [], links: [], ids: [], agents: [], banner: { links: [] } };
+for (const [path, file] of [['/', 'site/index.html'], ['/skills/', 'site/skills/index.html'], ['/plugins/', 'site/plugins/index.html'], ['/bun/', 'site/bun/index.html']]) {
+  const page = { path, cards: [], plugins: [], links: [], ids: [], agents: [], banner: { links: [] } };
   await new HTMLRewriter()
     .on('.skill-banner', { element(el) { page.banner.label = el.getAttribute('aria-label'); } })
     .on('.banner-list a', { element(el) { page.banner.links.push(el.getAttribute('href')); } })
     .on('article.skill-card', { element(el) {
       page.cards.push(Object.fromEntries(['skill', 'category', 'command', 'steps'].map(key => [key, el.getAttribute(`data-${key}`)])));
+      if (el.getAttribute('data-plugin')) page.plugins.push(el.getAttribute('data-plugin'));
+    } })
+    .on('article.plugin-card', { element(el) {
+      if (el.getAttribute('data-plugin')) page.plugins.push(el.getAttribute('data-plugin'));
     } })
     .on('[id]', { element(el) { page.ids.push(el.getAttribute('id')); } })
     .on('[href]', { element(el) { page.links.push(el.getAttribute('href')); } })
@@ -22,7 +26,7 @@ for (const [path, file] of [['/', 'site/index.html'], ['/skills/', 'site/skills/
     .transform(new Response(await Bun.file(new URL(file, root)).text())).text();
   pages.push(page);
 }
-const [home, catalog] = pages;
+const [home, catalog, plugins] = pages;
 const skills = [...new Bun.Glob('skills/*/SKILL.md').scanSync({ cwd: fileURLToPath(root) })]
   .map(path => path.split('/')[1]).sort();
 
@@ -70,4 +74,13 @@ test('README documents every installation target and directory', () => {
 test('homepage banner provides every skill link without JavaScript', () => {
   expect(home.banner.label).toBe('Explore the skills');
   expect(home.banner.links).toEqual(catalog.cards.map(card => `/skills/${card.skill}/`));
+});
+
+test('plugins page lists TokenEconomizer and stays linked', () => {
+  expect(home.links).toContain('/plugins/');
+  expect(catalog.links).toContain('/plugins/');
+  expect(plugins.links).toContain('/skills/');
+  expect(plugins.plugins).toContain('tokeneconomizer');
+  expect(readme).toContain('TokenEconomizer');
+  expect(readme).toContain('microsoft/TokenEconomizer');
 });

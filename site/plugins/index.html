@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101317">
+  <meta name="description" content="Install the TokenEconomizer plugin for your coding agent.">
+  <title>Plugins | ostack</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="catalog-page">
+<a class="skip-link" href="#plugins">Skip to plugins</a>
+<header class="site-header wrap">
+  <a class="wordmark" href="/" aria-label="ostack home"><span class="logo" aria-hidden="true">≋</span>ostack<span class="wordmark-dot">.</span></a>
+  <nav aria-label="Main navigation"><a href="/skills/">The skills <span class="nav-count">15</span></a><a href="/plugins/" aria-current="page">Plugins</a><a href="/#install">Get started</a><a class="github-link" href="https://github.com/0libote/ostack">GitHub</a></nav>
+</header>
+<main>
+<section class="catalog wrap" id="plugins" aria-labelledby="plugins-title">
+  <div class="section-heading"><div><h1 id="plugins-title">The plugins.</h1></div><p>Installed by your agent, kept upstream. One to start.</p></div>
+  <p class="result-count" id="result-count" role="status" aria-live="polite">1 plugin</p>
+  <div class="skill-grid" id="plugin-grid">
+    <article class="skill-card" data-plugin="tokeneconomizer" data-category="Cost">
+      <h3><a href="https://github.com/microsoft/TokenEconomizer">TokenEconomizer</a></h3>
+      <div class="card-top"><span class="category">Cost</span></div>
+      <p class="card-tagline">Spend fewer tokens in familiar repos</p><p class="card-description">Experience-driven cost control for coding agents: learns repository facts, prunes unused tools where supported, and intervenes in failure loops. Measured 18–30% lower cost on SWE-Bench tasks.</p>
+      <a class="skill-link" href="https://github.com/microsoft/TokenEconomizer">Upstream source</a>
+    </article>
+  </div>
+  <div class="plugin-notes">
+    <p>Plugins differ from skills. Skills are Markdown instructions copied or linked into your harness folders. Plugins are installed by each agent&rsquo;s own plugin tooling and stay upstream; ostack documents them but does not copy them into <code>skills/</code>.</p>
+  </div>
+</section>
+
+<section class="wrap plugin-install" id="install-plugin" aria-labelledby="install-plugin-title">
+  <h2 id="install-plugin-title">Install TokenEconomizer</h2>
+  <p>You need Python 3.10+ on <code>PATH</code> and one supported agent. Keep the clone in place: Claude Code, Codex, the Copilot CLI, and opencode run the plugin from the clone.</p>
+
+  <h3 id="install-claude">Claude Code</h3>
+  <pre tabindex="0" aria-label="Install TokenEconomizer for Claude Code"><code>git clone https://github.com/microsoft/TokenEconomizer.git
+claude plugin marketplace add "$PWD/TokenEconomizer"
+claude plugin install tokeneconomizer@tokeneconomizer</code></pre>
+  <p>Start <code>claude</code>, trust the folder, and run <code>/tokeneconomizer:status</code>. Once per machine, and again after Claude Code updates, run <code>/tokeneconomizer:toolprune refresh-catalog</code>.</p>
+
+  <h3 id="install-codex">Codex</h3>
+  <pre tabindex="0" aria-label="Install TokenEconomizer for Codex"><code>git clone https://github.com/microsoft/TokenEconomizer.git
+codex plugin marketplace add "$PWD/TokenEconomizer"
+codex plugin add tokeneconomizer@tokeneconomizer</code></pre>
+  <p>Start <code>codex</code>, choose Trust and continue, then Trust all and continue at the hooks review. The hooks take effect from your next session, so quit, start <code>codex</code> again, and check with <code>$tokeneconomizer:status</code>.</p>
+
+  <h3 id="install-opencode">OpenCode (experimental)</h3>
+  <pre tabindex="0" aria-label="Install TokenEconomizer for OpenCode"><code>git clone https://github.com/microsoft/TokenEconomizer.git
+mkdir -p ~/.config/opencode/plugins
+ln -s "$PWD/TokenEconomizer/plugin/opencode/tokeneconomizer.ts" ~/.config/opencode/plugins/</code></pre>
+  <p>Start <code>opencode</code>, send a prompt, then check with <code>~/.tokeneconomizer/bin/te --host opencode status</code>. Upstream lists this support as experimental.</p>
+
+  <h3 id="install-t3code">t3code-docker</h3>
+  <p>Install inside the container as <code>t3</code> so the clone and Codex configuration live on the persistent <code>/home/t3</code> volume:</p>
+  <pre tabindex="0" aria-label="Install TokenEconomizer in t3code-docker"><code>docker compose exec -u t3 t3code bash -lc 'git clone https://github.com/microsoft/TokenEconomizer.git "$HOME/.local/share/TokenEconomizer"'
+docker compose exec -u t3 t3code bash -lc 'codex plugin marketplace add "$HOME/.local/share/TokenEconomizer" &amp;&amp; codex plugin add tokeneconomizer@tokeneconomizer'</code></pre>
+  <p>Restart Codex sessions after installation. Update with <code>git -C ~/.local/share/TokenEconomizer pull</code> inside the container.</p>
+
+  <h3 id="update-plugin">Update</h3>
+  <pre tabindex="0" aria-label="Update TokenEconomizer"><code>git pull</code></pre>
+  <p>Run <code>git pull</code> in the clone (plus the <code>codex plugin add</code> line again for Codex). The upstream <a href="https://github.com/microsoft/TokenEconomizer">README</a> documents other agents, troubleshooting, and every setting.</p>
+</section>
+
+<section class="wrap plugin-mechanisms" aria-labelledby="mechanisms-title">
+  <h2 id="mechanisms-title">What it does</h2>
+  <ul>
+    <li><strong>Micro-skills.</strong> Remembers how the repository works from repeated failures and a review every three sessions. Off by default.</li>
+    <li><strong>Tool pruning.</strong> Leaves out tools that go unused, through each agent&rsquo;s own settings. On by default.</li>
+    <li><strong>Failure-loop intervention.</strong> A judge model redirects turns that look stuck, at most once per turn. On by default.</li>
+  </ul>
+  <p>What it learns stays on your machine in <code>~/.tokeneconomizer</code>. Apache-2.0. See the <a href="https://github.com/microsoft/TokenEconomizer">upstream repository</a> for supported versions, full settings, and the paper&rsquo;s results.</p>
+</section>
+</main>
+<footer class="wrap site-footer"><a class="wordmark" href="/">ostack<span class="wordmark-dot">.</span></a><p>Agent skills from the open-source community.</p><a href="https://github.com/0libote/ostack#license">Sources &amp; licenses</a></footer>
+</body>
+</html>
