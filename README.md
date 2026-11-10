@@ -242,6 +242,7 @@ Sources (see [`.github/upstream.json`](.github/upstream.json)):
 - `frontend-design`: [`anthropics/skills`](https://github.com/anthropics/skills) (`main`, `skills/frontend-design/` into `skills/frontend-design/`).
 - `hallmark`: [`Nutlope/hallmark`](https://github.com/Nutlope/hallmark) (`main`, `skills/hallmark/` into `skills/hallmark/`, including its license, themes, references, and scripts).
 - `ponytail`: [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail) (`main`, `skills/ponytail/` into `skills/ponytail/`).
+- `security-audit`: [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) (`main`, `skills/security-audit/` into `skills/security-audit/`).
 
 How it works:
 
