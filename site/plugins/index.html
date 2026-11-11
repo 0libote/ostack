@@ -17,52 +17,50 @@
 </header>
 <main>
 <section class="catalog wrap" id="plugins" aria-labelledby="plugins-title">
-  <div class="section-heading"><div><h1 id="plugins-title">The plugins.</h1></div><p>Installed by your agent, kept upstream. One to start.</p></div>
+  <div class="section-heading"><div><h1 id="plugins-title">The plugins.</h1></div><p>Vendored in this repo, synced from upstream. One to start.</p></div>
   <p class="result-count" id="result-count" role="status" aria-live="polite">1 plugin</p>
   <div class="skill-grid" id="plugin-grid">
     <article class="skill-card" data-plugin="tokeneconomizer" data-category="Cost">
       <h3><a href="https://github.com/microsoft/TokenEconomizer">TokenEconomizer</a></h3>
       <div class="card-top"><span class="category">Cost</span></div>
       <p class="card-tagline">Spend fewer tokens in familiar repos</p><p class="card-description">Experience-driven cost control for coding agents: learns repository facts, prunes unused tools where supported, and intervenes in failure loops. Measured 18–30% lower cost on SWE-Bench tasks.</p>
-      <a class="skill-link" href="https://github.com/microsoft/TokenEconomizer">Upstream source</a>
+      <a class="skill-link" href="https://github.com/0libote/ostack/tree/main/plugins/tokeneconomizer">Vendored copy</a>
     </article>
   </div>
   <div class="plugin-notes">
-    <p>Plugins differ from skills. Skills are Markdown instructions copied or linked into your harness folders. Plugins are installed by each agent&rsquo;s own plugin tooling and stay upstream; ostack documents them but does not copy them into <code>skills/</code>.</p>
+    <p>Plugins differ from skills. Skills are Markdown instructions copied or linked into your harness folders. Each plugin is vendored under <code>plugins/</code> in this repository and updated from upstream through the same sync workflow as the skills, so install from the local copy below instead of cloning upstream yourself. The <a href="https://github.com/microsoft/TokenEconomizer">upstream repository</a> remains the source of truth.</p>
   </div>
 </section>
 
 <section class="wrap plugin-install" id="install-plugin" aria-labelledby="install-plugin-title">
   <h2 id="install-plugin-title">Install TokenEconomizer</h2>
-  <p>You need Python 3.10+ on <code>PATH</code> and one supported agent. Keep the clone in place: Claude Code, Codex, the Copilot CLI, and opencode run the plugin from the clone.</p>
+  <p>You need Python 3.10+ on <code>PATH</code> and one supported agent. Install from an ostack checkout and keep the checkout in place: the agents run the plugin from the vendored path.</p>
+
+  <pre tabindex="0" aria-label="Clone ostack for the vendored plugin"><code>git clone https://github.com/0libote/ostack</code></pre>
 
   <h3 id="install-claude">Claude Code</h3>
-  <pre tabindex="0" aria-label="Install TokenEconomizer for Claude Code"><code>git clone https://github.com/microsoft/TokenEconomizer.git
-claude plugin marketplace add "$PWD/TokenEconomizer"
+  <pre tabindex="0" aria-label="Install TokenEconomizer for Claude Code"><code>claude plugin marketplace add "$PWD/ostack/plugins/tokeneconomizer"
 claude plugin install tokeneconomizer@tokeneconomizer</code></pre>
   <p>Start <code>claude</code>, trust the folder, and run <code>/tokeneconomizer:status</code>. Once per machine, and again after Claude Code updates, run <code>/tokeneconomizer:toolprune refresh-catalog</code>.</p>
 
   <h3 id="install-codex">Codex</h3>
-  <pre tabindex="0" aria-label="Install TokenEconomizer for Codex"><code>git clone https://github.com/microsoft/TokenEconomizer.git
-codex plugin marketplace add "$PWD/TokenEconomizer"
+  <pre tabindex="0" aria-label="Install TokenEconomizer for Codex"><code>codex plugin marketplace add "$PWD/ostack/plugins/tokeneconomizer"
 codex plugin add tokeneconomizer@tokeneconomizer</code></pre>
   <p>Start <code>codex</code>, choose Trust and continue, then Trust all and continue at the hooks review. The hooks take effect from your next session, so quit, start <code>codex</code> again, and check with <code>$tokeneconomizer:status</code>.</p>
 
   <h3 id="install-opencode">OpenCode (experimental)</h3>
-  <pre tabindex="0" aria-label="Install TokenEconomizer for OpenCode"><code>git clone https://github.com/microsoft/TokenEconomizer.git
-mkdir -p ~/.config/opencode/plugins
-ln -s "$PWD/TokenEconomizer/plugin/opencode/tokeneconomizer.ts" ~/.config/opencode/plugins/</code></pre>
+  <pre tabindex="0" aria-label="Install TokenEconomizer for OpenCode"><code>mkdir -p ~/.config/opencode/plugins
+ln -s "$PWD/ostack/plugins/tokeneconomizer/plugin/opencode/tokeneconomizer.ts" ~/.config/opencode/plugins/</code></pre>
   <p>Start <code>opencode</code>, send a prompt, then check with <code>~/.tokeneconomizer/bin/te --host opencode status</code>. Upstream lists this support as experimental.</p>
 
   <h3 id="install-t3code">t3code-docker</h3>
-  <p>Install inside the container as <code>t3</code> so the clone and Codex configuration live on the persistent <code>/home/t3</code> volume:</p>
-  <pre tabindex="0" aria-label="Install TokenEconomizer in t3code-docker"><code>docker compose exec -u t3 t3code bash -lc 'git clone https://github.com/microsoft/TokenEconomizer.git "$HOME/.local/share/TokenEconomizer"'
-docker compose exec -u t3 t3code bash -lc 'codex plugin marketplace add "$HOME/.local/share/TokenEconomizer" &amp;&amp; codex plugin add tokeneconomizer@tokeneconomizer'</code></pre>
-  <p>Restart Codex sessions after installation. Update with <code>git -C ~/.local/share/TokenEconomizer pull</code> inside the container.</p>
+  <p>Run the same commands inside the container as <code>t3</code>, substituting the container-side path of your ostack checkout so the vendored copy and Codex configuration live on the persistent <code>/home/t3</code> volume:</p>
+  <pre tabindex="0" aria-label="Install TokenEconomizer in t3code-docker"><code>docker compose exec -u t3 t3code bash -lc 'codex plugin marketplace add &lt;path-to-ostack&gt;/plugins/tokeneconomizer &amp;&amp; codex plugin add tokeneconomizer@tokeneconomizer'</code></pre>
+  <p>Restart Codex sessions after installation.</p>
 
   <h3 id="update-plugin">Update</h3>
-  <pre tabindex="0" aria-label="Update TokenEconomizer"><code>git pull</code></pre>
-  <p>Run <code>git pull</code> in the clone (plus the <code>codex plugin add</code> line again for Codex). The upstream <a href="https://github.com/microsoft/TokenEconomizer">README</a> documents other agents, troubleshooting, and every setting.</p>
+  <pre tabindex="0" aria-label="Update TokenEconomizer"><code>git -C ostack pull --ff-only</code></pre>
+  <p>Plugin updates arrive through the upstream sync, one PR per plugin; pull the checkout to get them (plus the <code>codex plugin add</code> line again for Codex). The upstream <a href="https://github.com/microsoft/TokenEconomizer">README</a> documents other agents, troubleshooting, and every setting.</p>
 </section>
 
 <section class="wrap plugin-mechanisms" aria-labelledby="mechanisms-title">

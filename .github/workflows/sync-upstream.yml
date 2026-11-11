@@ -1,4 +1,4 @@
-name: Sync upstream skills
+name: Sync upstream skills and plugins
 
 on:
   workflow_dispatch:
@@ -22,7 +22,7 @@ jobs:
       - name: Test upstream merge safety
         run: python3 -m unittest discover -s tests -p 'test_sync_upstream.py'
 
-      - name: Sync each upstream skill (one PR per skill)
+      - name: Sync each upstream skill and plugin (one PR per item)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Optional PAT (classic, repo + workflow scopes) used when the

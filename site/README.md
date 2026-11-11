@@ -1,7 +1,7 @@
 # ostack website
 
 A static catalog and individual pages for browsing and installing the skills,
-plus a plugins page for agent plugins kept upstream.
+plus a plugins page for vendored agent plugins.
 `index.html` is the homepage, `skills/index.html` holds the catalog content,
 `plugins/index.html` documents TokenEconomizer,
 `catalog.js` handles search and filters, and `install.js` provides the shared install picker.
@@ -107,8 +107,9 @@ changing catalog metadata, skill instructions, or the generator to regenerate pa
 
 ## Update plugins
 
-Plugins are documented, not vendored. Edit `site/plugins/index.html` directly;
-it is static and ships as `dist/plugins/index.html`. Keep the plugin count, the
+Plugin sources live under `plugins/` and sync from upstream like the skills;
+`site/plugins/index.html` only documents them. Edit the page directly; it is
+static and ships as `dist/plugins/index.html`. Keep the plugin count, the
 homepage teaser in `site/index.html`, and the root README `External plugins`
 section in sync when adding a plugin. The dev server serves `/plugins/` and the
 build includes it via `scripts/generate-pages.js`.

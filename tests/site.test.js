@@ -84,3 +84,11 @@ test('plugins page lists TokenEconomizer and stays linked', () => {
   expect(readme).toContain('TokenEconomizer');
   expect(readme).toContain('microsoft/TokenEconomizer');
 });
+
+test('vendored plugin copy is present and installable', async () => {
+  const manifest = await Bun.file(new URL('plugins/tokeneconomizer/.claude-plugin/marketplace.json', root)).text();
+  expect(manifest).toContain('tokeneconomizer');
+  await access(new URL('plugins/tokeneconomizer/plugin/opencode/tokeneconomizer.ts', root));
+  await access(new URL('plugins/tokeneconomizer/plugin/hooks/hooks.json', root));
+  expect(readme).toContain('plugins/tokeneconomizer');
+});

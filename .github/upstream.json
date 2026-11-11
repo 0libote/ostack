@@ -59,6 +59,17 @@
       "upstream_path": "skills/security-audit",
       "local_skill": "security-audit",
       "baseline": "c1c8a8c1471069fb0e188eeaff69b8e8db6564a8"
+    },
+    {
+      "id": "tokeneconomizer",
+      "repo": "microsoft/TokenEconomizer",
+      "branch": "main",
+      "mode": "single",
+      "kind": "plugin",
+      "local_skill": "tokeneconomizer",
+      "local_dir": "plugins/tokeneconomizer",
+      "upstream_path": ".",
+      "baseline": "81e32e56bb3c4c1b4c9756b429be91e3960116ca"
     }
   ],
   "ignore_paths": [

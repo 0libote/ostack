@@ -38,7 +38,7 @@ TRUE LEADER, but we still run the tests.
 
 ## Skills
 
-Upstream changes arrive as one PR per skill. `gh-actions` and `rich-chat` are maintained here:
+Upstream changes arrive as one PR per skill or plugin. `gh-actions` and `rich-chat` are maintained here:
 
 | Skill | Say | Source | What it does |
 |---|---|---|---|
@@ -68,9 +68,11 @@ Some skills call others. Install the ones they need too:
 ## External plugins
 
 Plugins extend the agent itself rather than shipping Markdown instructions. They
-are installed by each agent's own plugin tooling, not the skills CLI. They are
-kept upstream and are not copied into `skills/`. The [plugins page](site/plugins/index.html)
-has the same install commands for the website.
+are installed by each agent's own plugin tooling, not the skills CLI. Each
+plugin is vendored under `plugins/` and synced from upstream like the skills
+(see [Staying in sync with upstream](#staying-in-sync-with-upstream)). The
+[plugins page](site/plugins/index.html) has the same install commands for the
+website.
 
 | Plugin | Source | Supports | What it does |
 |---|---|---|---|
@@ -81,43 +83,47 @@ has the same install commands for the website.
 Three mechanisms, each reversible and announced in one line. Tool pruning and
 the failure-loop guard are on by default; micro-skills (repository facts
 proposed every three sessions) is off by default. What it learns stays on your
-machine in `~/.tokeneconomizer`. Apache-2.0.
+machine in `~/.tokeneconomizer`. Apache-2.0, vendored at
+[`plugins/tokeneconomizer`](plugins/tokeneconomizer).
+
+Clone ostack (or pull it current), then register the vendored copy with your
+agent. Keep the checkout in place: the agents run the plugin from that path.
 
 ```bash
-git clone https://github.com/microsoft/TokenEconomizer.git
+git clone https://github.com/0libote/ostack
 ```
-
-Then register the clone with your agent:
 
 ```bash
 # Claude Code
-claude plugin marketplace add "$PWD/TokenEconomizer"
+claude plugin marketplace add "$PWD/ostack/plugins/tokeneconomizer"
 claude plugin install tokeneconomizer@tokeneconomizer
 # check with /tokeneconomizer:status; once per machine run /tokeneconomizer:toolprune refresh-catalog
 
 # Codex
-codex plugin marketplace add "$PWD/TokenEconomizer"
+codex plugin marketplace add "$PWD/ostack/plugins/tokeneconomizer"
 codex plugin add tokeneconomizer@tokeneconomizer
 # restart Codex, then check with $tokeneconomizer:status
 
 # OpenCode (experimental)
 mkdir -p ~/.config/opencode/plugins
-ln -s "$PWD/TokenEconomizer/plugin/opencode/tokeneconomizer.ts" ~/.config/opencode/plugins/
+ln -s "$PWD/ostack/plugins/tokeneconomizer/plugin/opencode/tokeneconomizer.ts" ~/.config/opencode/plugins/
 # check with ~/.tokeneconomizer/bin/te --host opencode status
 ```
 
-For t3code-docker, install it inside the container as `t3` so the clone and
-Codex configuration live on the persistent `/home/t3` volume:
+For t3code-docker, run the same commands inside the container as `t3`,
+substituting the container-side path of your ostack checkout for
+`$PWD/ostack` so the vendored copy and Codex configuration live on the
+persistent `/home/t3` volume:
 
 ```bash
-docker compose exec -u t3 t3code bash -lc 'git clone https://github.com/microsoft/TokenEconomizer.git "$HOME/.local/share/TokenEconomizer"'
-docker compose exec -u t3 t3code bash -lc 'codex plugin marketplace add "$HOME/.local/share/TokenEconomizer" && codex plugin add tokeneconomizer@tokeneconomizer'
+docker compose exec -u t3 t3code bash -lc 'codex plugin marketplace add <path-to-ostack>/plugins/tokeneconomizer && codex plugin add tokeneconomizer@tokeneconomizer'
 ```
 
-Restart Codex sessions after installation. Update the plugin with `git pull`
-in the clone (`git -C ~/.local/share/TokenEconomizer pull` inside the
-container, plus the `codex plugin add` line again for Codex). The upstream
-README documents other agents, troubleshooting, and every setting.
+Restart Codex sessions after installation. Plugin updates arrive through the
+upstream sync (one PR per plugin); pull the checkout to get them
+(`git -C ostack pull --ff-only`, plus the `codex plugin add` line again for
+Codex). The upstream README documents other agents, troubleshooting, and
+every setting.
 
 ## Install
 
@@ -243,14 +249,15 @@ Sources (see [`.github/upstream.json`](.github/upstream.json)):
 - `hallmark`: [`Nutlope/hallmark`](https://github.com/Nutlope/hallmark) (`main`, `skills/hallmark/` into `skills/hallmark/`, including its license, themes, references, and scripts).
 - `ponytail`: [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail) (`main`, `skills/ponytail/` into `skills/ponytail/`).
 - `security-audit`: [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) (`main`, `skills/security-audit/` into `skills/security-audit/`).
+- `tokeneconomizer`: [`microsoft/TokenEconomizer`](https://github.com/microsoft/TokenEconomizer) (`main`, repo root into `plugins/tokeneconomizer/`).
 
 How it works:
 
 - Run [`sync-upstream.yml`](.github/workflows/sync-upstream.yml) from Actions
-  with Sync upstream skills, or let it run weekly on Mondays.
+  with Sync upstream skills and plugins, or let it run weekly on Mondays.
 - It compares upstream against a recorded upstream revision, then merges only
-  those new changes into `skills/<name>`. Local customizations alone never
-  create a PR. Each proposed update uses branch `sync/<skill>`.
+  those new changes into `skills/<name>` or `plugins/<name>`. Local customizations alone never
+  create a PR. Each proposed update uses branch `sync/<name>`.
 - Independent upstream changes preserve local edits. If edits overlap, the
   whole skill is skipped, its files stay untouched, and the run reports a
   conflict for manual review.
@@ -265,7 +272,7 @@ How it works:
 - PRs carry the `sync` and `upstream` labels. If a PR for that skill is already
   open, the run skips it instead of opening a duplicate.
 - `README.md` and root `LICENSE` stay untouched. To track a new source
-  (for example more `ponytail-*` skills), add it to `upstream.json`.
+  (for example more `ponytail-*` skills, or another plugin), add it to `upstream.json`.
 - The workflow needs permission to open PRs. Enable Settings, Actions,
   General, Workflow permissions, "Allow GitHub Actions to create and approve
   pull requests". Without it, runs push branches but fail to open PRs. As a
@@ -288,3 +295,4 @@ bash .github/scripts/sync-upstream.sh                      # create branches + P
 - `hallmark`: MIT © Hallmark contributors. See [`skills/hallmark/LICENSE`](skills/hallmark/LICENSE). Photos listed in its library retain their individual licenses and require the credits specified by the skill.
 - `ponytail`: MIT © DietrichGebert. Upstream [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail).
 - `security-audit`: MIT. See [`skills/security-audit/LICENSE`](skills/security-audit/LICENSE). Upstream [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill).
+- TokenEconomizer: Apache-2.0. See [`plugins/tokeneconomizer/LICENSE`](plugins/tokeneconomizer/LICENSE). Upstream [`microsoft/TokenEconomizer`](https://github.com/microsoft/TokenEconomizer).

@@ -1,4 +1,5 @@
 import importlib.util
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -45,6 +46,56 @@ class MergeTests(unittest.TestCase):
 
     def test_concurrent_addition_conflicts(self):
         self.check_merge({}, {'skill': 'custom'}, {'skill': 'new'}, conflict=True)
+
+    def check_merge_links(self, base, local, upstream, expected=None, conflict=False):
+        with tempfile.TemporaryDirectory() as tmp:
+            dirs = [Path(tmp) / name for name in ('base', 'local', 'upstream', 'output')]
+            for root, entries in zip(dirs, (base, local, upstream)):
+                root.mkdir()
+                for name, item in entries.items():
+                    target = root / name
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    if isinstance(item, tuple):
+                        target.symlink_to(item[1])
+                    else:
+                        target.write_text(item)
+            if conflict:
+                with self.assertRaises(ValueError):
+                    module.merge(*dirs)
+                self.assertFalse(dirs[3].exists())
+            else:
+                module.merge(*dirs)
+                actual = {}
+                for p in dirs[3].rglob('*'):
+                    if p.is_symlink():
+                        actual[str(p.relative_to(dirs[3]))] = ('link', os.readlink(p))
+                    elif p.is_file():
+                        actual[str(p.relative_to(dirs[3]))] = ('file', p.read_text())
+                self.assertEqual(actual, expected)
+
+    def test_unchanged_symlink_survives(self):
+        entries = {'lib/real': 'code', 'lib/link': ('link', '../real')}
+        self.check_merge_links(entries, entries, entries,
+                               {'lib/real': ('file', 'code'), 'lib/link': ('link', '../real')})
+
+    def test_upstream_symlink_target_change_applies(self):
+        base = {'lib/link': ('link', '../old')}
+        self.check_merge_links(base, base, {'lib/link': ('link', '../new')},
+                               {'lib/link': ('link', '../new')})
+
+    def test_local_symlink_target_change_preserved(self):
+        base = {'lib/link': ('link', '../old')}
+        self.check_merge_links(base, {'lib/link': ('link', '../mine')}, {'lib/link': ('link', '../old')},
+                               {'lib/link': ('link', '../mine')})
+
+    def test_conflicting_symlink_targets_conflict(self):
+        base = {'lib/link': ('link', '../old')}
+        self.check_merge_links(base, {'lib/link': ('link', '../mine')}, {'lib/link': ('link', '../new')},
+                               conflict=True)
+
+    def test_upstream_added_symlink_applies(self):
+        self.check_merge_links({'f': 'x'}, {'f': 'x'}, {'f': 'x', 'lib/link': ('link', '../real')},
+                               {'f': ('file', 'x'), 'lib/link': ('link', '../real')})
 
 
 if __name__ == '__main__':

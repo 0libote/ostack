@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sync skills from their upstream GitHub repos, one PR per skill.
+# Sync skills and plugins from their upstream GitHub repos, one PR per item.
 #
 # Usage:
 #   bash .github/scripts/sync-upstream.sh [--dry-run] [--source <id>]
@@ -81,10 +81,10 @@ unchanged=()
 failed=()
 
 sync_one_skill() {
-  # args: source_id repo sha short upstream_dir local_dir skill status [upstream_name]
+  # args: source_id repo sha short upstream_dir local_dir skill status kind [upstream_name]
   local source_id="$1" repo="$2" sha="$3" short="$4"
-  local upstream_dir="$5" local_dir="$6" skill="$7" status="$8"
-  local upstream_name="${9:-$skill}"
+  local upstream_dir="$5" local_dir="$6" skill="$7" status="$8" kind="$9"
+  local upstream_name="${10:-$skill}"
 
   local state_file=".github/upstream-state/$source_id/$skill"
   local baseline
@@ -113,14 +113,14 @@ sync_one_skill() {
 
   local branch="${PR_PREFIX}${skill}"
   echo "---"
-  echo "Skill '$skill' is $status (source $source_id $repo@$short)."
+  echo "${kind^} '$skill' is $status (source $source_id $repo@$short)."
 
   if [[ "$DRY_RUN" == "1" ]]; then
     echo "[dry-run] would sync $skill -> branch $branch"
     if [[ -d "$local_dir" ]]; then
       diff -r -u "$local_dir" "$upstream_dir" 2>/dev/null | head -n 100 || true
     else
-      echo "[dry-run] new skill, files:"
+      echo "[dry-run] new $kind, files:"
       (cd "$upstream_dir" && find . -type f | head -n 30)
     fi
     if [[ "$status" == "new" ]]; then new_skills+=("$skill"); else changed+=("$skill"); fi
@@ -177,10 +177,10 @@ sync_one_skill() {
   fi
   local body
   body=$(cat <<EOF
-Syncs skill \`$skill\` from upstream [\`${repo}@\`${short}](https://github.com/${repo}/commit/${sha}).
+Syncs ${kind} \`$skill\` from upstream [\`${repo}@\`${short}](https://github.com/${repo}/commit/${sha}).
 
 **Source:** \`$source_id\` — https://github.com/${repo}
-**Status:** $status skill.
+**Status:** $status $kind.
 
 **Files:**
 \`$filelist\`
@@ -265,13 +265,14 @@ for ((i = 0; i < NUM_SOURCES; i++)); do
           status="updated"
         fi
       fi
-      sync_one_skill "$source_id" "$repo" "$SHA" "$SHORT" "$upstream_dir" "$local_dir" "$local_name" "$status" "$skill"
+      sync_one_skill "$source_id" "$repo" "$SHA" "$SHORT" "$upstream_dir" "$local_dir" "$local_name" "$status" "skill" "$skill"
     done
   else
+    kind=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get('kind','skill'))" "$SRC_JSON")
     local_skill=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get('local_skill',''))" "$SRC_JSON")
     upstream_path=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get('upstream_path',''))" "$SRC_JSON")
     has_files=$(python3 -c "import json,sys;print('yes' if 'files' in json.loads(sys.argv[1]) else 'no')" "$SRC_JSON")
-    local_dir="skills/$local_skill"
+    local_dir=$(python3 -c "import json,sys;d=json.loads(sys.argv[1]);print(d.get('local_dir','skills/'+d.get('local_skill','')))" "$SRC_JSON")
     stage="$TMPDIR/stage-$source_id-$local_skill"
     rm -rf "$stage"
     mkdir -p "$stage"
@@ -288,12 +289,17 @@ for ((i = 0; i < NUM_SOURCES; i++)); do
         cp -R "$clone_dir/$f" "$stage/$f"
       done
     else
-      export UPSTREAM_PATH_HINT="$upstream_path"
-      if [[ ! -d "$clone_dir/$upstream_path" ]]; then
-        echo "warning: $repo missing expected path $upstream_path (skipping)" >&2
-        continue
+      if [[ -z "$upstream_path" || "$upstream_path" == "." ]]; then
+        export UPSTREAM_PATH_HINT="(repo root)"
+        git -C "$clone_dir" archive HEAD | tar -x -C "$stage"
+      else
+        export UPSTREAM_PATH_HINT="$upstream_path"
+        if [[ ! -d "$clone_dir/$upstream_path" ]]; then
+          echo "warning: $repo missing expected path $upstream_path (skipping)" >&2
+          continue
+        fi
+        cp -R "$clone_dir/$upstream_path"/. "$stage"/
       fi
-      cp -R "$clone_dir/$upstream_path"/. "$stage"/
     fi
 
     status="new"
@@ -305,7 +311,7 @@ for ((i = 0; i < NUM_SOURCES; i++)); do
         status="updated"
       fi
     fi
-    sync_one_skill "$source_id" "$repo" "$SHA" "$SHORT" "$stage" "$local_dir" "$local_skill" "$status"
+    sync_one_skill "$source_id" "$repo" "$SHA" "$SHORT" "$stage" "$local_dir" "$local_skill" "$status" "$kind"
   fi
 done
 
