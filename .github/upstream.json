@@ -10,6 +10,9 @@
       "renames": {
         "sol-loop": "agent-loop"
       },
+      "skip": [
+        "leaving-pr-comments"
+      ],
       "baseline": "1085050f3baed1ac724caa4a8166145fb2ac88af"
     },
     {

@@ -263,7 +263,9 @@ How it works:
   conflict for manual review.
 - Each update PR includes `.github/upstream-state/<source>/<skill>` with the
   new revision. Merge that file along with the skill so future runs use the
-  right baseline. Closing an update without merging can propose it again.
+  right baseline. Closing an update without merging proposes it again on the
+  next run. To decline a skill permanently (for example one you deleted on
+  purpose), add its local name to that source's `skip` list in `upstream.json`.
 - Initial source revisions live in `.github/upstream.json` (`baseline`). These
   establish the starting point for tracking future changes; they do not
   replace existing local files. For a new source, set its baseline to the

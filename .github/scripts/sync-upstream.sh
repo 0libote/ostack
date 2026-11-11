@@ -79,6 +79,7 @@ new_skills=()
 skipped=()
 unchanged=()
 failed=()
+declined=()
 
 sync_one_skill() {
   # args: source_id repo sha short upstream_dir local_dir skill status kind [upstream_name]
@@ -231,6 +232,7 @@ for ((i = 0; i < NUM_SOURCES; i++)); do
   repo=$(python3 -c "import json,sys;print(json.loads(sys.argv[1])['repo'])" "$SRC_JSON")
   branch=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get('branch','main'))" "$SRC_JSON")
   mode=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get('mode','all'))" "$SRC_JSON")
+  skip_json=$(python3 -c "import json,sys;print(json.dumps(json.loads(sys.argv[1]).get('skip',[])))" "$SRC_JSON")
 
   if [[ -n "$ONLY_SOURCE" && "$source_id" != "$ONLY_SOURCE" ]]; then
     continue
@@ -255,6 +257,11 @@ for ((i = 0; i < NUM_SOURCES; i++)); do
       skill=$(basename "$upstream_dir")
       export UPSTREAM_PATH_HINT="$upstream_path/$skill"
       local_name=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get(sys.argv[2],sys.argv[2]))" "$renames_json" "$skill")
+      if python3 -c "import json,sys;sys.exit(0 if sys.argv[2] in json.loads(sys.argv[1]) else 1)" "$skip_json" "$local_name"; then
+        echo "skip: $local_name is declined in $CONFIG (source $source_id)"
+        declined+=("$local_name")
+        continue
+      fi
       local_dir="$local_path/$local_name"
       status="new"
       if [[ -d "$local_dir" ]]; then
@@ -270,6 +277,11 @@ for ((i = 0; i < NUM_SOURCES; i++)); do
   else
     kind=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get('kind','skill'))" "$SRC_JSON")
     local_skill=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get('local_skill',''))" "$SRC_JSON")
+    if python3 -c "import json,sys;sys.exit(0 if sys.argv[2] in json.loads(sys.argv[1]) else 1)" "$skip_json" "$local_skill"; then
+      echo "skip: $local_skill is declined in $CONFIG (source $source_id)"
+      declined+=("$local_skill")
+      continue
+    fi
     upstream_path=$(python3 -c "import json,sys;print(json.loads(sys.argv[1]).get('upstream_path',''))" "$SRC_JSON")
     has_files=$(python3 -c "import json,sys;print('yes' if 'files' in json.loads(sys.argv[1]) else 'no')" "$SRC_JSON")
     local_dir=$(python3 -c "import json,sys;d=json.loads(sys.argv[1]);print(d.get('local_dir','skills/'+d.get('local_skill','')))" "$SRC_JSON")
@@ -320,6 +332,7 @@ echo "New: ${new_skills[*]:-none}"
 echo "Updated: ${changed[*]:-none}"
 echo "Unchanged: ${unchanged[*]:-none}"
 echo "Skipped (open PR exists): ${skipped[*]:-none}"
+echo "Declined (skip list): ${declined[*]:-none}"
 echo "Failed (branch pushed, no PR): ${failed[*]:-none}"
 
 if [[ ${#failed[@]} -gt 0 ]]; then
