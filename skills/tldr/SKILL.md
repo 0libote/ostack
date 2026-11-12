@@ -18,6 +18,7 @@ Read a named source before summarizing it. For a T3 thread, use the available th
 - Lead with one sentence stating the outcome, recommendation, or main point.
 - Add up to five short bullets only if they add useful facts. Aim for 60 to 120 words total; use less for simple material. Follow a user-specified length or format instead.
 - Rank by consequence. Keep urgent risks, blockers, decisions needed, and the next action when the source supplies them. Group minor findings rather than listing every one. For an audit, preserve the top findings and distinguish reported concerns from confirmed vulnerabilities.
+- Make notes understandable on their own. Replace references such as “fix items 2 and 3” with the issue names.
 - Keep uncertainty and scope limits that change the takeaway. Preserve numbers and links needed to act. Tests passing does not mean every behavior was checked; a proposed fix is not completed work.
 - Cut repeated context, process narration, implementation detail, and closing offers. Do not invent a recommendation or rerun the underlying task. A shorter source may need just one sentence.
 
