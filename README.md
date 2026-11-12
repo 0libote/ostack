@@ -64,7 +64,7 @@ Some skills call others. Install the ones they need too:
 - `full-send` uses `agent-loop`, `file-pr`, and `babysit-pr`.
 - `full-stop` uses `full-send`.
 - `takeover` uses `modernize`, `file-pr`, and `babysit-pr`.
-- `tldr` uses `humanizer` for wording and `rich-chat` for compact formatting when available.
+- `tldr` loads and applies `humanizer` for wording and `rich-chat` for compact formatting.
 - `humanizer` also ships `agents/openai.yaml`; `frontend-design` ships its Apache `LICENSE.txt`.
 
 ## External plugins
