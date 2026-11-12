@@ -71,7 +71,15 @@
       "kind": "plugin",
       "local_skill": "tokeneconomizer",
       "local_dir": "plugins/tokeneconomizer",
-      "upstream_path": ".",
+      "files": [
+        ".claude-plugin/marketplace.json",
+        ".gitattributes",
+        "LICENSE",
+        "package.json",
+        "plugin",
+        "pyproject.toml",
+        "tokeneconomizer"
+      ],
       "baseline": "81e32e56bb3c4c1b4c9756b429be91e3960116ca"
     }
   ],
