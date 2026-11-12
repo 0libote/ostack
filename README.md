@@ -38,7 +38,7 @@ TRUE LEADER, but we still run the tests.
 
 ## Skills
 
-Upstream changes arrive as one PR per skill or plugin. `gh-actions` and `rich-chat` are maintained here:
+Upstream changes arrive as one PR per skill or plugin. `gh-actions`, `rich-chat`, and `tldr` are maintained here:
 
 | Skill | Say | Source | What it does |
 |---|---|---|---|
@@ -50,6 +50,7 @@ Upstream changes arrive as one PR per skill or plugin. `gh-actions` and `rich-ch
 | `takeover` | "take over" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/takeover) | Finishes someone else's PR, branch, or agent thread, and keeps their credit. |
 | `babysit-pr` | "babysit" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/babysit-pr) | Watches a PR through CI and review bots, and fixes the real findings. |
 | `modernize` | "modernize" | [`t3dotgg/tstack`](https://github.com/t3dotgg/tstack/tree/main/skills/modernize) | Rebases an old PR and decides if it should still exist. |
+| `tldr` | "/TLDR" or "TLDR this" | [ostack](skills/tldr/SKILL.md) | Turns long answers, reports, and threads into a takeaway and brief key notes. |
 | `rich-chat` | "use rich-chat" | [ostack](skills/rich-chat/SKILL.md) | Produces Markdown and inline HTML visuals in T3 Code chat, with tool discovery and preview before rendering. |
 | `gh-actions` | (automatic) | [ostack](skills/gh-actions/SKILL.md) | Writes and reviews GitHub Actions workflows with verified action releases, scoped permissions, caching, and deployment controls. |
 | `humanizer` | "humanize" | [`blader/humanizer`](https://github.com/blader/humanizer) | Rewrites AI-sounding prose so it reads like the writer, without changing what it says. Based on Wikipedia's "Signs of AI writing". |
@@ -63,6 +64,7 @@ Some skills call others. Install the ones they need too:
 - `full-send` uses `agent-loop`, `file-pr`, and `babysit-pr`.
 - `full-stop` uses `full-send`.
 - `takeover` uses `modernize`, `file-pr`, and `babysit-pr`.
+- `tldr` uses `humanizer` for wording and `rich-chat` for compact formatting when available.
 - `humanizer` also ships `agents/openai.yaml`; `frontend-design` ships its Apache `LICENSE.txt`.
 
 ## External plugins

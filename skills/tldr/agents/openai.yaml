@@ -1,0 +1,4 @@
+interface:
+  display_name: "TLDR"
+  short_description: "Turn long answers into brief, useful key notes"
+  default_prompt: "Use $tldr to summarize this into the takeaway and brief key notes."

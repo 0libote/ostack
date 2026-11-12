@@ -5,7 +5,8 @@ const root = new URL('../', import.meta.url);
 const dependencies = {
   'full-send': ['agent-loop', 'file-pr', 'babysit-pr'],
   'full-stop': ['full-send'],
-  takeover: ['modernize', 'file-pr', 'babysit-pr']
+  takeover: ['modernize', 'file-pr', 'babysit-pr'],
+  tldr: ['humanizer', 'rich-chat']
 };
 const notes = {
   'full-send': 'Owns the work through merge. Use full-stop when you want to make the final merge yourself.',
