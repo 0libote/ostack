@@ -14,7 +14,8 @@ const notes = {
   council: 'Needs access to models from different providers. Available reviewers depend on your harness.',
   'agent-loop': 'Name the reviewer model you want to use. The skill asks when you have not chosen one.',
   hallmark: 'Name Hallmark explicitly when you want to redesign or audit an existing page.',
-  ponytail: 'Supports lite, full, and ultra levels. Full is the default.'
+  ponytail: 'Supports lite, full, and ultra levels. Full is the default.',
+  'modern-web-guidance': 'Runs `npx -y modern-web-guidance@latest` and needs Node.js 22+ with network access to fetch its guides.'
 };
 export const escapeHTML = text => text.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 
