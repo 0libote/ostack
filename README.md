@@ -59,7 +59,6 @@ Upstream changes arrive as one PR per skill or plugin. `gh-actions`, `rich-chat`
 | `ponytail` | "ponytail" | [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail/tree/main/skills/ponytail) | Lazy senior dev mode: the smallest change that fully solves the task. Lite / full (default) / ultra. |
 | `security-audit` | "security audit" | [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill/tree/main/skills/security-audit) | Runs a multi-phase code security audit with independently verified, machine-readable findings. |
 | `modern-web-guidance` | "use modern web guidance" | [`GoogleChrome/modern-web-guidance`](https://github.com/GoogleChrome/modern-web-guidance/tree/main/skills/modern-web-guidance) | Searches current web platform guidance for HTML, CSS, and client-side JS, and applies it instead of legacy patterns. |
-| `chrome-extensions` | "build a Chrome extension" | [`GoogleChrome/modern-web-guidance`](https://github.com/GoogleChrome/modern-web-guidance/tree/main/skills/chrome-extensions) | Builds production-quality Chrome extensions with Manifest V3 and prepares them for the Chrome Web Store. |
 
 Some skills call others. Install the ones they need too:
 
@@ -254,7 +253,7 @@ Sources (see [`.github/upstream.json`](.github/upstream.json)):
 - `hallmark`: [`Nutlope/hallmark`](https://github.com/Nutlope/hallmark) (`main`, `skills/hallmark/` into `skills/hallmark/`, including its license, themes, references, and scripts).
 - `ponytail`: [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail) (`main`, `skills/ponytail/` into `skills/ponytail/`).
 - `security-audit`: [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill) (`main`, `skills/security-audit/` into `skills/security-audit/`).
-- `modern-web-guidance`: [`GoogleChrome/modern-web-guidance`](https://github.com/GoogleChrome/modern-web-guidance) (`main`, `skills/`, all skills: `modern-web-guidance` and `chrome-extensions`).
+- `modern-web-guidance`: [`GoogleChrome/modern-web-guidance`](https://github.com/GoogleChrome/modern-web-guidance) (`main`, `skills/modern-web-guidance/` into `skills/modern-web-guidance/`).
 - `tokeneconomizer`: [`microsoft/TokenEconomizer`](https://github.com/microsoft/TokenEconomizer) (`main`, repo root into `plugins/tokeneconomizer/`).
 
 How it works:
@@ -303,5 +302,5 @@ bash .github/scripts/sync-upstream.sh                      # create branches + P
 - `hallmark`: MIT © Hallmark contributors. See [`skills/hallmark/LICENSE`](skills/hallmark/LICENSE). Photos listed in its library retain their individual licenses and require the credits specified by the skill.
 - `ponytail`: MIT © DietrichGebert. Upstream [`DietrichGebert/ponytail`](https://github.com/DietrichGebert/ponytail).
 - `security-audit`: MIT. See [`skills/security-audit/LICENSE`](skills/security-audit/LICENSE). Upstream [`cloudflare/security-audit-skill`](https://github.com/cloudflare/security-audit-skill).
-- `modern-web-guidance` and `chrome-extensions`: Apache-2.0 © Google Chrome. Upstream [`GoogleChrome/modern-web-guidance`](https://github.com/GoogleChrome/modern-web-guidance).
+- `modern-web-guidance`: Apache-2.0 © Google Chrome. Upstream [`GoogleChrome/modern-web-guidance`](https://github.com/GoogleChrome/modern-web-guidance).
 - TokenEconomizer: Apache-2.0. See [`plugins/tokeneconomizer/LICENSE`](plugins/tokeneconomizer/LICENSE). Upstream [`microsoft/TokenEconomizer`](https://github.com/microsoft/TokenEconomizer).

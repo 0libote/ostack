@@ -67,9 +67,9 @@
       "id": "modern-web-guidance",
       "repo": "GoogleChrome/modern-web-guidance",
       "branch": "main",
-      "mode": "all",
-      "upstream_path": "skills",
-      "local_path": "skills",
+      "mode": "single",
+      "upstream_path": "skills/modern-web-guidance",
+      "local_skill": "modern-web-guidance",
       "baseline": "4dd968349e54ca45a05dd5c818fb035c9054b022"
     },
     {
