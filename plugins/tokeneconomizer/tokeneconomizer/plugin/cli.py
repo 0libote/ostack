@@ -3,6 +3,10 @@
     te status                         what it has learned for this repository, and what it did
     te status --explain               explain the current settings and saved learning state
     te microskills                    the facts it injects, and the ones still forming
+    te microskills forget ID ...      stop injecting the facts with these ids (as listed by
+                                      `te microskills`); they are not learned again
+                                      under that id or from the same evidence
+    te microskills unforget ID ...    bring forgotten facts back, as they were
     te toolprune show                 the proposed deny list, and the evidence behind it
     te toolprune apply [ITEM ...]     write the proposal (or the named items) to the repository's
                                       settings: tools (Claude Code), capabilities (Codex) or
@@ -19,8 +23,8 @@
     te config unset KEY ...           back to the next source down (the global file, then default)
     te repomap [show | refresh]       the repository map (`repomap=on`): what is cached, or
                                       make it now
-    te history import [--dry-run]     Claude Code: fold this repository's sessions from before
-                                      the plugin, from Claude Code's own logs (no model calls,
+    te history import [--dry-run]     fold this repository's sessions from before the plugin,
+                                      from the agent's own logs (no model calls,
                                       no deny list written; only before any session is folded;
                                       with `history_import=on`, the first session start runs
                                       it by itself)
@@ -45,6 +49,7 @@ import argparse
 import glob
 import json
 import os
+import shlex
 import sys
 import time
 
@@ -264,7 +269,7 @@ def cmd_status(args):
           f"{accounting.fmt_tokens(ledger['effective_tokens'])} effective tokens, plugin "
           f"overhead {accounting.fmt_tokens(ledger['overhead_tokens'])} "
           f"({ledger['overhead_frac']:.1%})")
-    hist = history.describe(out["history"])
+    hist = history.describe(out["history"], ctx.host.name)
     if hist:
         print(f"  history      {hist}")
     i = out["microskills"]
@@ -294,6 +299,12 @@ def cmd_status(args):
 
 
 def cmd_microskills(args):
+    if args.action in ("forget", "unforget"):
+        return _microskills_forget(args)
+    if args.ids:
+        print(f"`microskills {args.action}` takes no ids; did you mean `microskills forget "
+              f"{' '.join(args.ids)}`?")
+        return 2
     ctx = _ctx(args)
     inj = ctx.store.read("injection.json") or {}
     if ctx.config.microskills == "off":
@@ -311,6 +322,55 @@ def cmd_microskills(args):
         for k, v in sorted(rows):
             print(f"  {v.get('state', '?'):9s} fire={v.get('fire', '?'):>5s} "
                   f"{'INJECTED' if v.get('inject') else '        '} {k}")
+    from tokeneconomizer.microskills import forgotten_facts
+    gone = forgotten_facts(ctx.repo.label, os.path.join(ctx.store.base, "mechanisms"))
+    if gone:
+        print("\nforgotten (`microskills unforget ID` brings one back):")
+        for k, claim in sorted(gone.items()):
+            print(f"  {k}" + (f"  ({_short(claim)})" if claim else ""))
+    return 0
+
+
+def _short(text, n=80):
+    text = " ".join(str(text).split())
+    return text if len(text) <= n else text[:n - 1] + "\u2026"
+
+
+def _microskills_forget(args):
+    from tokeneconomizer.microskills.lifecycle import NO_RECORD
+    undo = args.action == "unforget"
+    if not args.ids:
+        print(f"`microskills {args.action}` needs the id of at least one fact; "
+              f"`microskills` lists them")
+        return 2
+    ctx = _ctx(args)
+    refused = _refuse_unwritable(ctx.root)
+    if refused:
+        return refused
+    try:
+        done = fold.forget_microskills(ctx, args.ids, undo=undo)
+    except KeyError as e:
+        unknown = e.args[0] if e.args and isinstance(e.args[0], list) else list(e.args)
+        print(f"not changed: no learned fact here has the id {', '.join(unknown)} "
+              f"({ctx.host.name}, {ctx.repo.label}); `microskills` lists the ids")
+        return 1
+    except fold.Busy as e:
+        print(f"not changed: {e}; try again in a moment")
+        return 1
+    for fid, changed, claim in done:
+        if changed == NO_RECORD:
+            print(f"no longer forgotten, but nothing to bring back: {fid} had no saved record; "
+                  f"a later fold may learn it again")
+            continue
+        what = (("brought back" if changed else "not forgotten, nothing to bring back") if undo
+                else ("forgotten" if changed else "already forgotten"))
+        print(f"{what}: {fid}" + (f"  ({_short(claim)})" if claim else ""))
+    if any(changed for _, changed, _ in done):
+        print("from the next session, " + (
+            "these facts are kept and injected under the same rules as any other fact" if undo
+            else "these facts are not injected, and are not learned again under the same id "
+                 "or from the same evidence "
+                 "(`microskills unforget ID` undoes this)"))
     return 0
 
 
@@ -583,6 +643,8 @@ def _config_view(cfg):
                     "history_max_sessions": d.pop("history_max_sessions"),
                     "history_days": d.pop("history_days"),
                     "history_dirs": d.pop("history_dirs")},
+        "droid": {"state": "on" if cfg.droid_sidecall else "off",
+                  "droid_sidecall": d.pop("droid_sidecall")},
         "other": d,
         "warnings": cfg.warnings,
     }
@@ -623,7 +685,7 @@ def cmd_config(args):
     print(f"{path}: {json.dumps(cur, sort_keys=True)}")
     print("applies from the next hook call; a new fact-size cap applies once the next session "
           "has been folded")
-    if {canonical(k) for k in updates} & {"microskills", "loopguard"} and sidecall.resume(
+    if {canonical(k) for k in updates} & {"microskills", "loopguard", "droid_sidecall"} and sidecall.resume(
             ctx.host.name, ctx.root):
         print(f"the plugin's model calls through `{sidecall.call_name(ctx.host.name)}` will be "
               f"tried again")
@@ -654,7 +716,7 @@ def _print_history(ctx, doc):
         print(f"no import of earlier sessions recorded for {ctx.repo.label}"
               + ("" if ctx.config.history_import else " (history_import is off)"))
         return
-    print(f"{ctx.repo.label}: {history.describe(doc) or doc.get('state')}")
+    print(f"{ctx.repo.label}: {history.describe(doc, ctx.host.name) or doc.get('state')}")
     skipped = doc.get("skipped") if isinstance(doc.get("skipped"), dict) else {}
     if doc.get("over_limit"):
         skipped = dict(skipped, older_than_the_newest=doc["over_limit"])
@@ -663,13 +725,13 @@ def _print_history(ctx, doc):
 
 
 def cmd_history(args):
-    """`te history [import]`: a repository's sessions from before the plugin (Claude Code)."""
+    """`te history [import]`: a repository's sessions from before the plugin."""
     ctx = _ctx(args)
     if args.action == "status" or args.status:
         _print_history(ctx, history.summary(ctx))
         return 0
     if not ctx.host.keeps_history:
-        print(f"{ctx.host.name}: no session history the plugin reads (Claude Code only)")
+        print(f"{ctx.host.name}: no session history the plugin reads")
         return 1
     if args.dry_run:
         p = history.plan(ctx)
@@ -738,6 +800,13 @@ def cmd_repos(args):
     if args.action == "merge":
         if not args.keys or len(args.keys) > 2:
             print("usage: te repos merge KEY [INTO] (keys as `te repos` lists them)")
+            return 2
+        # A key names one directory in `repos/`: `.`, `""` or a path would name `repos/`
+        # itself, or somewhere else, and the merge would set all of it aside.
+        bad = [k for k in args.keys if k in ("", ".", "..") or os.path.basename(k) != k
+               or "/" in k or "\\" in k]
+        if bad:
+            print(f"not a state directory key: {bad[0]!r} (keys as `te repos` lists them)")
             return 2
         src = args.keys[0]
         if not os.path.isdir(os.path.join(repos.repos_dir(root), src)):
@@ -813,13 +882,14 @@ def cmd_doctor(args):
         ok = False
     import shutil as _sh
     # Only the agents installed here: a Codex-only machine has no Claude Code catalog to probe.
-    agents = [h for h in ("antigravity", "claude", "codex", "copilot", "grok", "hermes", "opencode",
-                          "pi")
+    agents = [h for h in ("antigravity", "claude", "codex", "copilot", "droid", "grok", "hermes",
+                          "opencode", "pi")
               if _sh.which(sidecall.claude_cli() if h == "claude" else
                            sidecall.hermes_cli() if h == "hermes" else
                            "agy" if h == "antigravity" else h)]
     print("agents      " + (', '.join(agents) or 'none of antigravity (agy), claude, codex, '
-                             'copilot, grok, hermes, opencode, pi on PATH'))
+                             'copilot, droid, grok, hermes, opencode, pi on PATH'))
+    ctx = _ctx(args)          # the per-agent lines below read the settings in effect
     for h in agents:
         pause = sidecall.paused(h, root)
         if pause:
@@ -831,7 +901,7 @@ def cmd_doctor(args):
         cat = os.path.join(root, "hosts", "claude", "catalog.json")
         print(f"claude      catalog {'present' if os.path.exists(cat) else 'not probed'}")
     if "codex" in agents:
-        trusted = denylist.codex_project_trusted(args.cwd)
+        trusted = denylist.codex_project_trusted(ctx.repo.root)
         if trusted is not None:
             print(f"codex       this project is {'trusted' if trusted else 'NOT trusted'} "
                   f"(an untrusted project's .codex/config.toml is ignored)")
@@ -853,6 +923,17 @@ def cmd_doctor(args):
         if ctrust is not None:
             print(f"copilot     this folder is {'trusted' if ctrust else 'NOT trusted'} (an "
                   f"untrusted folder's .github/copilot settings are ignored)")
+    if "droid" in agents:
+        sessions = os.environ.get("DROID_SESSIONS_DIR") or os.path.join(
+            os.path.expanduser("~"), ".factory", "sessions")
+        if getattr(ctx.config, "droid_sidecall", False):
+            side = "on (the `droid_sidecall` setting)"
+        elif sidecall.droid_enabled():
+            side = "on (TE_DROID_SIDECALL=1)"
+        else:
+            side = ("off (set `droid_sidecall=on` or TE_DROID_SIDECALL=1 to try them)")
+        print(f"droid       sessions {sessions}; side calls {side}; tool pruning is not "
+              f"available in the TUI")
     if "hermes" in agents:
         link = os.path.join(sidecall.hermes_home(), "plugins", "tokeneconomizer")
         print(f"hermes      plugin {'linked at ' + link if os.path.exists(link) else 'not in ' + link}"
@@ -866,7 +947,6 @@ def cmd_doctor(args):
             pkgs = []
         mine = [p for p in pkgs if "tokeneconomizer" in json.dumps(p).lower()]
         print(f"pi          package {'installed: ' + str(mine[0]) if mine else 'not in ' + settings}")
-    ctx = _ctx(args)
     print(f"repository  {ctx.repo.root}: {repos.describe(ctx.repo)}; state {ctx.repo.key}")
     home_git = os.path.join(paths.home_dir(), ".git")
     for path in repos.ignored_git_entries(args.cwd):
@@ -916,7 +996,12 @@ def build_parser():
     p.add_argument("--explain", action="store_true",
                    help="briefly explain current settings and saved state (no model calls)")
     p.set_defaults(fn=cmd_status)
-    add("microskills", "facts").set_defaults(fn=cmd_microskills)
+    p = add("microskills", "facts")
+    p.add_argument("action", nargs="?", default="show", choices=("show", "forget", "unforget"),
+                   help="show the facts (default); forget: stop injecting them and never learn "
+                        "them again; unforget: bring forgotten facts back")
+    p.add_argument("ids", nargs="*", metavar="ID", help="fact ids, as `te microskills` lists them")
+    p.set_defaults(fn=cmd_microskills)
     p = add("toolprune", "untool")
     p.add_argument("action", nargs="?", default="show",
                    choices=("show", "apply", "restore", "refresh-catalog", "measure",
@@ -978,7 +1063,35 @@ def _recent_host(cwd):
     return max(seen, key=seen.get) if seen else None
 
 
+def _split_argline(line):
+    """Split on whitespace and quotes as a POSIX shell would, but keep a backslash as typed:
+    on Windows `C:\\Python312\\python.exe` is a path, not two escapes. An unclosed quote
+    raises ValueError."""
+    lex = shlex.shlex(line, posix=True)
+    lex.whitespace_split = True
+    lex.escape = ""
+    lex.commenters = ""
+    return list(lex)
+
+
+def _expand_argline(argv):
+    """`--argline TEXT` stands for TEXT split by `_split_argline`: a host's slash command
+    (Pi's `/te ...`) hands over the line as typed, and a fact id may hold spaces and quotes."""
+    argv = list(sys.argv[1:] if argv is None else argv)
+    for i, a in enumerate(argv):
+        if a == "--argline" and i + 1 < len(argv):
+            return argv[:i] + _split_argline(argv[i + 1]) + argv[i + 2:]
+        if a.startswith("--argline="):
+            return argv[:i] + _split_argline(a.split("=", 1)[1]) + argv[i + 1:]
+    return argv
+
+
 def main(argv=None):
+    try:
+        argv = _expand_argline(argv)
+    except ValueError as e:
+        print(f"te: could not read the arguments: {e}")
+        return 2
     args = build_parser().parse_args(argv)
     if args.host is None:
         args.host = hosts.default_host(recent=_recent_host(args.cwd))
