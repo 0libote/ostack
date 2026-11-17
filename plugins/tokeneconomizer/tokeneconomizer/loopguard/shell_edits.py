@@ -177,24 +177,84 @@ def _py_writes(text):
     return out
 
 
+# git's own options that take the next word as their value (`git -C repo apply x.diff`).
+_GIT_VALUE_OPTS = {"-C", "-c", "--git-dir", "--work-tree", "--namespace", "--config-env",
+                   "--attr-source"}
+
+
+def _git_args(tokens):
+    """The words of a git command from its subcommand on, past git's own options such as
+    `-C <dir>`, `-c <name>=<value>` or `--no-pager`; [] for any other command."""
+    if tokens[0].rsplit("/", 1)[-1] != "git":
+        return []
+    i = 1
+    while i < len(tokens) and tokens[i].startswith("-"):
+        i += 2 if tokens[i] in _GIT_VALUE_OPTS else 1
+    return tokens[i:]
+
+
 def _restored(tokens):
     """The paths a `git checkout -- <path>` or `git restore <path>` puts back; [] for any other
     command."""
-    if tokens[0].rsplit("/", 1)[-1] != "git" or len(tokens) < 3 or \
-            tokens[1] not in ("checkout", "restore"):
+    args = _git_args(tokens)
+    if len(args) < 2 or args[0] not in ("checkout", "restore"):
         return []
-    rest = (tokens[tokens.index("--") + 1:] if "--" in tokens
-            else tokens[2:] if tokens[1] == "restore" else [])
+    rest = (args[args.index("--") + 1:] if "--" in args
+            else args[1:] if args[0] == "restore" else [])
     return [t for t in rest if not t.startswith("-")]
 
 
+# The commands that run another one, and which of their own options take the next word as a
+# value: `sudo -u bob sed -i ...`, `env -u VAR ...`, `timeout -s KILL 60 ...`, `nice -n 10 ...`.
+_WRAPPERS = {
+    "sudo": {"-u", "-g", "-p", "-C", "-D", "-R", "-r", "-t", "-T", "-U", "--user", "--group",
+             "--prompt", "--close-from", "--chdir", "--chroot", "--role", "--type",
+             "--command-timeout", "--other-user"},
+    "env": {"-u", "-C", "-S", "--unset", "--chdir", "--split-string"},
+    "timeout": {"-s", "-k", "--signal", "--kill-after"},
+    "nice": {"-n", "--adjustment"},
+    "time": {"-f", "-o", "--format", "--output"},
+    "command": set(),
+    "nohup": set(),
+}
+
+
+def _past_wrapper(tokens):
+    """The words after a wrapper such as `sudo` or `timeout`, its own options and, for
+    `timeout`, the duration."""
+    takes_value = _WRAPPERS[tokens[0]]
+    i = 1
+    while i < len(tokens) and tokens[i].startswith("-"):
+        t = tokens[i]
+        i += 1
+        if t == "--":
+            break
+        if t.startswith("--"):
+            if t in takes_value:                      # `--user bob`, not `--user=bob`
+                i += 1
+            continue
+        for n, letter in enumerate(t[1:], 2):         # `-Eu bob`, `-ubob`, `-n10`, `-10`
+            if "-" + letter in takes_value:
+                if n == len(t):                       # the value is the next word
+                    i += 1
+                break
+    if tokens[0] == "timeout":
+        i += 1
+    return tokens[i:]
+
+
 def _bare(cmds):
-    """Each command with the `sudo`, `env`, `VAR=1` ... before it dropped; empty ones left out."""
+    """Each command with the `sudo -u bob`, `env -u VAR`, `timeout 60`, `VAR=1` ... before it
+    dropped; empty ones left out."""
     out = []
     for tokens in cmds:
-        while tokens and (tokens[0] in ("sudo", "command", "env", "time", "nohup")
-                          or re.match(r"^\w+=", tokens[0])):
-            tokens = tokens[1:]
+        while tokens:
+            if tokens[0] in _WRAPPERS:
+                tokens = _past_wrapper(tokens)
+            elif re.match(r"^\w+=", tokens[0]):
+                tokens = tokens[1:]
+            else:
+                break
         if tokens:
             out.append(tokens)
     return out
@@ -232,7 +292,7 @@ def shell_edit_targets(cmd):
             found += [t for t in tokens[1:] if not t.startswith("-") and _SOURCE_FILE.search(t)]
         elif head == "apply_patch":
             found += _PATCH_FILE.findall("\n".join(bodies + [" ".join(tokens[1:])])) or ["(patch)"]
-        elif head == "patch" or (head == "git" and len(tokens) > 1 and tokens[1] == "apply"):
+        elif head == "patch" or _git_args(tokens)[:1] == ["apply"]:
             found.append("(patch)")
         else:
             found += _restored(tokens)

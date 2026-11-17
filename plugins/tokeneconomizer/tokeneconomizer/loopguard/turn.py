@@ -34,13 +34,25 @@ _SLOTS = SpiralState.__slots__
 # is often named by path (`python tests/runtests.py`, `.venv/bin/pytest`, `./node_modules/.bin/
 # jest`): without the optional directories those turns showed no verification at all, so a turn
 # whose last test run failed still counted as ended green and fed the envelope.
+# `python` with the interpreter's own options before what it runs (`python -W error -m pytest`,
+# `python -X dev -m pytest`, `python -u tests/runtests.py`); they are case-sensitive.
+_PYTHON = (r"python\d?(?:\.\d+)?"
+           r"(?-i:(?:\s+(?:-[bBdEiIOPqsSuvx]+|-[WX]\s*[^\s\-]\S*))*)")
 VERIFY_RE = re.compile(
-    r"(?i)(?:^|[\s;&|(])(?:(?:~?/)?(?:[\w.\-]+/)*python\d?(?:\.\d+)?\s+)?"
-    r"(?:~?/)?(?:[\w.\-]+/)*(?:pytest|py\.test|tox|nox|python\d?(?:\.\d+)?\s+-m\s+(?:pytest|unittest)|"
+    r"(?i)(?:^|[\s;&|(])(?:(?:~?/)?(?:[\w.\-]+/)*" + _PYTHON + r"\s+)?"
+    r"(?:~?/)?(?:[\w.\-]+/)*(?:pytest|py\.test|tox|nox|" + _PYTHON + r"\s+-m\s+(?:pytest|unittest)|"
     r"manage\.py\s+test|runtests(?:\.py)?|jest|vitest|mocha|ava|playwright\s+test|"
     r"(?:npm|pnpm|yarn|bun)\s+(?:run\s+)?test|go\s+test|cargo\s+(?:test|nextest)|"
     r"(?:mvn|mvnw|\./mvnw)\s+(?:\S+\s+)*test|(?:gradle|gradlew|\./gradlew)\s+(?:\S+\s+)*test|"
     r"make\s+(?:test|check)|ctest|rspec|phpunit|dotnet\s+test|swift\s+test|mix\s+test|"
+    # Ruby: `rake test`, `bin/rails test`, and `ruby` given a test file (`ruby -Itest
+    # test/models/user_test.rb`), but not `ruby -e '...'`, a syntax check (`ruby -wc x.rb`) or a
+    # script that is not a test (`ruby repro.rb`): the options it takes are spelled out, and
+    # case-sensitive, so `-W` does not also take `-wc` under the pattern's `(?i)`.
+    r"rake(?:\s+\w+=\S*)*\s+(?:test|spec)(?::[\w:]+)?|rails\s+test(?::[\w:]+)?|"
+    r"ruby(?-i:\s+(?:-[Ir](?:\S+|\s+[^\s\-]\S*)|-C\s*\S+|-W[0-2]?(?::\S+)?|"
+    r"--[\w\-]+(?:=\S+)?|-[abdf-zABDF-Z]+))*\s+"
+    r"(?:[\w.\-~]*/)*(?:test_[\w.\-]*|[\w.\-]*_(?:test|spec))\.rb|"
     r"deno\s+test|node\s+--test|bazel\s+test|(?:\./)?bin/test)(?![\w.\-/])")
 
 # A command line's exit status is its LAST command's, so it may not be the test run's: `npm test
@@ -55,9 +67,13 @@ _QUOTED_RE = re.compile(r"'[^']*'|\"(?:\\.|[^\"\\])*\"")
 _SEP_RE = re.compile(r"(&&|\|\||\|&|(?<!>)\||;|\n)")    # `|`, but not the `>|` redirect
 # A runner asked for its help, version or test list, not to run the tests.
 _NOT_A_RUN_RE = re.compile(r"\s(?:-h|--help|--version|--collect-only|--co|--list\S*)(?!\S)")
-# What may precede the command itself: `FOO=1 timeout 60 npm test`, and a launcher that runs
-# it in the project's environment, `uv run pytest`, `npx jest`, `bundle exec rspec`.
-_PREFIX_RE = re.compile(r"^\s*(?:(?:\w+=\S*|time|nice|nohup|command|env|"
+# What may precede the command itself: `FOO=1 timeout 60 npm test`, `env -u VAR`, `nice -n 10`,
+# and a launcher that runs it in the project's environment, `uv run pytest`, `npx jest`,
+# `bundle exec rspec`.
+_PREFIX_RE = re.compile(r"^\s*(?:(?:\w+=\S*|time|nohup|command|"
+                        r"nice(?:\s+(?:-n\s*|--adjustment=)?[-+]?\d+)?|"
+                        # env's options; `-u`, `-C` and their long forms take a value
+                        r"env(?:\s+(?:(?:-[uC]|--unset|--chdir)(?:=|\s*)[^\s-]\S*|-[-\w]*))*|"
                         r"timeout(?:\s+(?:-\S+|[A-Z]+|\d\S*))+|"
                         r"(?:(?:uv|poetry|pipenv|pdm|hatch|rye)\s+run|npx|bunx|"
                         r"(?:npm|pnpm|yarn)\s+(?:exec|dlx)|bundle\s+exec|xvfb-run)"
@@ -178,6 +194,9 @@ _RUN_FAILED_RE = re.compile("|".join((
     r"^(?:--- FAIL: |FAIL\t|FAIL$)",                                # go
     r"^test result: FAILED",                                        # cargo
     r"\b\d+ examples?, [1-9]\d* failures?\b",                       # rspec
+    # minitest (`8 runs, 9 assertions, 1 failures, 0 errors, 0 skips`), test-unit (`tests`)
+    r"^\d+ (?:runs|tests), \d+ assertions, (?:[1-9]\d* failures, \d+ errors|\d+ failures, "
+    r"[1-9]\d* errors)\b",
     r"Tests run: \d+, Failures: (?:[1-9]|0, Errors: [1-9])",        # JUnit (Maven, Gradle)
     r"BUILD FAIL(?:URE|ED)")), re.MULTILINE)
 _RUN_PASSED_RE = re.compile("|".join((
@@ -192,6 +211,7 @@ _RUN_PASSED_RE = re.compile("|".join((
     r"^ok\s+\S+\s+(?:\d+(?:\.\d+)?s|\(cached\))",
     r"^test result: ok\.",
     r"\b\d+ examples?, 0 failures\b",
+    r"^\d+ (?:runs|tests), \d+ assertions, 0 failures, 0 errors\b",   # minitest, test-unit
     r"BUILD SUCCESS")), re.MULTILINE)
 
 
