@@ -100,7 +100,8 @@ behaviour, run `claude plugin update tokeneconomizer@tokeneconomizer`.
 
 **Uninstall.**
 
-1. In each repository where the plugin left tools out: `/tokeneconomizer:toolprune restore`.
+1. In each repository where the plugin left tools out (`/tokeneconomizer:repos` lists them):
+   `/tokeneconomizer:toolprune restore`.
 2. `claude plugin uninstall tokeneconomizer@tokeneconomizer`, then
    `claude plugin marketplace remove tokeneconomizer`.
 3. Optional: `rm -rf ~/.tokeneconomizer` to delete what it learned. (A line the plugin added to a
@@ -162,8 +163,9 @@ starts the hook with the `python` on PATH (3.10 or later), which `TE_PYTHON` doe
 
 **Uninstall.**
 
-1. In each repository where the plugin turned packages off:
-   `~/.tokeneconomizer/bin/te --host codex toolprune restore` (it leaves an empty `.codex/`).
+1. In each repository where the plugin turned packages off (`~/.tokeneconomizer/bin/te --host
+   codex repos` lists them): `~/.tokeneconomizer/bin/te --host codex toolprune restore` (it
+   leaves an empty `.codex/`).
 2. `codex plugin remove tokeneconomizer@tokeneconomizer`, then
    `codex plugin marketplace remove tokeneconomizer`.
 3. Optional: `rm -rf ~/.tokeneconomizer`.
@@ -178,6 +180,45 @@ codex plugin add tokeneconomizer@tokeneconomizer
 ```
 
 To update it, rebuild the bundle and run `codex plugin add tokeneconomizer@tokeneconomizer` again.
+
+## GitHub Copilot in VS Code
+
+Requires Python >= 3.10 on PATH and Copilot signed in inside VS Code.
+
+**1. Install.**
+
+1. Open your project and select **Copilot** as the chat session target.
+2. Press **Ctrl+Shift+P**, run **Chat: Manage Plugin Marketplaces**, and choose **Add Marketplace**.
+3. Enter `microsoft/TokenEconomizer` (or the path to your local clone).
+4. Select the `tokeneconomizer` marketplace, choose **Browse**, and install `tokeneconomizer`.
+
+If you install from GitHub rather than a local clone (or on Windows without Git symlink
+support), the copied plugin directory holds only `plugin/` without the Python package; either
+install from a bundle built with `python scripts/build_plugin.py`, or clone the repository to
+`~/.tokeneconomizer/src` (or set `TE_CORE_PATH` to your clone).
+
+See [VS Code's plugin installation guide](https://code.visualstudio.com/docs/agent-customization/agent-plugins).
+GitHub CLI and standalone Copilot CLI are not needed for installation.
+
+**2. Optional: use without Copilot CLI.** Skip this step to keep your current settings.
+To enable model-free micro-skills without the standalone CLI, enter this in a new Copilot chat:
+
+```text
+/tokeneconomizer:config set microskills=envfacts toolprune=off loopguard=off
+```
+
+This is not required for installation. It disables the model-based proposer and loop guard,
+which invoke the standalone CLI, and tool pruning, which has not been verified in VS Code.
+These settings apply to this repository.
+
+**3. Check it.** Enter `/tokeneconomizer:status` in chat and check that it reports the
+`copilot` host. If the command is missing, check **Chat: Open Customizations** > **Plugins**
+and start a fresh chat with the plugin enabled.
+
+**Update.** Run **Chat: Update Plugins**, then start a new chat.
+
+**Uninstall.** Open **Chat: Open Customizations** > **Plugins**, select TokenEconomizer,
+and choose **Uninstall**.
 
 ## Copilot CLI
 
@@ -243,7 +284,8 @@ redirect shows "● TokenEconomizer: …" in the conversation (and on stdout und
 
 **Uninstall.**
 
-1. In each repository where the plugin turned a server off: `/tokeneconomizer:toolprune restore`.
+1. In each repository where the plugin turned a server off (`/tokeneconomizer:repos` lists them):
+   `/tokeneconomizer:toolprune restore`.
 2. `copilot plugin uninstall tokeneconomizer@tokeneconomizer`, then
    `copilot plugin marketplace remove tokeneconomizer`.
 3. Optional: `rm -rf ~/.tokeneconomizer`.
@@ -413,6 +455,13 @@ ln -s /path/to/TokenEconomizer/plugin/opencode/tokeneconomizer.ts ~/.config/open
 
 (Per repository: `.opencode/plugins/`.) Python 3.10+ must be on `PATH`, or named by `TE_PYTHON`.
 
+**A copied plugin, not a link,** has no `scripts/` beside it, so it cannot find the dispatcher on
+its own. Point it at the checkout: `TE_CORE_PATH=/path/to/TokenEconomizer`, or `TE_PLUGIN_ROOT`
+at the directory that holds `scripts/`. Without one of them a copied plugin starts no hook at all.
+The state launcher (`~/.tokeneconomizer/bin/te`) is written once a hook has reached the
+dispatcher, so it cannot make the first one work. On 2.x the variable must reach the service —
+`opencode service restart` from a shell where it is set (see below).
+
 **2. Check it.** Run a session, then `~/.tokeneconomizer/bin/te --host opencode status` in the
 repository. opencode has no plugin slash commands, so every command runs from a terminal. Tool
 pruning does not apply. Micro-skills is off by default: `te --host opencode config set
@@ -429,8 +478,9 @@ session from its events and writes the same JSON (where that copy holds no promp
 2.x's `opencode session export` instead). A turn ends at 2.x's `session.execution.*` events or
 the documented `session.idle`, whichever the release emits; a headless `opencode run` is folded
 when its turn ends and a deleted session when it is deleted. Quitting the TUI gives a plugin no
-chance to say so: that session is folded by the next session's start, once its export has been
-quiet for 10 minutes.
+chance to say so, so the plugin hands a session over itself once it has been quiet for 10
+minutes — the window TE's own recovery uses (`fold.STALE_S`; `TE_OPENCODE_QUIET_MS` overrides it,
+floor 10 s) — whether or not a later session start ever arrives.
 
 **Model calls.** The proposer and the loop guard's judge run through `opencode run` on your
 default opencode model (`paid_model` names another): tools that change anything are denied,
@@ -453,8 +503,11 @@ the side call denies only `bash`, `edit`, `webfetch` and `websearch`.
 ## Hermes Agent
 
 Experimental, and narrower than the other agents: **micro-skills and the loop guard**, on Hermes's
-**classic CLI** (`hermes`, `hermes chat`) and **one-shot runs** (`hermes -z`, `hermes chat --oneshot`),
-with `terminal.backend: local`. Tested on 0.22.5 only.
+**classic CLI** (`hermes`, `hermes chat`), **one-shot runs** (`hermes -z`, `hermes chat --oneshot`),
+and gateway sessions (the API server and messaging platforms such as Discord and Telegram) and `cron`
+runs, with `terminal.backend: local`. Tested on 0.22.5 only; the gateway and `cron` sessions have
+been exercised against a recorded `state.db` and not against a live platform. Where Hermes has
+`register_command`, `/te` runs the command line below.
 
 **1. Install.** Link the plugin directory, keeping it next to `scripts/` and `lib/`, enable it, and
 restart the gateway, which is what runs your sessions:
@@ -489,9 +542,19 @@ quiet for 10 minutes. A session whose rows cannot be read then stays unfolded an
 each later start in that repository, for a week after its last hook; after that it is recorded as
 unreadable.
 
-**Which repository.** Each session's own row names its directory, so sessions in different
-repositories can run at once in the one gateway. A session with no directory on this machine is
-not followed.
+**Which repository.** Each session names its own directory, so sessions in different repositories
+can run at once in the one gateway; the gateway's working directory and `TERMINAL_CWD` are never
+used. A session's directory is its row's `cwd` in Hermes's `state.db`. A gateway or `cron` session
+whose row records none takes the `terminal_cwd` of its chat's routing entry (`gateway_routing`),
+then the directory Hermes scopes to the running turn; with none of these it is not followed yet,
+and is looked at again at its next hook. Any other session with no directory on this machine is not
+followed. A `cron` run is one turn and ends with it; a gateway chat ends at `/new` (a finalize or a
+reset), at shutdown, or, if neither fires, when the next session starts in its repository after 10
+quiet minutes.
+
+**`/te`.** It runs in the repository of the session that typed it, found as above and by the chat's
+`session_key`. `/te --cwd PATH status` names another. A session with no directory gets
+`te: no working directory for this session; pass --cwd PATH`.
 
 **Model calls.** The proposer and the loop guard's judge run through `hermes chat --oneshot --source
 tool` on your default Hermes model (`paid_model` names another; `hermes_cli` or `TE_HERMES_CLI`
@@ -543,9 +606,8 @@ off in mid-turn by a gateway that died, and two timed-out side calls, were recov
 * A session resumed after it was folded: its later turns are neither learned from nor priced, since
   a session folds once. That rule is shared by every agent. It matters more here, because a one-shot
   run folds as soon as its turn ends, so `hermes -c` after `hermes -z` always lands on it.
-* The Ink TUI (`--tui`), Desktop, ACP, messaging platforms and cron are ignored, on purpose: nothing
-  has been verified there, and a chat is not repository work. So are subagents, whose tokens are
-  counted with their session and whose tool calls are not.
+* The Ink TUI (`--tui`), Desktop and ACP are ignored, on purpose: nothing has been verified there.
+  So are subagents, whose tokens are counted with their session and whose tool calls are not.
 * Remote terminal backends, named profiles and `plugins.isolation: host`.
 * Tool pruning. Hermes has no per-repository tool setting. `llm_request` middleware removed a tool
   from a request in a probe, but keeping a session's list stable across its cache has not been built.
@@ -874,6 +936,7 @@ first session there ends.
 | `local_judge_confidence` | `0.9` | how sure a stuck verdict from the on-device judge must be to count; below it the turn is spared |
 | `pi_extensions` | `""` | Pi only: extension files (comma-separated paths) the plugin's own calls load, for a model whose provider an extension registers |
 | `pi_cli` | `""` | Pi only: the `pi` the plugin's own calls run; empty: the first on PATH |
+| `tool_roles` | none | tools the mechanisms do not know by name, each given the role of a built-in one: `tool=role` entries separated by commas, a tool by name or pattern, a role `shell`, `edit` or `read` (`mcp__serena__replace_content=edit,mcp__serena__execute_shell_command=shell`). Micro-skills read a shell tool's commands, and an edit tool's file counts as edited; tool pruning still knows each tool by its own name |
 | `shadow` | `false` | decide and log everything, act on nothing |
 | `mode` | `auto` | `interactive` or `headless` to override what the plugin detects |
 
@@ -967,8 +1030,9 @@ agents the default listed under [Settings](#settings). `status` prints the repos
 `overhead`, and a record of its own for each judge call (`"kind": "overhead"`, with the session's
 id).
 
-These calls run through **your own agent's CLI**: `claude -p`; `codex exec`; `copilot -p`, with
-every tool removed; and `pi -p`, with nothing loaded but the model. So they use whatever your
+These calls run through **your own agent's CLI**: `claude -p`, in safe mode where your Claude
+Code has `--safe-mode` (none of your CLAUDE.md, plugins or hooks); `codex exec`; `copilot -p`,
+with every tool removed; and `pi -p`, with nothing loaded but the model. So they use whatever your
 sessions already use (a Claude subscription or Anthropic API key, your Codex login or OpenAI key,
 Copilot's subscription, or the provider and login Pi is set up with), are billed there, and are
 shown in `status`. Copilot with BYOK is the exception; see [Copilot CLI](#copilot-cli).
