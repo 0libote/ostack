@@ -274,6 +274,16 @@ def claude_no_mcp(cli, cwd):
     return ["--strict-mcp-config", "--mcp-config", path]
 
 
+def claude_safe_mode(cli):
+    """`--safe-mode` when this Claude Code has it: a side call starts without the person's
+    customizations -- CLAUDE.md, installed plugins and their hooks, skills, output styles --
+    which it would otherwise load, pay for on every judge and proposer call, and run its hooks
+    inside (#162). Auth, model selection and the settings file's `env` still apply (verified on
+    2.1.329), so a provider set there is still the one called. Not for the catalog probes, which
+    measure the person's real session."""
+    return ["--safe-mode"] if "--safe-mode" in _claude_help(cli) else []
+
+
 def claude_json(stdout):
     """The result object of a `claude -p --output-format json` run, {} when there is none. With
     `"verbose": true` in the person's settings (or `--verbose`), Claude Code prints the whole
@@ -296,6 +306,7 @@ def claude_call(prompt, model="haiku", cli=None, timeout=TIMEOUT_S, effort=""):
         # `--mcp-config` takes several values, so an option follows it, never a bare argument.
         cmd = ([cli, "-p", "--output-format", "json", "--max-turns", "1", "--tools", ""]
                + claude_no_mcp(cli, cwd) + ["--model", model or "haiku"] + claude_flags(cli)
+               + claude_safe_mode(cli)
                + (["--effort", effort] if effort and "--effort" in _claude_help(cli) else []))
         out = subprocess.run(cmd, input=prompt, capture_output=True,
                              encoding="utf-8", errors="replace", timeout=timeout, env=_env(),
@@ -346,8 +357,8 @@ def codex_call(prompt, model="", cli="codex", timeout=TIMEOUT_S, effort=""):
         eff, _ = accounting.effective({
             "input_tokens": max(0, inp - cached - cw), "cache_read_input_tokens": cached,
             "cache_creation_input_tokens": cw,
-            "output_tokens": int(usage.get("output_tokens") or 0)
-            + int(usage.get("reasoning_output_tokens") or 0),
+            # Codex's output_tokens already holds its reasoning_output_tokens.
+            "output_tokens": int(usage.get("output_tokens") or 0),
             "model": model or "codex"})
     return text, eff
 
@@ -428,10 +439,14 @@ def opencode_call(prompt, model="", cli="opencode", timeout=TIMEOUT_S):
     env = dict(_env(), OPENCODE_CONFIG_CONTENT=OPENCODE_CONFIG)
     exe = program(cli)
     with tempfile.TemporaryDirectory(prefix="te-side-", ignore_cleanup_errors=True) as cwd:
+        # The message goes on stdin, never on argv: Windows stops a command line at 32,767
+        # characters, and the proposer's prompt (eight task digests plus the facts) outgrows
+        # that -- CreateProcess failed with WinError 206 before a session existed. `opencode
+        # run` reads the message from stdin when it is given none (opencode 2.3.0).
         out = subprocess.run([*exe, "run", *opencode_flags(cli), "--format", "json",
-                              *model_args, prompt],
-                             capture_output=True, encoding="utf-8", errors="replace",
-                             timeout=timeout, env=env, cwd=cwd, stdin=subprocess.DEVNULL)
+                              *model_args],
+                             input=prompt, capture_output=True, encoding="utf-8",
+                             errors="replace", timeout=timeout, env=env, cwd=cwd)
         text, usage, sid = trace.opencode_run_reply(out.stdout)
         if sid:
             try:
